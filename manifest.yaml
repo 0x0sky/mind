@@ -2,16 +2,21 @@ version: 1
 
 repository:
   name: mind
-  description: Personal AI knowledge repository
+  description: Vendor-independent context repository
+  foundation: true
 
 structure:
+  assistant:
+    path: .assistant
+    description: Vendor-independent assistant configuration
+    priority: high
 
   identity:
-    description: Stable personal preferences and identity
-    priority: low
+    description: Stable identity of the repository owner
+    priority: medium
 
   knowledge:
-    description: Long-term knowledge
+    description: Durable domain knowledge
     priority: medium
 
   systems:
@@ -19,7 +24,7 @@ structure:
     priority: high
 
   projects:
-    description: Project-specific documentation
+    description: Self-contained project context
     priority: highest
 
   state:
@@ -31,23 +36,24 @@ structure:
     priority: ignore_unless_requested
 
 rules:
-
   single_source_of_truth: true
-
-  markdown_only: true
-
   duplicate_content: forbidden
-
   cross_reference: preferred
-
   canonical_files: required
+  stable_and_temporary_context_separated: true
+  assistant_and_implementation_separated: true
+  secrets_forbidden: true
+
+formats:
+  knowledge: markdown
+  machine_readable_configuration: yaml
 
 loading:
-
   default:
     - state
     - projects
     - systems
+    - .assistant
 
   extended:
     - knowledge
@@ -56,8 +62,6 @@ loading:
   full:
     - archive
 
-future:
-
-  context_protocol: planned
-
-  mcp: planned
+derivation:
+  personal_and_organization_histories: independent
+  upstream_synchronization: optional

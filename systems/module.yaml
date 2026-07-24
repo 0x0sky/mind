@@ -1,0 +1,14 @@
+schema_version: 1
+module:
+  id: systems
+  purpose: map the public software ecosystem, organizations, domains, and system boundaries
+  stability: stable
+  dependencies:
+    - engineering
+  entrypoints:
+    - systems/README.md
+    - systems/ecosystem.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public

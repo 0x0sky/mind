@@ -1,0 +1,13 @@
+schema_version: 1
+module:
+  id: identity
+  purpose: define the canonical public identity that owns this mind
+  stability: stable
+  dependencies: []
+  entrypoints:
+    - identity/README.md
+    - identity/handles.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public

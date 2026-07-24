@@ -1,0 +1,14 @@
+schema_version: 1
+module:
+  id: knowledge
+  purpose: preserve durable public models without copying transient conversation history
+  stability: stable
+  dependencies:
+    - identity
+  entrypoints:
+    - knowledge/README.md
+    - knowledge/principles.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public

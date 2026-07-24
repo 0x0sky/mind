@@ -1,12 +1,12 @@
 schema_version: 1
 
 mind:
-  name: mind
-  kind: abstract
-  context_version: 0.1.0
+  name: 0x0sky
+  kind: personal
+  context_version: 0.2.0
   owner:
-    type: unspecified
-    id: unspecified
+    type: person
+    id: 0x0sky
 
 contract:
   canonical_source: required
@@ -17,8 +17,14 @@ contract:
   secrets: forbidden
 
 modules:
-  required: []
-  registered: []
+  required:
+    - identity
+  registered:
+    - identity
+    - knowledge
+    - engineering
+    - systems
+    - writing
   rules:
     single_responsibility: required
     explicit_dependencies: required
@@ -26,16 +32,36 @@ modules:
     duplicate_content: forbidden
     cross_reference: preferred
     composition_over_inheritance: preferred
+  catalog:
+    identity: identity/module.yaml
+    knowledge: knowledge/module.yaml
+    engineering: engineering/module.yaml
+    systems: systems/module.yaml
+    writing: writing/module.yaml
 
 context:
   stability:
     stable: long_lived_contracts
     transient: current_state
     archived: ignored_unless_requested
+  visibility:
+    repository: public
+    allowed: durable_public_context
+    forbidden:
+      - credentials
+      - secrets
+      - private_health_data
+      - private_relationship_data
+      - transient_personal_state
 
 loading:
-  default: []
-  optional: []
+  default:
+    - identity
+    - knowledge
+    - engineering
+    - systems
+  optional:
+    - writing
 
 validation:
   schema: schema/mind.schema.json

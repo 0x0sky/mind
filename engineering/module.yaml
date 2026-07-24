@@ -1,0 +1,15 @@
+schema_version: 1
+module:
+  id: engineering
+  purpose: define the public software engineering practice of 0x0sky
+  stability: stable
+  dependencies:
+    - identity
+    - knowledge
+  entrypoints:
+    - engineering/README.md
+    - engineering/principles.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public

@@ -1,0 +1,15 @@
+schema_version: 1
+module:
+  id: writing
+  purpose: describe the public creative and linguistic practice associated with 0x0sky
+  stability: stable
+  dependencies:
+    - identity
+    - knowledge
+  entrypoints:
+    - writing/README.md
+    - writing/language.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public

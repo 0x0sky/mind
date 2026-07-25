@@ -7,10 +7,15 @@ This directory separates the canonical assistant contract from model-specific in
 ├── sources/
 │   └── 0x0da.yaml
 ├── generated/
-│   ├── CHATGPT.md
+│   ├── AGENTS.md
 │   ├── CLAUDE.md
-│   └── GEMINI.md
+│   ├── GEMINI.md
+│   ├── COPILOT.md
+│   └── GROK.md
 └── README.md
+
+.github/
+└── copilot-instructions.md
 ```
 
 ## Source of truth
@@ -23,11 +28,15 @@ The YAML exists because the source is structured data that can later be validate
 
 Files under [`generated/`](generated/) are model-facing Markdown renders:
 
-- `CHATGPT.md` — imperative instructions for ChatGPT and OpenAI coding agents;
-- `CLAUDE.md` — imperative instructions for Claude and Claude Code;
-- `GEMINI.md` — imperative instructions for Gemini tooling.
+- `AGENTS.md` — vendor-neutral repository agent contract, including OpenAI and Codex-style agents;
+- `CLAUDE.md` — instructions for Claude and Claude Code;
+- `GEMINI.md` — instructions for Gemini tooling;
+- `COPILOT.md` — readable GitHub Copilot render;
+- `GROK.md` — optional render for Grok-based agents.
 
-Generated files are derived artifacts. Do not edit their policy independently. Change the YAML source first, then update every render target in the same pull request.
+[`.github/copilot-instructions.md`](../.github/copilot-instructions.md) is the native repository instruction path used by GitHub Copilot. It is also derived from the YAML source.
+
+Generated files are derived artifacts. Do not edit their policy independently. Change the YAML source first, then update every affected render target in the same pull request.
 
 ## Entity boundary
 

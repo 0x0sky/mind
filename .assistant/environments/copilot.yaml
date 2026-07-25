@@ -1,0 +1,29 @@
+version: "1.0"
+kind: agent_environment
+
+id: github_copilot
+
+purpose: >-
+  Repository coding environment for GitHub Copilot operating within
+  0x0sky/mind.
+
+consumes:
+  contract: ../contract/agent.yaml
+
+identity:
+  name: github_copilot
+  relationship: repository_coding_environment
+
+emits:
+  - ../../.github/copilot-instructions.md
+
+rules:
+  - start_from_manifest
+  - load_task_relevant_context_only
+  - preserve_permission_boundaries
+  - preserve_canonical_ownership
+  - render_as_concise_repository_instructions
+
+boundary: >-
+  Copilot implements the shared contract in its own repository environment.
+  It does not inherit the identity or transient context of 0xda.

@@ -1,18 +1,17 @@
 # Assistant architecture
 
-This directory defines how `0x0sky/mind` expresses agent behavior without making any vendor-specific instruction file the source of truth.
+This directory defines shared agent behavior for `0x0sky/mind` and implements it in two concrete working environments.
 
-Claude should read this file as the architectural explanation of the system. Claude is intentionally not given a native `CLAUDE.md` implementation in this iteration. Its role here is to understand, review, and reason about the architecture rather than become another independently maintained instruction target.
+The architecture does not begin with a vendor or a model-specific prompt. It begins with a neutral contract, then applies the contract inside an environment that has its own identity, runtime assumptions, and native instruction path.
 
-## The three participants
+## Implemented environments
 
-The current design intentionally supports only three participants:
+Only two environments are implemented:
 
-1. **OpenAI / 0x0da** — implemented through the repository-root [`AGENTS.md`](../AGENTS.md).
-2. **Claude** — represented by this explanatory README and used as an architectural reader or reviewer.
-3. **GitHub Copilot** — implemented through [`.github/copilot-instructions.md`](../.github/copilot-instructions.md).
+1. **`0xda`** — the current personal working environment in which `0x0sky` collaborates with the assistant. Its native repository entry point is [`AGENTS.md`](../AGENTS.md).
+2. **GitHub Copilot** — the repository coding environment implemented through [`.github/copilot-instructions.md`](../.github/copilot-instructions.md).
 
-Gemini, Grok, and other speculative targets are deliberately excluded. A future vendor should be added only when there is a real runtime or workflow to support.
+No other environment is represented or implied.
 
 ## Structure
 
@@ -20,10 +19,8 @@ Gemini, Grok, and other speculative targets are deliberately excluded. A future 
 .assistant/
 ├── contract/
 │   └── agent.yaml
-├── personas/
-│   └── 0x0da.yaml
-├── adapters/
-│   ├── openai.yaml
+├── environments/
+│   ├── 0xda.yaml
 │   └── copilot.yaml
 └── README.md
 
@@ -35,57 +32,57 @@ AGENTS.md
 
 ### `contract/`
 
-Contains vendor-neutral behavior, permissions, privacy rules, communication expectations, and engineering constraints.
+Contains behavior that must remain stable across environments: guard principles, permissions, privacy rules, communication expectations, engineering workflow, and entity boundaries.
 
-The contract does not describe OpenAI, Claude, Copilot, or a particular prompt format. It defines what an agent is allowed and expected to do.
+The contract does not define a vendor, model, prompt format, or personal identity. It describes what an agent operating in this repository is allowed and expected to do.
 
-### `personas/`
+### `environments/`
 
-Contains identity-specific expression layered over the contract. `0x0da` is one persona, not the foundation of the architecture.
+Contains concrete implementations of the shared contract.
 
-A persona may influence tone, role, and working style, but it must not redefine permissions, privacy, or canonical repository behavior.
+An environment may define:
 
-### `adapters/`
+- its identity and relationship to the owner;
+- runtime-specific loading rules;
+- supported roles and expression;
+- the native instruction artifact it emits;
+- boundaries that prevent context from leaking into another environment.
 
-Contains translation rules for a concrete runtime. An adapter consumes the neutral contract and an optional persona, then emits a native artifact.
+`0xda` is not a vendor alias. It is the identity of the current personal working environment.
 
-Vendor-specific assumptions belong here and nowhere else.
+GitHub Copilot is a separate repository environment. It consumes the same contract but does not inherit the identity or transient context of `0xda`.
 
 ### Native artifacts
 
-`AGENTS.md` and `.github/copilot-instructions.md` are executable repository entry points for their respective runtimes. They are derived artifacts, not independent policy sources.
+`AGENTS.md` and `.github/copilot-instructions.md` are environment-facing entry points. They are derived implementations, not independent policy sources.
 
 ## Resolution order
-
-When interpreting the system, use this order:
 
 ```text
 repository contracts and manifest
         ↓
 .assistant/contract/agent.yaml
         ↓
-.assistant/personas/0x0da.yaml
-        ↓
-.assistant/adapters/<runtime>.yaml
+.assistant/environments/<environment>.yaml
         ↓
 native instruction artifact
 ```
 
-If a native artifact conflicts with the neutral contract, the neutral contract wins. If the persona conflicts with the contract, the contract wins. Vendor adapters may change form, but not meaning or authorization boundaries.
+If a native artifact conflicts with the shared contract, the contract wins. An environment may change form, loading behavior, or expression, but it must not weaken authorization, privacy, or canonical-source boundaries.
 
-## Adding another vendor
+## Adding another environment
 
-A future vendor should require only:
+A future environment should require only:
 
-1. a new adapter under `.assistant/adapters/`;
-2. a native artifact at the path expected by that runtime;
+1. a new file under `.assistant/environments/`;
+2. a native artifact at the path expected by that environment;
 3. an update to this README.
 
-The contract and persona should remain unchanged unless the underlying behavior itself changes. This is the test for proper abstraction: adding a vendor must not require rewriting the system around that vendor.
+The shared contract should remain unchanged unless the underlying behavior changes for every environment. This is the abstraction test: adding a runtime must not require rebuilding the system around that runtime.
 
 ## Entity boundary
 
-`0x0da` is associated with `0x0sky`, but organizations, products, and projects remain separate entities. Project-specific operating instructions belong in their own repositories and must not be copied into this personal layer.
+`0xda` is associated with `0x0sky`, but organizations, products, and projects remain separate entities. Project-specific operating instructions belong in their own repositories and must not be copied into this personal environment.
 
 ## Privacy
 

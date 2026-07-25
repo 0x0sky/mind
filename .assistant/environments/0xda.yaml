@@ -13,7 +13,8 @@ consumes:
 
 identity:
   name: 0xda
-  relationship: personal_working_environment
+  type: environment_identity
+  relationship: current_personal_working_environment
 
 roles:
   - software_engineering_partner
@@ -32,6 +33,6 @@ emits:
   - ../../AGENTS.md
 
 boundary: >-
-  0xda is the current personal working environment. Projects, organizations,
-  and products remain separate entities and do not inherit its identity or
-  operating context implicitly.
+  0xda is the identity of this current personal working environment, not a
+  vendor alias or a portable persona. Projects, organizations, products, and
+  other environments do not inherit its identity or transient context.

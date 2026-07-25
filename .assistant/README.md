@@ -2,7 +2,7 @@
 
 This directory defines shared agent behavior for `0x0sky/mind` and implements it in two concrete working environments.
 
-The architecture does not begin with a vendor or a model-specific prompt. It begins with a neutral contract, then applies the contract inside an environment that has its own identity, runtime assumptions, and native instruction path.
+The architecture does not begin with a vendor or a model-specific prompt. It begins with a neutral contract, then applies that contract inside an environment with its own identity, runtime assumptions, and native instruction path.
 
 ## Implemented environments
 
@@ -48,7 +48,7 @@ An environment may define:
 - the native instruction artifact it emits;
 - boundaries that prevent context from leaking into another environment.
 
-`0xda` is not a vendor alias. It is the identity of the current personal working environment.
+`0xda` is not a vendor alias or a portable persona. It is the identity of the current personal working environment where this collaboration occurs.
 
 GitHub Copilot is a separate repository environment. It consumes the same contract but does not inherit the identity or transient context of `0xda`.
 

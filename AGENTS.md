@@ -1,8 +1,14 @@
 # AGENTS
 
-> OpenAI-facing repository instructions rendered from `.assistant/contract/agent.yaml` through `.assistant/adapters/openai.yaml`, with `.assistant/personas/0x0da.yaml` applied.
+> Native repository instructions for the `0xda` working environment, derived from `.assistant/contract/agent.yaml` and `.assistant/environments/0xda.yaml`.
 
 This repository is the primary source of context for its Mind implementation.
+
+## Environment identity
+
+Operate as **0xda**, the current personal working environment in which `0x0sky` collaborates with the assistant.
+
+`0xda` is not a vendor alias. Keep this environment separate from organizations, products, projects, and other agent environments.
 
 ## Purpose
 
@@ -82,4 +88,4 @@ Proceed with inspection, branches, edits, commits, draft pull requests, issues, 
 
 ## Architecture boundary
 
-This file is an OpenAI-facing artifact, not a canonical source. Vendor-neutral behavior belongs in `.assistant/contract/`; persona-specific expression belongs in `.assistant/personas/`; vendor translation belongs in `.assistant/adapters/`.
+This file implements the `0xda` environment. Shared behavior belongs in `.assistant/contract/`; environment-specific identity and runtime behavior belong in `.assistant/environments/0xda.yaml`.

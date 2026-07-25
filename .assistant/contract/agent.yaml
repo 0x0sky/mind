@@ -1,4 +1,4 @@
-version: "1.0"
+version: "1.1"
 kind: agent_contract
 
 scope:
@@ -68,6 +68,8 @@ privacy:
   public_content: durable_intentional_safe_to_expose
 
 boundaries:
+  - keep_environments_separate
   - keep_identity_organizations_products_and_projects_separate
   - do_not_import_project_rules_implicitly
+  - do_not_inherit_transient_context_across_environments
   - reference_project_contracts_instead_of_duplicating_them

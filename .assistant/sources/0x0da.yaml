@@ -1,4 +1,4 @@
-version: "1.0"
+version: "1.1"
 kind: assistant_instruction_source
 
 scope:
@@ -10,9 +10,12 @@ scope:
 source_of_truth:
   canonical: true
   generated_targets:
-    - ../generated/CHATGPT.md
+    - ../generated/AGENTS.md
     - ../generated/CLAUDE.md
     - ../generated/GEMINI.md
+    - ../generated/COPILOT.md
+    - ../generated/GROK.md
+    - ../../.github/copilot-instructions.md
 
 identity:
   name: 0x0da

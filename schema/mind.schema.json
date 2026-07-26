@@ -4,7 +4,17 @@
   "title": "Mind Manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "mind", "contract", "modules", "context", "loading", "validation"],
+  "required": [
+    "schema_version",
+    "mind",
+    "organizations",
+    "memberships",
+    "contract",
+    "modules",
+    "context",
+    "loading",
+    "validation"
+  ],
   "properties": {
     "schema_version": { "type": "integer", "minimum": 1 },
     "mind": {
@@ -29,6 +39,11 @@
     "organizations": {
       "type": "array",
       "items": { "$ref": "#/$defs/organization" },
+      "uniqueItems": true
+    },
+    "memberships": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/membership" },
       "uniqueItems": true
     },
     "contract": { "type": "object" },
@@ -67,6 +82,15 @@
         "id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
         "label": { "type": "string", "minLength": 1 },
         "href": { "type": "string", "format": "uri" }
+      }
+    },
+    "membership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "organization"],
+      "properties": {
+        "identity": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+        "organization": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" }
       }
     }
   }

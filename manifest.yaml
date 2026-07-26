@@ -3,10 +3,18 @@ schema_version: 1
 mind:
   name: 0x0sky
   kind: personal
-  context_version: 0.2.1
+  context_version: 0.3.0
   owner:
     type: person
     id: 0x0sky
+
+organizations:
+  - id: aiaiaiaitech
+    label: aiaiaiai
+    href: https://github.com/aiaiaiaitech
+  - id: 0xda-market
+    label: 0xda-market
+    href: https://github.com/0xda-market
 
 contract:
   canonical_source: required

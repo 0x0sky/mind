@@ -1,6 +1,6 @@
 # 0x0sky / mind
 
-> A versioned public context graph for a person, their engineering practice, systems, and writing.
+> A versioned public context graph for a person, their engineering practice, systems, organizations, and writing.
 
 ## Purpose
 
@@ -12,6 +12,8 @@ The repository contains durable public context only. It is not a conversation ar
 
 ```text
 0x0sky
+├── aiaiaiai
+├── 0xda-market
 ├── identity
 ├── knowledge
 ├── engineering
@@ -19,7 +21,7 @@ The repository contains durable public context only. It is not a conversation ar
 └── writing
 ```
 
-Folders are graph nodes. Markdown files inside a folder are documents attached to that node and appear as tabs in `mind-web`. Dependencies declared in each `module.yaml` become directed graph edges.
+Folders and declared organizations are graph nodes. Markdown files inside a folder are documents attached to that node and appear as tabs in `mind-web`. Dependencies declared in each `module.yaml` become directed graph edges.
 
 ## Modules
 
@@ -29,7 +31,7 @@ Folders are graph nodes. Markdown files inside a folder are documents attached t
 - [`systems`](systems/README.md) — public ecosystem, organizations, domains, and system boundaries;
 - [`writing`](writing/README.md) — public creative practice and language register.
 
-The machine-readable registry lives in [`manifest.yaml`](manifest.yaml).
+The machine-readable registry lives in [`manifest.yaml`](manifest.yaml). Its `organizations` collection is the canonical source for public organization nodes consumed by `mind-web`.
 
 ## Repository nodes
 

@@ -26,6 +26,11 @@
         }
       }
     },
+    "organizations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/organization" },
+      "uniqueItems": true
+    },
     "contract": { "type": "object" },
     "modules": {
       "type": "object",
@@ -50,6 +55,18 @@
       "required": ["schema"],
       "properties": {
         "schema": { "const": "schema/mind.schema.json" }
+      }
+    }
+  },
+  "$defs": {
+    "organization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "href"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+        "label": { "type": "string", "minLength": 1 },
+        "href": { "type": "string", "format": "uri" }
       }
     }
   }

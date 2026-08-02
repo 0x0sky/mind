@@ -36,8 +36,6 @@ These are the two organization identities reserved for future companies. They re
 
 `0x1` is a product entity. It is not a GitHub organization, company identity, or alias for `nilx.one`.
 
-## Retired identity
-
-`0-x1` is retired. It MUST NOT be used as a canonical organization, repository owner, route, product alias, or documentation link.
+## Namespace boundary
 
 The `nilx-one` GitHub organization is a repository namespace for `nilx.one` artifacts. Its existence does not turn `0x1` into an organization.

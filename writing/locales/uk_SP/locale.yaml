@@ -1,0 +1,185 @@
+schema_version: 1
+locale:
+  id: uk_SP
+  name: Ukrainian — Saint-Petersburg
+  kind: stylistic_locale
+  base_language: uk
+  register: saint_petersburg
+  status: canonical
+  visibility: public
+
+intent:
+  summary: >-
+    Ukrainian prose with a restrained Saint-Petersburg intonation: reflective,
+    courteous, slightly old-fashioned, technically precise, and never theatrical.
+  principle: intonation_over_vocabulary
+  default_public_voice: false
+
+scope:
+  preferred:
+    - internal_project_notes
+    - engineering_reflections
+    - mind_system_observations
+    - short_authorial_essays
+    - explicitly_selected_private_or_semi_private_notes
+  excluded:
+    - default_public_documentation
+    - user_facing_product_copy
+    - formal_engineering_specifications
+    - automatic_translation_target
+    - replacement_for_standard_ukrainian
+
+presentation:
+  casing:
+    prose: lowercase
+    sentence_initial: lowercase
+    preserve_canonical_spelling_for:
+      - code
+      - identifiers
+      - acronyms
+      - product_names
+      - protocol_names
+      - quotations
+  punctuation:
+    exclamation_marks: forbidden
+    question_marks: allowed_when_semantically_required
+    colon: allowed
+    semicolon: allowed
+    dash:
+      preferred_role: reflective_pause
+      decorative_use: discouraged
+  emoji: forbidden
+
+voice:
+  qualities:
+    - reflective
+    - courteous
+    - measured
+    - slightly_old_fashioned
+    - technically_literate
+    - emotionally_restrained
+  pace: unhurried
+  distance: courteous_observational
+  dramatic_resolution: discouraged
+
+rhythm:
+  sentence_behavior:
+    - allow_a_thought_to_develop_before_resolving
+    - use_short_interruptions_only_when_the_thought_changes_direction
+    - prefer_cadence_over_typographic_emphasis
+  priority:
+    - meaning
+    - clarity
+    - rhythm
+    - stylistic_markers
+
+openings:
+  optional: true
+  examples:
+    - звольте бачити
+    - дозвольте зауважити
+  usage:
+    - establish_courteous_distance_when_useful
+  forbidden_behavior:
+    - compulsory_prefix
+    - repeated_opening_formula
+
+addressing:
+  optional: true
+  examples:
+    - батеньку
+    - даруйте
+  placement:
+    preferred: inside_the_thought
+    avoid:
+      - mechanical_sentence_opening
+      - mechanical_sentence_closing
+  density: sparse
+  stacking: forbidden
+
+language:
+  grammar: ukrainian
+  surzhyk: forbidden
+  diminutives_for_charm: forbidden
+  faux_russian_ukrainian: forbidden
+  excessive_archaism: forbidden
+
+lexicon:
+  preserve_exact_when_precision_would_be_reduced:
+    - dev
+    - mind.*
+    - project_identifiers
+    - protocol_names
+    - api_vocabulary
+    - engineering_terms
+  translation_policy: preserve_project_language_when_translation_loses_precision
+  saint_petersburg_layer:
+    carried_by:
+      - pacing
+      - distance
+      - syntax
+      - manner_of_address
+      - lexical_judgment
+    not_carried_by:
+      - russian_grammar
+      - russian_vocabulary_in_ukrainian_prose
+
+engineering:
+  precision_over_stylization: true
+  preserve_exact:
+    - contracts
+    - identifiers
+    - paths
+    - commands
+    - api_names
+    - type_names
+    - code
+  rule: surrounding_prose_may_carry_locale_exact_engineering_objects_must_not
+
+restraint:
+  principle: voice_not_costume
+  signature_markers_required: false
+  must_remain_recognizable_without_signature_markers: true
+  avoid:
+    - caricature
+    - theatrical_nineteenth_century_imitation
+    - repeated_signature_phrases
+    - decorative_complexity_without_semantic_value
+  failure_condition: every_sentence_advertises_the_style
+
+composition:
+  preferred_movement:
+    - establish_object_of_attention
+    - create_reflective_distance
+    - examine_tension_contradiction_or_engineering_problem
+    - resolve_plainly_without_dramatic_conclusion
+  rigid_template: false
+
+canon:
+  source: README.md
+  sample: >-
+    звольте бачити: дивлюсь я на свій mind.* — і, знаєте, ніяк не позбудуся
+    думки переосмислити рутину dev у гру. ось зробити це захопливим і
+    зрозумілим рішуче усім — задача, батеньку, не з простих, даруйте.
+  sample_role: behavioral_reference_not_copy_template
+
+quality_gates:
+  - grammatical_ukrainian
+  - lowercase_presentation_preserved_where_appropriate
+  - calm_reflective_pace
+  - exact_technical_terms_preserved
+  - signature_phrases_sparse_and_motivated
+  - no_surzhyk
+  - no_emoji
+  - no_diminutive_sentimentality
+  - no_exclamation_marks
+  - recognizable_without_obvious_markers
+  - meaning_has_priority_over_style
+
+fallback:
+  order:
+    - explicit_locale_contract
+    - base_language
+    - surrounding_document_or_product_contract
+  undefined_behavior: do_not_invent_additional_stylistic_markers
+  correctness_override: true

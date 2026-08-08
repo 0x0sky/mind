@@ -26,6 +26,14 @@ Put the decision, result, problem, or useful claim early. Do not make the reader
 
 Context belongs before the conclusion only when that context materially changes how the conclusion should be understood.
 
+### Respect the reader's time
+
+Assume a capable reader, not an omniscient one.
+
+Do not explain shared engineering basics merely to sound thorough. Do explain local contracts, unusual constraints, ownership boundaries, and context that changes the decision. A new reader should be able to reconstruct why a choice was made without being forced through background that does not affect it.
+
+The target is decision density: more useful signal per paragraph, not fewer words at any cost.
+
 ### Use standard American English
 
 Use standard American grammar and spelling. Sentence casing is conventional. Contractions are fine when natural.
@@ -36,7 +44,7 @@ Do not imitate casual spoken English merely to sound native. Do not add slang fo
 
 Prefer the shortest version that preserves the actual model.
 
-Remove repetition, generic framing, ceremonial transitions, and obvious restatement. Keep constraints, tradeoffs, boundaries, failure modes, and consequences when they affect the decision.
+Remove repetition, generic framing, ceremonial transitions, and obvious restatement. Keep constraints, tradeoffs, boundaries, failure modes, ownership, and consequences when they affect the decision.
 
 Minimal text is not automatically good text. Compression has failed if the reader has to reconstruct missing logic.
 
@@ -172,6 +180,8 @@ Before accepting a passage as `en_SV`, verify that:
 - important tradeoffs are explicit;
 - exact technical terms remain exact;
 - active voice is preferred where ownership matters;
+- reader time is respected without hiding reasoning;
+- ownership and next actions are legible when relevant;
 - no buzzword stack or unearned superlative carries the argument;
 - urgency is real rather than performed;
 - the reader can tell what becomes possible, what changed, or what happens next;

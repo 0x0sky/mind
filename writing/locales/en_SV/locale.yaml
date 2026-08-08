@@ -70,6 +70,18 @@ voice:
   distance: peer_to_peer
   dramatic_resolution: discouraged
 
+audience:
+  assumed_reader:
+    - technically_capable
+    - time_conscious
+    - interested_in_decisions_and_consequences
+  behavior:
+    - do_not_over_explain_shared_basics
+    - define_context_specific_terms_before_relying_on_them
+    - make_ownership_boundaries_and_next_actions_legible
+    - preserve_enough_context_for_a_new_reader_to_reconstruct_the_decision
+  principle: respect_reader_time_without_hiding_reasoning
+
 rhythm:
   sentence_behavior:
     - lead_with_the_point
@@ -165,6 +177,21 @@ product:
     - what_is_the_tradeoff
     - what_is_the_next_decision
 
+decision_density:
+  principle: maximize_useful_signal_not_minimize_word_count
+  preserve:
+    - constraints_that_change_the_choice
+    - material_tradeoffs
+    - ownership
+    - failure_modes
+    - user_or_system_impact
+    - next_action_when_known
+  remove:
+    - ceremonial_context
+    - repeated_claims
+    - generic_transitions
+    - adjectives_without_evidence
+
 restraint:
   principle: signal_not_posture
   signature_markers_required: false
@@ -206,6 +233,8 @@ quality_gates:
   - active_voice_preferred
   - tradeoffs_are_explicit_when_material
   - exact_technical_terms_preserved
+  - reader_time_respected_without_missing_reasoning
+  - ownership_and_next_actions_are_legible_when_relevant
   - no_buzzword_stacking
   - no_unearned_superlatives
   - no_fake_urgency

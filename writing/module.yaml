@@ -9,6 +9,7 @@ module:
   entrypoints:
     - writing/README.md
     - writing/language.md
+    - writing/locales/README.md
   owner:
     type: person
     id: 0x0sky

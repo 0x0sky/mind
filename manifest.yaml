@@ -3,7 +3,7 @@ schema_version: 1
 mind:
   name: 0x0sky
   kind: personal
-  context_version: 0.3.4
+  context_version: 0.3.5
   owner:
     type: person
     id: 0x0sky

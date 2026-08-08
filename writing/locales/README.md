@@ -28,7 +28,7 @@ Locale identifiers follow the shape `<language>_<register>`.
 
 The language component should use the shortest stable language identifier that is already meaningful in context. The register component names the deliberate authorial or cultural register and is not required to correspond to an ISO region code.
 
-For example, `uk_SP` means Ukrainian with the Saint-Petersburg register defined by that locale. It does not claim that `SP` is a standard Ukrainian regional locale.
+For example, `uk_SP` means Ukrainian with the Saint-Petersburg register defined by that locale. It does not claim that `SP` is a standard Ukrainian regional locale. Likewise, `en_SV` means American English with the Silicon Valley register defined by that locale; `SV` is a register identifier, not a standardized territory code.
 
 ## Discovery
 
@@ -80,4 +80,7 @@ Distinctive markers should be sparse enough that the register remains recognizab
 
 Canonical examples belong in each locale's README. They are evidence of intended behavior, not templates to be mechanically copied.
 
-The first locale in this system is [`uk_SP`](uk_SP/README.md): Ukrainian with a Saint-Petersburg intonation.
+Current canonical locales:
+
+- [`uk_SP`](uk_SP/README.md) — Ukrainian with a restrained Saint-Petersburg intonation;
+- [`en_SV`](en_SV/README.md) — American English with a Silicon Valley engineering register.

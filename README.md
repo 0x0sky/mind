@@ -23,14 +23,14 @@ The repository contains durable public context only. It is not a conversation ar
 
 Folders and declared organizations are graph nodes. Markdown files inside a folder are documents attached to that node and appear as tabs in `mind-web`. Dependencies declared in each `module.yaml` become directed graph edges.
 
-Products are separate ecosystem entities documented by the `systems` module. A product does not become an organization route or membership target.
+External products and protocols remain owned by their repositories. They do not become organization routes or membership targets unless explicitly declared in `manifest.yaml`.
 
 ## Modules
 
 - [`identity`](identity/README.md) — canonical public identity and handles;
 - [`knowledge`](knowledge/README.md) — durable models and principles;
 - [`engineering`](engineering/README.md) — software practice and engineering contract;
-- [`systems`](systems/README.md) — public ecosystem, organizations, products, domains, and system boundaries;
+- [`systems`](systems/README.md) — public ecosystem, declared organizations, and system boundaries;
 - [`writing`](writing/README.md) — public creative practice and language register.
 
 The machine-readable registry lives in [`manifest.yaml`](manifest.yaml). Its `organizations` collection is the canonical source for public organization nodes consumed by `mind-web`.

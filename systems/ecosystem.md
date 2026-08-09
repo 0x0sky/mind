@@ -4,10 +4,8 @@
 
 - identity: `0x0sky`
 - GitHub: [github.com/0x0sky](https://github.com/0x0sky)
-- canonical domain: `nilx.one`
-- mind route: `mind.nilx.one/0x0sky`
 
-`nilx.one` is the public ecosystem index rooted in the personal identity. It is not an alias for `0x1`.
+`0x0sky` is the root identity of this public mind graph.
 
 ## Organizational model
 
@@ -17,14 +15,12 @@ The ecosystem distinguishes the intended organizational structure from GitHub's 
 0x0sky                         owner / personal identity
 
 4xAI tech. / aiaiaiai tech.   parent organization
-├── 0xda-market               digital commerce organization
-└── nilx.one                  protocol / ecosystem namespace
-    └── 0x1                   protocol product
+└── 0xda-market               digital commerce organization
 ```
 
 `aiaiaiai tech.` (also referred to as `4xAI tech.`) is the conceptual parent organization for non-personal work. It currently exists as a GitHub organization and is intended to become a Ukrainian legal entity (ТОВ) in the future. `0x0sky` is the owner of the parent organization and its declared child organizations / namespaces.
 
-This hierarchy is an ecosystem and ownership model, not a GitHub-native relationship. GitHub represents `aiaiaiaitech`, `0xda-market`, `nilx-one`, and other organizations as peer namespaces; their equal technical representation on GitHub does not define their organizational ownership or governance relationship.
+This hierarchy is an ecosystem and ownership model, not a GitHub-native relationship. GitHub represents `aiaiaiaitech`, `0xda-market`, and other organizations as peer namespaces; their equal technical representation on GitHub does not define their organizational ownership or governance relationship.
 
 Personal identity and personal projects remain outside the corporate hierarchy unless explicitly declared otherwise.
 
@@ -38,7 +34,6 @@ Personal identity and personal projects remain outside the corporate hierarchy u
 - current form: GitHub organization
 - intended legal form: Ukrainian limited liability company (ТОВ)
 - GitHub organization: [github.com/aiaiaiaitech](https://github.com/aiaiaiaitech)
-- mind route: `mind.nilx.one/aiaiaiai`
 
 ### 0xda-market
 
@@ -46,28 +41,12 @@ Personal identity and personal projects remain outside the corporate hierarchy u
 - owner: `0x0sky`
 - aliases: `market`, `маркет`
 - GitHub organization: [github.com/0xda-market](https://github.com/0xda-market)
-- mind route: `mind.nilx.one/0xda-market`
-
-### nilx.one
-
-- canonical role: child protocol / ecosystem namespace under `aiaiaiai tech.`
-- owner: `0x0sky`
-- GitHub organization namespace: [github.com/nilx-one](https://github.com/nilx-one)
-- canonical domain: `nilx.one`
 
 The GitHub organizations above are technically independent peer namespaces. Their parent-child relationship is declared by this ecosystem model rather than inferred from GitHub ownership or membership.
 
-## Products
+## Scope boundary
 
-### 0x1
-
-- kind: protocol product
-- parent namespace: `nilx.one`
-- repository: [github.com/nilx-one/0x1](https://github.com/nilx-one/0x1)
-- status: `spec / pre-alpha`
-
-`0x1` is a product entity. It is not a separate GitHub organization, company identity, or alias for `nilx.one`.
-
-## Namespace boundary
-
-The `nilx-one` GitHub organization is the repository namespace for `nilx.one` artifacts and is modeled as a child organization / namespace under `aiaiaiai tech.`. Its existence does not turn `0x1` into an organization.
+This document maps only the identity and organizations currently declared by
+`manifest.yaml`. External protocols, participants, relationship models,
+namespaces, and domains remain owned by their own repositories and are not
+inferred into this graph.

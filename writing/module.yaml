@@ -10,6 +10,7 @@ module:
     - writing/README.md
     - writing/language.md
     - writing/locales/README.md
+    - writing/publishing/README.md
   owner:
     type: person
     id: 0x0sky

@@ -9,10 +9,7 @@ locale:
   visibility: public
 
 intent:
-  summary: >-
-    American English with a Silicon Valley engineering register: concise,
-    product-minded, technically precise, pragmatic, direct, and confident
-    without hype.
+  summary: American English in a Silicon Valley engineering and product register.
   principle: clarity_over_performance
   default_public_voice: true
 
@@ -24,7 +21,6 @@ scope:
     - architecture_notes
     - pull_request_and_release_notes
     - technical_strategy
-    - concise_project_descriptions
     - founder_or_engineer_written_product_narrative
   excluded:
     - legal_language_requiring_formal_legal_register
@@ -32,221 +28,114 @@ scope:
     - decorative_marketing_copy
     - investor_hype
     - corporate_press_release_voice
-    - replacement_for_exact_technical_contracts
 
 presentation:
   casing:
-    prose: standard_american_english
+    prose: standard
     sentence_initial: uppercase
-    preserve_canonical_spelling_for:
-      - code
-      - identifiers
-      - acronyms
-      - product_names
-      - protocol_names
-      - quotations
+    preserve_canonical_spelling_for: [code, identifiers, acronyms, product_names, protocol_names, quotations]
   punctuation:
     exclamation_marks: discouraged
     question_marks: allowed_when_semantically_required
-    colon: preferred_for_structure_when_useful
+    colon: preferred_when_structural
     semicolon: allowed_but_sparse
-    dash:
-      preferred_role: controlled_pause_or_compression
-      decorative_use: discouraged
+    dash: controlled_pause_or_compression
   emoji: discouraged
 
 voice:
-  qualities:
-    - concise
-    - technically_literate
-    - product_minded
-    - pragmatic
-    - direct
-    - calm
-    - confident
-    - low_ego
-    - execution_oriented
+  qualities: [concise, technically_literate, product_minded, pragmatic, direct, calm, confident, low_ego]
   pace: brisk_but_not_rushed
   distance: peer_to_peer
   dramatic_resolution: discouraged
 
 audience:
-  assumed_reader:
-    - technically_capable
-    - time_conscious
-    - interested_in_decisions_and_consequences
+  assumed_reader: [technically_capable, time_conscious, interested_in_decisions_and_consequences]
   behavior:
     - do_not_over_explain_shared_basics
     - define_context_specific_terms_before_relying_on_them
     - make_ownership_boundaries_and_next_actions_legible
-    - preserve_enough_context_for_a_new_reader_to_reconstruct_the_decision
   principle: respect_reader_time_without_hiding_reasoning
 
 rhythm:
   sentence_behavior:
     - lead_with_the_point
     - keep_sentences_structurally_clean
-    - prefer_one_clear_claim_per_sentence_when_complexity_is_high
-    - use_short_sentences_to_create_decision_points
-    - expand_only_when_the_tradeoff_requires_it
+    - use_short_sentences_for_decision_points
+    - expand_when_tradeoffs_require_it
   paragraph_behavior:
     - one_primary_job_per_paragraph
-    - front_load_context_that_changes_the_decision
     - end_on_consequence_next_step_or_boundary
-  priority:
-    - correctness
-    - clarity
-    - usefulness
-    - compression
-    - style
+  priority: [correctness, clarity, usefulness, compression, style]
 
 language:
   grammar: american_english
   spelling: american_english
+  naturalness: native_not_performed
   unnecessary_formality: discouraged
   faux_casualness: discouraged
-  slang_density: low
-  contractions: allowed_when_natural
 
 lexicon:
-  prefer:
-    - concrete_nouns
-    - active_verbs
-    - measurable_claims
-    - explicit_tradeoffs
-    - product_and_engineering_terms_when_they_add_precision
-  avoid:
-    - buzzword_stacking
-    - vague_superlatives
-    - visionary_language_without_mechanism
-    - corporate_filler
-    - management_consulting_cliches
-    - fake_urgency
-  preserve_exact_when_precision_would_be_reduced:
-    - project_identifiers
-    - protocol_names
-    - api_vocabulary
-    - engineering_terms
-    - product_terms
+  prefer: [concrete_nouns, active_verbs, measurable_claims, explicit_tradeoffs]
+  avoid: [buzzword_stacking, vague_superlatives, corporate_filler, fake_urgency]
+  preserve_exact_when_precision_would_be_reduced: [project_identifiers, protocol_names, api_vocabulary, engineering_terms, product_terms]
   translation_policy: prefer_native_american_engineering_usage_over_literal_translation
 
-silicon_valley_layer:
-  carried_by:
-    - compression
-    - product_orientation
-    - engineering_judgment
-    - explicit_tradeoffs
-    - ownership_language
-    - bias_toward_shippable_outcomes
-    - peer_level_directness
-  not_carried_by:
-    - startup_buzzwords
-    - fundraising_language
-    - forced_informality
-    - exaggerated_confidence
-    - jargon_for_status
+register_layer:
+  carried_by: [compression, product_orientation, engineering_judgment, explicit_tradeoffs, ownership_language, bias_toward_shippable_outcomes]
+  not_carried_by: [startup_buzzwords, fundraising_language, forced_informality, exaggerated_confidence, jargon_for_status]
+
+signature_markers:
+  required: false
+  examples: []
+  density: none
+  rule: register_must_not_depend_on_signature_phrases
 
 engineering:
   precision_over_stylization: true
   architecture_before_claims: true
   feasibility_matters: true
-  preserve_exact:
-    - contracts
-    - identifiers
-    - paths
-    - commands
-    - api_names
-    - type_names
-    - code
-    - version_numbers
-  preferred_reasoning_shape:
-    - state_the_problem
-    - name_the_constraint
-    - make_the_tradeoff_explicit
-    - describe_the_smallest_correct_solution
-    - state_what_changes_for_the_user_or_system
-  rule: style_must_make_engineering_easier_to_parse_not_more_impressive
+  preserve_exact: [contracts, identifiers, paths, commands, api_names, type_names, code, version_numbers]
+  preferred_reasoning_shape: [state_the_problem, name_the_constraint, make_the_tradeoff_explicit, describe_the_smallest_correct_solution, state_what_changes]
 
 product:
+  orientation: strong
   user_value_before_feature_inventory: true
   explain_why_before_how_when_context_requires_it: true
   claims_require_mechanism_or_evidence: true
-  preferred_questions:
-    - what_problem_does_this_remove
-    - what_becomes_possible
-    - what_is_the_tradeoff
-    - what_is_the_next_decision
 
 decision_density:
   principle: maximize_useful_signal_not_minimize_word_count
-  preserve:
-    - constraints_that_change_the_choice
-    - material_tradeoffs
-    - ownership
-    - failure_modes
-    - user_or_system_impact
-    - next_action_when_known
-  remove:
-    - ceremonial_context
-    - repeated_claims
-    - generic_transitions
-    - adjectives_without_evidence
+  preserve: [constraints_that_change_the_choice, material_tradeoffs, ownership, failure_modes, user_or_system_impact, next_action_when_known]
+  remove: [ceremonial_context, repeated_claims, generic_transitions, adjectives_without_evidence]
 
 restraint:
   principle: signal_not_posture
-  signature_markers_required: false
-  must_remain_recognizable_without_buzzwords: true
-  avoid:
-    - hype
-    - grandiosity
-    - hustle_language
-    - fake_certainty
-    - excessive_metaphor
-    - needless_abbreviations
-    - empty_speed_language
-    - performative_minimalism
+  avoid: [hype, grandiosity, hustle_language, fake_certainty, excessive_metaphor, performative_minimalism]
   failure_condition: text_sounds_like_a_pitch_when_it_should_sound_like_engineering
 
 composition:
-  preferred_movement:
-    - establish_the_problem_or_outcome
-    - state_the_relevant_constraint
-    - explain_the_solution_or_decision
-    - expose_the_tradeoff_or_boundary
-    - close_with_result_or_next_step
+  preferred_movement: [establish_problem_or_outcome, state_relevant_constraint, explain_solution_or_decision, expose_tradeoff_or_boundary, close_with_result_or_next_step]
   rigid_template: false
 
 canon:
   source: README.md
   sample: >-
-    The goal is simple: make the system easier to understand without making it
-    less capable. Keep the contract explicit, keep the implementation small,
-    and move complexity behind stable boundaries. If a feature cannot explain
-    what it unlocks for the user or the system, it is probably not ready to ship.
+    The goal is simple: make the system easier to understand without making it less capable.
+    Keep the contract explicit, keep the implementation small, and move complexity behind stable boundaries.
   sample_role: behavioral_reference_not_copy_template
 
 quality_gates:
-  - grammatical_american_english
+  - grammatical_base_language
   - main_point_appears_early
   - technically_precise
   - concrete_over_abstract
-  - active_voice_preferred
   - tradeoffs_are_explicit_when_material
   - exact_technical_terms_preserved
   - reader_time_respected_without_missing_reasoning
-  - ownership_and_next_actions_are_legible_when_relevant
-  - no_buzzword_stacking
-  - no_unearned_superlatives
-  - no_fake_urgency
-  - no_corporate_filler
   - no_hype_as_substitute_for_mechanism
-  - useful_to_an_engineer_product_builder_or_reader
   - clarity_has_priority_over_style
 
 fallback:
-  order:
-    - explicit_locale_contract
-    - base_language
-    - surrounding_document_or_product_contract
+  order: [explicit_locale_contract, base_language, surrounding_document_or_product_contract]
   undefined_behavior: do_not_invent_additional_stylistic_markers
   correctness_override: true

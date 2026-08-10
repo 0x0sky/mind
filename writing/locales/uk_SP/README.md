@@ -1,123 +1,63 @@
 # uk_SP
 
-`uk_SP` is a stylistic locale for Ukrainian written with a restrained Saint-Petersburg intonation.
-
-It is an authorial register, not a standard regional locale and not an attempt to imitate Russian through Ukrainian vocabulary. The Saint-Petersburg layer lives primarily in pacing, distance, sentence architecture, and manner of address.
+`uk_SP` is a stylistic locale for Ukrainian written with a restrained Saint-Petersburg authorial register. It is not a regional standard, not faux-Russian Ukrainian, and not theatrical nineteenth-century imitation.
 
 ## Intent
 
-The voice is reflective, civil, slightly old-fashioned, and technically literate. It should feel as though the speaker has enough distance from the subject to observe it before judging it.
-
-The register is designed for internal notes and reflections about personal projects, engineering practice, systems, and creative work. It is not the default public voice.
+Create reflective distance before judgment when that improves the thought. The voice is measured, civil, slightly old-fashioned, technically literate, and emotionally restrained. Intonation matters more than signature vocabulary.
 
 ## Canon
 
-> звольте бачити: дивлюсь я на свій mind.* — і, знаєте, ніяк не позбудуся думки переосмислити рутину dev у гру. ось зробити це захопливим і зрозумілим рішуче усім — задача, батеньку, не з простих, даруйте.
+> звольте бачити: дивлюсь я на свій mind.* — і, знаєте, ніяк не позбудуся думки переосмислити рутину dev у гру. зробити це захопливим і зрозумілим рішуче усім — задача, батеньку, не з простих, даруйте.
 
-The canon demonstrates the register rather than serving as a reusable template.
+The canon is a behavioral reference, not a copy template.
 
 ## Core behavior
 
-### Casing
+Use lowercase prose by default while preserving canonical casing for technical objects and quotations. Allow a sentence to inspect its own thought before resolving it. Emotional force should come from syntax and cadence rather than typographic volume.
 
-All prose uses lowercase, including the first word of a sentence. Existing technical identifiers, product names, code, acronyms, and quotations preserve their canonical spelling when changing them would damage meaning.
+## Audience
 
-### Opening distance
+Assume a capable, patient reader who can follow nuance without ceremonial explanation. Preserve context when it changes judgment, but do not over-explain shared engineering basics.
 
-A note may open with a courteous framing phrase such as `звольте бачити` or `дозвольте зауважити` when that distance is useful.
+## Language
 
-These openings are optional. They must not become a compulsory prefix.
+Use grammatical Ukrainian. Surzhyk, faux-Russian syntax, unnecessary Russian vocabulary, excessive archaism, and diminutives used merely for charm are outside the register.
 
-### Address
+## Rhythm
 
-Words such as `батеньку` and `даруйте` may appear as light internal punctuation inside a thought. They should not be used as decoration, stacked together, or placed mechanically at the beginning and end of every passage.
+The pace is unhurried. Dashes may act as reflective pauses. Short interruptions are useful when the thought genuinely changes direction. Paragraphs may create a small amount of distance before the resolution.
 
-### Rhythm
+## Technical terminology
 
-The preferred rhythm is measured and unhurried. A sentence is allowed to inspect its own thought before resolving it.
+Technical precision overrides stylization. Preserve exact contracts, identifiers, paths, commands, API names, type names, code, protocol names, versions, and project vocabulary when translation would reduce precision.
 
-Dashes are used as reflective pauses rather than as ornamental separators. Short sentences may interrupt a longer movement when the thought genuinely changes direction.
+## Product and engineering
 
-### Punctuation
+Product framing is contextual rather than mandatory. Engineering reasoning still exposes constraints, feasibility, and consequences. A useful movement is: object of attention → reflective distance → constraint or tension → boundary or tradeoff → plain resolution.
 
-Exclamation marks are avoided. Emotional force should come from syntax, choice of detail, and cadence rather than typographic volume.
+## Register layer
 
-Question marks remain available when the sentence is actually interrogative. Colons and semicolons may be used where they improve structural clarity.
+The Saint-Petersburg quality is carried by pacing, distance, syntax, manner of address, and lexical judgment. It is not carried by Russian grammar, imported Russian vocabulary, or costume-like historical imitation.
 
-### Vocabulary
+## Signature markers
 
-The base language is Ukrainian. Surzhyk is not part of the register.
-
-Established project and engineering terms such as `dev`, `mind.*`, identifiers, protocol names, and API vocabulary remain unchanged when translation would reduce precision or erase the local technical language of the project.
-
-The Saint-Petersburg quality is carried by intonation, not by importing Russian grammar or vocabulary into Ukrainian text.
-
-### Engineering language
-
-Technical precision has priority over stylization.
-
-Contracts, identifiers, paths, commands, API names, type names, code, and other exact engineering objects must remain exact. The surrounding prose may carry the locale; the engineering object itself must not be distorted to sound literary.
+Phrases such as `звольте бачити`, `дозвольте зауважити`, `батеньку`, and `даруйте` are optional and sparse. The register must remain recognizable without them.
 
 ## Restraint
 
-`uk_SP` must remain recognizable without relying on signature words.
-
-A successful passage can omit `звольте бачити`, `батеньку`, and `даруйте` entirely and still preserve the register through distance, pacing, syntax, and judgment.
-
-If every sentence advertises the style, the style has failed.
-
-Avoid:
-
-- caricature or theatrical nineteenth-century imitation;
-- faux-Russian Ukrainian;
-- surzhyk;
-- diminutives used for charm;
-- emoji;
-- exclamation marks;
-- excessive archaism;
-- repeated signature phrases;
-- decorative complexity that obscures the actual thought.
+Avoid caricature, theatrical nineteenth-century imitation, repeated signature phrases, emoji, exclamation marks, surzhyk, and decorative complexity without semantic value. If every sentence advertises the style, the locale has failed.
 
 ## Composition
 
-A typical `uk_SP` note follows a loose movement rather than a rigid template:
-
-1. establish the object of attention;
-2. create a small amount of reflective distance;
-3. examine the actual tension, contradiction, or engineering problem;
-4. resolve the thought plainly, without a dramatic conclusion.
-
-The structure may be shorter whenever the thought does not require all four movements.
+Prefer: establish the object of attention; create reflective distance; examine the tension or engineering problem; expose the relevant boundary or tradeoff; resolve plainly. This is a reasoning preference, not a rigid template.
 
 ## Scope
 
-Preferred uses:
-
-- internal project notes;
-- engineering reflections;
-- observations about `mind.*` and related systems;
-- short essays about one's own work;
-- private or semi-private authorial notes where this register is explicitly selected.
-
-Not intended as:
-
-- the default voice for public documentation;
-- user-facing product copy;
-- formal engineering specifications;
-- an automatic translation target;
-- a replacement for standard Ukrainian.
+Preferred for internal project notes, engineering reflections, short authorial essays, and explicitly selected private or semi-private writing. It is not the default public documentation voice, user-facing product copy, formal engineering specification, or replacement for standard Ukrainian.
 
 ## Quality check
 
-Before accepting a passage as `uk_SP`, verify that:
-
-- the prose is grammatically Ukrainian;
-- lowercase presentation is preserved where appropriate;
-- the pace is calm and reflective;
-- technical terms remain precise;
-- signature phrases are sparse and motivated;
-- no surzhyk, emoji, diminutive sentimentality, or exclamation marks appear;
-- the voice remains legible without its most obvious markers;
-- style never takes priority over meaning.
+Verify that the prose is grammatical Ukrainian; the main point remains legible; technical terms stay precise; signature markers are sparse and motivated; no surzhyk or theatrical caricature appears; and meaning outranks style.
 
 The normative machine-readable contract lives in [`locale.yaml`](locale.yaml).

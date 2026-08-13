@@ -10,17 +10,22 @@ mind:
 
 organizations:
   - id: aiaiaiaitech
-    label: aiaiaiai
+    label: aiaiaiai tech.
     href: https://github.com/aiaiaiaitech
   - id: 0xda-market
     label: 0xda-market
     href: https://github.com/0xda-market
+  - id: nilx-one
+    label: nilx.one
+    href: https://github.com/nilx-one
 
 memberships:
   - identity: 0x0sky
     organization: aiaiaiaitech
   - identity: 0x0sky
     organization: 0xda-market
+  - identity: 0x0sky
+    organization: nilx-one
 
 contract:
   canonical_source: required

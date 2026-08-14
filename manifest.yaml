@@ -1,52 +1,98 @@
+# Version of the manifest contract. Manifest CI accepts schema version 1.
 schema_version: 1
 
+# Stable identity and context version of this mind.
 mind:
+  # Human-readable, stable name of the mind.
   name: 0x0sky
+  # Mind scope: abstract, personal, organization, project, or product.
   kind: personal
+  # Semantic version of the context published by this manifest.
   context_version: 0.3.6
+  # Entity that owns and publishes this mind.
   owner:
+    # Owner scope. A personal mind must use person.
     type: person
+    # Stable owner identifier.
     id: 0x0sky
 
+# Optional GitHub organization visibility allowlist.
+# Omit the field, as here, to make every discovered owner/member organization public.
+# Use `public_organizations: []` to make none public, or list GitHub organization
+# IDs to expose only those organizations. Manifest CI rejects legacy organization keys.
+# public_organizations: []
+
+# Repository-wide guarantees every consumer may rely on.
 contract:
+  # The repository is the canonical source of its published context.
   canonical_source: required
+  # The owning entity must be declared explicitly under mind.owner.
   explicit_owner: required
+  # Published context must carry a semantic context_version.
   versioned_context: required
+  # Context must remain understandable to human readers.
   human_readable: required
+  # Context must remain parseable by software.
   machine_readable: required
+  # Credentials and other secrets must never be stored in the mind.
   secrets: forbidden
 
+# Module registry, dependency rules, and descriptor paths.
 modules:
+  # Modules every valid loading policy must load by default.
   required:
     - identity
+  # Complete set of module IDs available in this mind.
   registered:
     - identity
     - knowledge
     - engineering
     - systems
     - writing
+  # Architectural guarantees applied to every registered module.
   rules:
+    # Each module must have one clear responsibility.
     single_responsibility: required
+    # Dependencies between modules must be declared explicitly.
     explicit_dependencies: required
+    # A module must be replaceable without rewriting unrelated modules.
     independently_replaceable: required
+    # The same durable context must not be copied between modules.
     duplicate_content: forbidden
+    # Shared context should be linked instead of duplicated.
     cross_reference: preferred
+    # Modules should be composed through references instead of inheritance.
     composition_over_inheritance: preferred
+  # One repository-relative descriptor path for every registered module.
   catalog:
+    # Descriptor for the identity module.
     identity: identity/module.yaml
+    # Descriptor for the knowledge module.
     knowledge: knowledge/module.yaml
+    # Descriptor for the engineering module.
     engineering: engineering/module.yaml
+    # Descriptor for the systems module.
     systems: systems/module.yaml
+    # Descriptor for the writing module.
     writing: writing/module.yaml
 
+# Stability and visibility vocabulary used by this mind.
 context:
+  # Meanings of the supported context lifecycles.
   stability:
+    # Stable context defines long-lived contracts.
     stable: long_lived_contracts
+    # Transient context represents current state.
     transient: current_state
+    # Archived context is ignored unless a consumer requests it.
     archived: ignored_unless_requested
+  # Repository-level publication and privacy policy.
   visibility:
+    # Visibility of this repository's durable context.
     repository: public
+    # The only category of context permitted in this public repository.
     allowed: durable_public_context
+    # Context categories that must never be published here.
     forbidden:
       - credentials
       - secrets
@@ -54,14 +100,19 @@ context:
       - private_relationship_data
       - transient_personal_state
 
+# Module sets used when consumers load this mind.
 loading:
+  # Modules loaded for every consumer; includes every required module.
   default:
     - identity
     - knowledge
     - engineering
     - systems
+  # Registered modules loaded only when explicitly requested.
   optional:
     - writing
 
+# Machine-readable validation contract for this manifest.
 validation:
+  # Repository-relative JSON Schema path used by Manifest CI.
   schema: schema/mind.schema.json

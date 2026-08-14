@@ -34,16 +34,10 @@
         }
       }
     },
-    "organizations": {
-      "description": "Optional authored organization metadata; omission makes no claim about external account membership.",
+    "public_organizations": {
+      "description": "Optional visibility allowlist of GitHub organization ids. Omission makes every discovered organization public; an empty list makes none public.",
       "type": "array",
-      "items": { "$ref": "#/$defs/organization" },
-      "uniqueItems": true
-    },
-    "memberships": {
-      "description": "Optional authored membership metadata; omission makes no claim about external account membership.",
-      "type": "array",
-      "items": { "$ref": "#/$defs/membership" },
+      "items": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
       "uniqueItems": true
     },
     "contract": { "type": "object" },
@@ -70,27 +64,6 @@
       "required": ["schema"],
       "properties": {
         "schema": { "const": "schema/mind.schema.json" }
-      }
-    }
-  },
-  "$defs": {
-    "organization": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["id", "label", "href"],
-      "properties": {
-        "id": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
-        "label": { "type": "string", "minLength": 1 },
-        "href": { "type": "string", "format": "uri" }
-      }
-    },
-    "membership": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["identity", "organization"],
-      "properties": {
-        "identity": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
-        "organization": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" }
       }
     }
   }

@@ -8,19 +8,8 @@ mind:
     type: person
     id: 0x0sky
 
-organizations:
-  - id: aiaiaiaitech
-    label: aiaiaiai
-    href: https://github.com/aiaiaiaitech
-  - id: 0xda-market
-    label: 0xda-market
-    href: https://github.com/0xda-market
-
-memberships:
-  - identity: 0x0sky
-    organization: aiaiaiaitech
-  - identity: 0x0sky
-    organization: 0xda-market
+organizations: []
+memberships: []
 
 contract:
   canonical_source: required

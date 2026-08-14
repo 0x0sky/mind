@@ -8,9 +8,6 @@ mind:
     type: person
     id: 0x0sky
 
-organizations: []
-memberships: []
-
 contract:
   canonical_source: required
   explicit_owner: required

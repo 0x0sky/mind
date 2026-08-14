@@ -7,8 +7,6 @@
   "required": [
     "schema_version",
     "mind",
-    "organizations",
-    "memberships",
     "contract",
     "modules",
     "context",
@@ -37,11 +35,13 @@
       }
     },
     "organizations": {
+      "description": "Optional authored organization metadata; omission makes no claim about external account membership.",
       "type": "array",
       "items": { "$ref": "#/$defs/organization" },
       "uniqueItems": true
     },
     "memberships": {
+      "description": "Optional authored membership metadata; omission makes no claim about external account membership.",
       "type": "array",
       "items": { "$ref": "#/$defs/membership" },
       "uniqueItems": true

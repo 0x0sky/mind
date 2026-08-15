@@ -16,8 +16,11 @@ mind:
     # Stable owner identifier.
     id: 0x0sky
 
-# Optional GitHub organization visibility allowlist.
-# Only provider-discovered owner/member organizations listed here are public.
+# Optional authored public organization relations.
+# Omit the field to let consumers project provider-discovered memberships.
+# An empty list publishes none. A populated list explicitly publishes these
+# public GitHub organization relations; consumers must preserve manifest
+# provenance and may enrich the organization identity from GitHub.
 public_organizations:
   - aiaiaiaitech
   - 0xda-market

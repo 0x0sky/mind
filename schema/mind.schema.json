@@ -72,7 +72,7 @@
       }
     },
     "public_organizations": {
-      "description": "Optional visibility allowlist of GitHub organization IDs. Omission makes every discovered owner/member organization public; an empty list makes none public; a populated list exposes only matching organizations.",
+      "description": "Optional authored public GitHub organization relations. Omission delegates organization presence to provider-discovered memberships; an empty list publishes none; a populated list explicitly publishes the listed public organization relations and consumers must preserve manifest provenance when projecting them.",
       "type": "array",
       "items": {
         "type": "string",

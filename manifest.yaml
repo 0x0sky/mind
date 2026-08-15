@@ -8,7 +8,7 @@ mind:
   # Mind scope: abstract, personal, organization, project, or product.
   kind: personal
   # Semantic version of the context published by this manifest.
-  context_version: 0.3.6
+  context_version: 0.3.7
   # Entity that owns and publishes this mind.
   owner:
     # Owner scope. A personal mind must use person.
@@ -17,10 +17,11 @@ mind:
     id: 0x0sky
 
 # Optional GitHub organization visibility allowlist.
-# Omit the field, as here, to make every discovered owner/member organization public.
-# Use `public_organizations: []` to make none public, or list GitHub organization
-# IDs to expose only those organizations. Manifest CI rejects legacy organization keys.
-# public_organizations: []
+# Only provider-discovered owner/member organizations listed here are public.
+public_organizations:
+  - aiaiaiaitech
+  - 0xda-market
+  - nilx-one
 
 # Repository-wide guarantees every consumer may rely on.
 contract:

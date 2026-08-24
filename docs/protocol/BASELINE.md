@@ -10,6 +10,7 @@ Baseline generation produces:
 
 ```text
 baseline/
+├── README.md
 ├── protocol.yaml
 ├── conformance.yaml
 ├── compatibility.yaml
@@ -18,6 +19,8 @@ baseline/
 └── schema/
     └── published protocol schemas
 ```
+
+The generated `README.md` states directly that the directory is abstract and not a concrete Mind, so the artifact remains understandable even when viewed outside this repository.
 
 `manifest.yaml` is an abstract manifest-v3 composition only:
 
@@ -74,7 +77,7 @@ Bootstrap introduces only explicit authored inputs: subject, publication owner, 
 
 ## Determinism
 
-The baseline contains no timestamp, random identifier, provider lookup, network result, filesystem-dependent absolute path, or concrete-instance content. `baseline.json` records deterministic SHA-256 digests of generated contract files.
+The baseline contains no timestamp, random identifier, provider lookup, network result, filesystem-dependent absolute path, or concrete-instance content. `baseline.json` records deterministic SHA-256 digests of generated contract files, including its self-describing `README.md`.
 
 CI generates the bundle twice and requires byte-for-byte identical snapshots.
 
@@ -86,7 +89,7 @@ The baseline does not invent a second compatibility policy: it packages the cano
 
 ## Instance isolation
 
-The check derives reference-instance tokens from the concrete root `manifest.yaml` and rejects them if they appear anywhere in generated YAML/JSON. This prevents the living `mind@0x0sky` subject from leaking into the neutral artifact.
+The check derives reference-instance tokens from the concrete root `manifest.yaml` and rejects them if they appear anywhere in generated YAML/JSON. This prevents the living `mind@0x0sky` subject from leaking into the neutral machine artifact.
 
 Provider-specific identifiers remain outside the neutral baseline by construction. Protocol namespace URLs such as `aiaiaiai.org/mind/schema/...` identify protocol contract namespaces, not concrete subjects.
 

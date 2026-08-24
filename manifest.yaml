@@ -5,7 +5,7 @@ schema_version: 3
 
 protocol:
   id: mind
-  version: 0.9.0
+  version: 1.0.0-rc.1
 
 # Living canonical instance on master: mind@0x0sky.
 mind:

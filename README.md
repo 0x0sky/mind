@@ -31,12 +31,14 @@ exact Mind Protocol release
           ↓
    neutral baseline
           ↓
-explicit subject + owner + Identity
+subject + publication-owner semantics + Identity
           ↓
      concrete mind@<id>
           ↓
 only authored modules/resources for that subject
 ```
+
+By default the publication owner is the subject itself; bootstrap accepts an explicit different owner only when both owner type and id are supplied.
 
 ## Machine entry points
 
@@ -102,7 +104,7 @@ python scripts/validate_compatibility.py
 
 [`scripts/generate_baseline.py`](scripts/generate_baseline.py) produces the deterministic **abstract** protocol baseline. It has `subject: unspecified`, no concrete Identity, and is never itself a person's or organization's Mind.
 
-[`scripts/bootstrap_mind.py`](scripts/bootstrap_mind.py) is the canonical transition from an exact protocol release to a minimal concrete Mind. It requires explicit subject, owner, display name, context version, and repository visibility; then creates only the Identity module plus exact protocol locks. It does not copy reference-instance modules.
+[`scripts/bootstrap_mind.py`](scripts/bootstrap_mind.py) is the canonical transition from an exact protocol release to a minimal concrete Mind. It requires explicit subject, display name, context version, and repository visibility. Publication owner defaults to the subject, with an explicit distinct-owner override. Bootstrap then creates only the Identity module plus exact protocol locks. It does not copy reference-instance modules.
 
 ```bash
 python scripts/generate_baseline.py --check

@@ -1,14 +1,14 @@
 # Mind Protocol 0.6
 
-Status: **`0.6.0-rc.1` staged next-version candidate**
+Status: **`0.6.0-rc.1` development candidate**
 
 `0.6` separates canonical protocol semantics from any one concrete identity implementation before the visual-identity contract is exercised with real assets.
 
-This branch is intentionally staged on top of the current `0.5` work. Stable `0.5.0` remains a prerequisite for releasing `0.6.0-rc.1`; the next line must not erase the unfinished consumer-conformance gate of the previous line.
+The accepted `0.5` relationship/provenance semantics are carried forward into this line. Consumer conformance is intentionally deferred to the `0.8` milestone: a renderer or application may verify compatibility, but no consumer grants protocol stability or protocol authority.
 
 ## Two entry points
 
-Mind now exposes two explicit machine entry points with different authority:
+Mind exposes two explicit machine entry points with different authority:
 
 - [`../../protocol.yaml`](../../protocol.yaml) — implementation-independent protocol descriptor;
 - [`../../manifest.yaml`](../../manifest.yaml) — one concrete mind instance.
@@ -19,7 +19,7 @@ For this repository, `master` is the living canonical instance **`mind@0x0sky`**
 
 ## Version model
 
-| Version | Staged reference | Meaning |
+| Version | Current development reference | Meaning |
 | --- | --- | --- |
 | Protocol descriptor schema | `1` | Shape of `protocol.yaml`. |
 | Manifest schema | `2` | Shape of one concrete `manifest.yaml`. |
@@ -42,11 +42,13 @@ These axes are independent.
 
 A protocol release tag identifies the contracts on that commit. The concrete `mind@0x0sky` context present on the same commit remains an instance, not protocol ontology.
 
+Merging protocol development into `master` is not itself a release. Tags and GitHub Releases remain separate explicitly authorized publication actions.
+
 ## Identity split
 
 Prior releases used `schema/identity.schema.json` both as semantic Identity and as a repository resource envelope. That coupled the universal concept to `schema_version`, a validation-file path, and repository-local asset paths.
 
-`0.6.0-rc.1` separates those responsibilities:
+`0.6.0-rc.1` separates those responsibilities.
 
 ### Universal Identity
 
@@ -82,11 +84,13 @@ Therefore the root manifest of this repository is `mind@0x0sky`, not a generic `
 
 The `master` branch is the living instance branch. A long-lived parallel generic branch is intentionally avoided because it would create a second ontology capable of drifting from released protocol contracts.
 
-## Relationships
+## Relationships and provider projections
 
-The `0.5` authored relationship and provenance model remains intact. `0.6.0-rc.1` does not change relationship schema or confirmation semantics.
+The authored relationship and provenance model introduced in `0.5` remains intact. `0.6.0-rc.1` does not change relationship schema or reciprocal-confirmation semantics.
 
-`public_organizations` remains a legacy compatibility projection until the `0.5` consumer migration is completed and its deprecation can be handled explicitly.
+Canonical relationship entity ids remain provider-independent. The current organization relationship is `organization:aiaiaiai`; the GitHub namespace `aiaiaiai-org` is provider metadata.
+
+`public_organizations` remains a legacy GitHub-facing compatibility projection. Its values are provider logins and therefore must not be treated as canonical organization ids merely because strings happen to match. Until an explicit provider-binding resource exists, CI validates canonical authored relationship semantics independently from that legacy provider projection.
 
 ## Visual identity
 
@@ -105,7 +109,7 @@ A later `0.6` RC should:
 A concrete `0.5` mind adopting this line should:
 
 1. keep manifest schema `2` unless its manifest shape changes;
-2. adopt the released `0.6` protocol version;
+2. adopt the `0.6` protocol version it actually implements;
 3. expose a concrete instance name `mind@{subject.id}`;
 4. treat `schema/identity.schema.json` as universal Identity rather than a resource envelope;
 5. carry the value through `schema/identity-resource.schema.json` or an equivalent protocol-conformant resource binding;
@@ -113,12 +117,15 @@ A concrete `0.5` mind adopting this line should:
 7. keep provider and repository bindings outside the universal Identity value;
 8. bump the concrete context version when its durable published representation changes.
 
-## Release gate for 0.6.0-rc.1
+## Acceptance gate for `0.6.0-rc.1`
 
-Before this candidate can be released:
+The development candidate is internally acceptable when:
 
-- stable `0.5.0` must be complete;
-- `protocol.yaml` and every referenced contract must validate;
-- `mind@0x0sky` must validate as a concrete implementation of the neutral Identity contract;
-- current consumers must either parse the changed identity resource contract or have an explicit compatibility boundary;
-- no provider or repository-layout assumption may leak back into universal Identity.
+- `protocol.yaml` and every published JSON Schema validate;
+- `mind@0x0sky` validates as a concrete implementation of the neutral Identity contract;
+- relationship authority and reciprocal-confirmation invariants remain green;
+- provider login strings are not promoted into universal Identity semantics;
+- regression tests cover correctness-critical validators;
+- protocol documentation changes trigger contract CI.
+
+Consumer conformance is a later `0.8` gate, not a prerequisite for merging this protocol line. Publishing a tag or GitHub Release remains a separate action requiring explicit release authorization.

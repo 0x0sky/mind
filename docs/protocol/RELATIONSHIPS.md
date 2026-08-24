@@ -77,18 +77,22 @@ It must not publish a canonical relationship between two unrelated external enti
 
 ## Legacy GitHub projection
 
-The root `public_organizations` field exists temporarily for older consumers. For a `0.5` mind that adopts authored relationships, each populated legacy entry must be backed by `subject --member_of--> organization`.
+The root `public_organizations` field exists temporarily for older consumers. It contains GitHub organization logins and therefore belongs to a provider-specific compatibility namespace.
 
-The legacy field does not become canonical relationship authority. Omission, empty-list, and populated-list semantics remain unchanged while legacy consumers exist.
+Canonical relationship entity ids remain provider-independent. A GitHub login and a canonical organization id may be identical by coincidence, but the protocol does not require or infer that equality. For example, `aiaiaiai-org` is the GitHub namespace while the canonical organization relationship endpoint is `organization:aiaiaiai`.
+
+The legacy field does not become canonical relationship authority, and the relationship validator must not require exact string equality between provider logins and canonical entity ids. Until a provider-binding contract is defined, consumers must keep the two namespaces distinct rather than invent a naming-based mapping.
+
+Omission, empty-list, and populated-list semantics remain unchanged while legacy consumers exist.
 
 ## Consumer merge policy
 
-A consumer may see both authored and provider-derived representations of the same semantic edge. It should preserve each evidence source, prefer authored data for canonical meaning, use provider-derived data as enrichment, never convert derived evidence into reciprocal confirmation, and avoid rendering duplicate edges when multiple evidence sources describe the same relationship.
+A consumer may see both authored and provider-derived representations of the same semantic edge. It should preserve each evidence source, prefer authored data for canonical meaning, use provider-derived data as enrichment, never convert derived evidence into reciprocal confirmation, and avoid rendering duplicate edges only when it has explicit evidence that multiple representations refer to the same entities.
 
 Deduplication is a presentation concern; provenance must remain recoverable after deduplication.
 
 ## Provider ids
 
-Provider-specific identifiers belong to integration evidence. GitHub numeric ids, installation ids, repository node ids, API URLs, and provider-specific membership record ids must not become universal relationship identity.
+Provider-specific identifiers belong to integration evidence. GitHub numeric ids, installation ids, repository node ids, API URLs, organization logins, and provider-specific membership record ids must not become universal relationship identity.
 
 Protocol relationship ids and entity refs remain provider-independent.

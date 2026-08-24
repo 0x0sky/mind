@@ -6,4 +6,4 @@ identity:
   display_name: 0x0sky
 
 validation:
-  schema: schema/identity.schema.json
+  schema: schema/identity-resource.schema.json

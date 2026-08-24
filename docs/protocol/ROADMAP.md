@@ -25,7 +25,7 @@ Stable `0.4.0` required a migrated personal reference mind, at least one migrate
 
 ## 0.5 — relationships and provenance
 
-Status: **`0.5.0-rc.1` prerelease candidate**
+Status: **accepted semantics carried forward into `0.6`**
 
 Goals:
 
@@ -35,20 +35,23 @@ Goals:
 - provide an explicit migration path for `public_organizations` rather than silently changing its meaning;
 - keep provider-specific identifiers at integration boundaries.
 
-`0.5.0-rc.1` introduces a typed `relationships` module/resource while keeping manifest schema v2. The personal and `aiaiaiai-tech` minds now exercise reciprocal authored membership across independent canonical viewpoints.
+The line introduced a typed `relationships` module/resource while keeping manifest schema v2. The personal and `aiaiaiai` organization minds exercise reciprocal authored membership across independent canonical viewpoints.
 
-Stable `0.5.0` still requires:
+Accepted invariants:
 
-- `mind-web` to consume canonical relationships while preserving authored versus provider-derived provenance;
-- deterministic legacy fallback during the `public_organizations` migration;
-- no provider-specific identifier leakage into the universal relationship resource;
-- no unresolved reciprocal-reference ambiguity.
+- the personal reference relationship resource validates;
+- an organization mind independently publishes the matching reciprocal relation;
+- provider-specific identifiers do not leak into canonical relationship entity identity;
+- provider-facing `public_organizations` values are not assumed to equal canonical entity ids;
+- reciprocal-reference semantics are deterministic.
 
-No visual-system expansion is required for this milestone.
+Consumer conformance does not grant protocol stability. Cross-consumer verification belongs to `0.8`, where at least two independent consumers or consumer modes are tested against the same fixtures.
+
+No visual-system expansion was required for this milestone.
 
 ## 0.6 — Identity abstraction and canonical visual identity
 
-Status: **`0.6.0-rc.1` staged next-version work; release blocked on stable `0.5.0`**
+Status: **`0.6.0-rc.1` development candidate**
 
 `0.6` first separates universal Identity from any concrete mind implementation. Real visual assets are built on that boundary rather than baked into repository semantics.
 
@@ -79,6 +82,15 @@ master
 ```
 
 The universal Identity contract must remain readable without knowing GitHub, repository layout, a renderer, a database, a filesystem, or an AI runtime.
+
+Canonical organization Identity and provider namespace are explicitly separate. For the parent organization:
+
+```text
+canonical Identity:  organization:aiaiaiai
+GitHub namespace:     aiaiaiai-org
+```
+
+A provider binding may relate those layers, but universal Identity must never collapse them into one identifier.
 
 ### Later 0.6 RC — real visual identity
 
@@ -129,11 +141,13 @@ Goals:
 - define a reproducible neutral baseline derived from a released `protocol.yaml` contract set;
 - stop treating an old long-lived foundation branch as the source of protocol truth;
 - add conformance fixtures for person, organization, agent, project, and product minds;
-- verify at least two independent consumers or consumer modes against the same fixtures;
+- verify `mind-web` plus at least one second independent consumer or consumer mode against the same fixtures;
 - publish explicit supported protocol ranges;
 - make baseline extraction deterministic enough that instance content cannot leak into a fork template.
 
 The neutral baseline is an artifact of a protocol version, not a parallel ontology or branch that can drift away from the canonical protocol descriptor.
+
+Consumers prove interoperability; they do not become protocol authority and do not retroactively define protocol stability.
 
 ## 0.9 — compatibility freeze
 
@@ -144,7 +158,8 @@ Goals:
 - remove or formally deprecate pre-1.0 aliases with migration notes;
 - freeze identity, module, resource, provenance, and loading semantics;
 - define forward-compatibility rules for unknown optional modules/resources;
-- define the minimum compatibility policy for `1.x`.
+- define the minimum compatibility policy for `1.x`;
+- synchronize every active sovereign organization mind with real canonical visual identity before the freeze completes.
 
 No new major concept should enter the root manifest after this point without evidence that it is protocol-wide.
 

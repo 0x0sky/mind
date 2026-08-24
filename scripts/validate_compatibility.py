@@ -6,13 +6,13 @@
 from __future__ import annotations
 
 import hashlib
-import re
 import sys
 from pathlib import Path
 from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from semver import SemVer
 from validate_manifest import load_json_mapping, load_schema, load_yaml_mapping, schema_errors
 from validate_protocol import expected_compatibility_status
 
@@ -27,12 +27,6 @@ SCHEMA_ROOT = ROOT / "schema"
 
 MIGRATION_FLOOR = "0.6.0"
 PRE_1_0_STABLE_LINES = ("0.6.0", "0.7.0", "0.8.0", "0.9.0")
-STABLE_SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
-SEMVER_CORE_RE = re.compile(
-    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
-    r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
-    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
-)
 
 
 def git_blob_sha1(path: Path) -> str:
@@ -41,26 +35,19 @@ def git_blob_sha1(path: Path) -> str:
     return hashlib.sha1(header + data).hexdigest()
 
 
-def semver_core(version: str) -> tuple[int, int, int]:
-    match = SEMVER_CORE_RE.fullmatch(version)
-    if match is None:
-        raise ValueError(f"invalid semantic version: {version!r}")
-    return tuple(int(match.group(index)) for index in range(1, 4))
-
-
 def stable_semver_key(version: str) -> tuple[int, int, int]:
-    match = STABLE_SEMVER_RE.fullmatch(version)
-    if match is None:
+    parsed = SemVer.parse(version)
+    if parsed.prerelease or parsed.build:
         raise ValueError(f"migration source must be a stable semantic version: {version!r}")
-    return tuple(int(match.group(index)) for index in range(1, 4))
+    return (parsed.major, parsed.minor, parsed.patch)
 
 
 def expected_supported_stable_lines(target_version: str) -> list[str]:
-    target = semver_core(target_version)
+    target = SemVer.parse(target_version)
     return [
         version
         for version in PRE_1_0_STABLE_LINES
-        if stable_semver_key(version) < target
+        if SemVer.parse(version).compare_precedence(target) < 0
     ]
 
 

@@ -5,12 +5,12 @@
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
+from semver import SemVer
 from validate_manifest import load_schema, load_yaml_mapping, schema_errors
 
 
@@ -37,27 +37,14 @@ EXPECTED_CONTRACTS = {
     "compatibility": COMPATIBILITY_SCHEMA,
 }
 
-SEMVER_RE = re.compile(
-    r"^(?P<major>0|[1-9][0-9]*)\."
-    r"(?P<minor>0|[1-9][0-9]*)\."
-    r"(?P<patch>0|[1-9][0-9]*)"
-    r"(?:-(?P<prerelease>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?"
-    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
-)
-
 
 def expected_compatibility_status(version: str) -> str:
     """Return the protocol lifecycle state implied by a schema-v3 release version."""
-    match = SEMVER_RE.fullmatch(version)
-    if match is None:
-        raise ValueError(f"invalid protocol semantic version: {version!r}")
-
-    major = int(match.group("major"))
-    prerelease = match.group("prerelease")
-    if major == 0:
+    parsed = SemVer.parse(version)
+    if parsed.major == 0:
         return "frozen_pre_1_0"
-    if major == 1:
-        return "release_candidate" if prerelease else "stable_1_x"
+    if parsed.major == 1:
+        return "release_candidate" if parsed.prerelease else "stable_1_x"
     raise ValueError(
         "protocol descriptor schema v3 defines lifecycle semantics only for "
         "pre-1.0 and 1.x releases"

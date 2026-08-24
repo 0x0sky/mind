@@ -11,6 +11,7 @@ on:
       - manifest.yaml
       - schema/**
       - docs/protocol/**
+      - scripts/semver.py
       - scripts/validate_manifest.py
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py

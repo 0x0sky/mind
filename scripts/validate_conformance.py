@@ -9,7 +9,6 @@ import argparse
 import copy
 import hashlib
 import json
-import re
 import sys
 import tempfile
 from pathlib import Path
@@ -17,6 +16,7 @@ from typing import Any, Callable
 
 from jsonschema import Draft202012Validator
 
+from semver import SemVer
 from validate_identity_resources import validate_identity_envelope
 from validate_manifest import load_schema, load_yaml_mapping, schema_errors
 from validate_relationships import validate_relationships
@@ -43,14 +43,6 @@ REQUIRED_FEATURE_SUPPORT = {
     "compatibility_freeze": "required",
     "unknown_optional_modules": "required",
 }
-SEMVER_CORE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)")
-
-
-def semver_core(value: str) -> tuple[int, int, int]:
-    match = SEMVER_CORE.match(value)
-    if match is None:
-        raise ValueError(f"invalid semantic version: {value!r}")
-    return tuple(int(part) for part in match.groups())
 
 
 def build_manifest(fixture: dict[str, Any], protocol: dict[str, Any]) -> dict[str, Any]:
@@ -141,10 +133,10 @@ def build_relationship_resource(fixture: dict[str, Any]) -> dict[str, Any]:
 
 
 def range_errors(range_spec: dict[str, Any], protocol: dict[str, Any]) -> list[str]:
-    version = semver_core(protocol["version"])
-    minimum = semver_core(range_spec["minimum_inclusive"])
-    maximum = semver_core(range_spec["maximum_exclusive"])
-    if not minimum <= version < maximum:
+    version = SemVer.parse(protocol["version"])
+    minimum = SemVer.parse(range_spec["minimum_inclusive"])
+    maximum = SemVer.parse(range_spec["maximum_exclusive"])
+    if minimum.compare_precedence(version) > 0 or version.compare_precedence(maximum) >= 0:
         return ["protocol version is outside declared supported range"]
     return []
 

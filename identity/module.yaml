@@ -6,7 +6,6 @@ module:
   dependencies: []
   entrypoints:
     - identity/README.md
-    - identity/identity.yaml
     - identity/handles.md
   owner:
     type: person

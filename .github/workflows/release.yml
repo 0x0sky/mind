@@ -1,0 +1,142 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+name: Publish Mind Protocol Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Protocol version without v prefix
+        required: true
+        type: string
+      target_sha:
+        description: Exact verified master commit to tag and release
+        required: true
+        type: string
+      channel:
+        description: GitHub release channel
+        required: true
+        type: choice
+        options:
+          - stable
+          - prerelease
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish verified protocol artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact release commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_sha }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install release-packaging dependencies
+        run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.23.0
+
+      - name: Verify release target and metadata
+        env:
+          VERSION: ${{ inputs.version }}
+          TARGET_SHA: ${{ inputs.target_sha }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          set -euo pipefail
+
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          git fetch origin master --depth=1
+          test "$(git rev-parse origin/master)" = "$TARGET_SHA"
+
+          ACTUAL_VERSION="$(python - <<'PY'
+          import yaml
+          with open('protocol.yaml', encoding='utf-8') as handle:
+              print(yaml.safe_load(handle)['protocol']['version'])
+          PY
+          )"
+          test "$ACTUAL_VERSION" = "$VERSION"
+
+          test -f "docs/protocol/releases/v${VERSION}.md"
+
+          case "$CHANNEL" in
+            stable)
+              if [[ "$VERSION" == *-* ]]; then
+                echo "stable channel cannot publish a prerelease semantic version" >&2
+                exit 1
+              fi
+              ;;
+            prerelease)
+              if [[ "$VERSION" != *-* ]]; then
+                echo "prerelease channel requires a prerelease semantic version" >&2
+                exit 1
+              fi
+              ;;
+          esac
+
+          if git ls-remote --exit-code --tags origin "refs/tags/v${VERSION}" >/dev/null 2>&1; then
+            echo "tag v${VERSION} already exists; release tags are immutable" >&2
+            exit 1
+          fi
+
+      - name: Build deterministic release artifact
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          python scripts/build_release_bundle.py \
+            --version "$VERSION" \
+            --output "dist/mind-protocol-v${VERSION}.zip" \
+            --sha256-output "dist/mind-protocol-v${VERSION}.sha256"
+
+      - name: Publish GitHub Release and immutable tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          TARGET_SHA: ${{ inputs.target_sha }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          set -euo pipefail
+
+          args=(
+            "v${VERSION}"
+            "dist/mind-protocol-v${VERSION}.zip"
+            "dist/mind-protocol-v${VERSION}.sha256"
+            --target "$TARGET_SHA"
+            --title "Mind Protocol ${VERSION}"
+            --notes-file "docs/protocol/releases/v${VERSION}.md"
+          )
+
+          if [[ "$CHANNEL" == "prerelease" ]]; then
+            args+=(--prerelease)
+          fi
+
+          gh release create "${args[@]}"
+
+      - name: Verify published release metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          CHANNEL: ${{ inputs.channel }}
+        run: |
+          set -euo pipefail
+          gh release view "v${VERSION}" --json tagName,isPrerelease,url > release.json
+          python - <<'PY'
+          import json
+          import os
+
+          data = json.load(open('release.json', encoding='utf-8'))
+          expected_prerelease = os.environ['CHANNEL'] == 'prerelease'
+          if data['tagName'] != f"v{os.environ['VERSION']}":
+              raise SystemExit('published tag name does not match requested version')
+          if data['isPrerelease'] is not expected_prerelease:
+              raise SystemExit('published prerelease state does not match requested channel')
+          print(data['url'])
+          PY

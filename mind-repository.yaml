@@ -47,10 +47,13 @@ bootstrap:
   starts_from: generated_neutral_baseline
   requires_explicit:
     - subject
-    - publication_owner
     - display_name
     - context_version
     - repository_visibility
+  publication_owner:
+    default: subject
+    explicit_override: supported
+    partial_override: forbidden
 
 version_axes:
   protocol_version:

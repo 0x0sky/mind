@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaiaiai.org/mind/schema/identity-resource/v1",
+  "title": "Mind Identity Resource Envelope",
+  "description": "Concrete mind resource envelope carrying one canonical implementation-independent identity value.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "identity", "validation"],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "identity": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema"],
+      "properties": {
+        "schema": {
+          "const": "schema/identity-resource.schema.json"
+        }
+      }
+    }
+  }
+}

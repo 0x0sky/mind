@@ -93,7 +93,14 @@ def validate_fixture() -> list[str]:
     identity_schema = load_schema(ROOT / contracts["identity"]["schema"])
 
     errors: list[str] = []
-    if manifest.get("protocol") != protocol.get("protocol"):
+    fixture_protocol = manifest.get("protocol")
+    repository_protocol = protocol.get("protocol")
+    if not isinstance(fixture_protocol, dict) or not isinstance(repository_protocol, dict):
+        errors.append("agent fixture and protocol descriptor must declare protocol mappings")
+    elif (
+        fixture_protocol.get("id") != repository_protocol.get("id")
+        or fixture_protocol.get("version") != repository_protocol.get("version")
+    ):
         errors.append("agent fixture must target the repository protocol id/version exactly")
 
     errors.extend(

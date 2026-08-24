@@ -21,11 +21,11 @@ Goals:
 - define optional `visual_identity.primary_mark`;
 - preserve current `public_organizations` provenance semantics.
 
-Stable `0.4.0` required a migrated personal reference mind, at least one migrated organization mind, and verified consumer compatibility. Those gates are satisfied by the schema-v2 `0x0sky/mind` reference implementation, the migrated `aiaiaiai-tech/mind` organization instance, and explicit `mind-web` parser compatibility tests exercised by full CI.
-
-The stable promotion changes the shared protocol version, not the concrete subject context, so the personal reference mind keeps `mind.context_version: 0.3.8`.
+Stable `0.4.0` required a migrated personal reference mind, at least one migrated organization mind, and verified consumer compatibility. Those gates are satisfied.
 
 ## 0.5 — relationships and provenance
+
+Status: **`0.5.0-rc.1` prerelease candidate**
 
 Goals:
 
@@ -34,6 +34,16 @@ Goals:
 - preserve provider-discovered relationships as derived data;
 - provide an explicit migration path for `public_organizations` rather than silently changing its meaning;
 - keep provider-specific identifiers at integration boundaries.
+
+`0.5.0-rc.1` introduces a typed `relationships` module/resource while keeping manifest schema v2. The personal reference mind moves to context `0.3.9` because it now publishes canonical authored `member_of` relationships. `public_organizations` remains a legacy compatibility projection, and every populated legacy entry in a mind adopting the relationships module must be backed by a canonical authored membership.
+
+Stable `0.5.0` requires:
+
+- the personal reference relationship resource to validate;
+- at least one organization mind to independently publish a matching relation so reciprocal confirmation is exercised across canonical minds;
+- `mind-web` to consume canonical relationships while preserving authored versus provider-derived provenance;
+- deterministic legacy fallback during the `public_organizations` migration;
+- no provider-specific identifier leakage into the universal relationship resource.
 
 No visual-system expansion is required for this milestone.
 

@@ -2,7 +2,7 @@
 
 Status: **`0.8.0` stable source contract**
 
-`0.8` makes protocol interoperability reproducible without turning any concrete mind or product consumer into protocol authority. It adds a machine-readable conformance suite, a deterministic neutral baseline, five synthetic identity-type fixtures, explicit support-range metadata, and two consumer modes.
+`0.8` makes protocol interoperability reproducible without turning any concrete mind or product consumer into protocol authority. It adds a machine-readable conformance suite, a deterministic neutral baseline, five synthetic identity-type fixtures, explicit support-range metadata, deterministic expected outcomes, and two consumer modes.
 
 The accepted Identity, relationship/provenance, canonical visual-asset, and agent boundaries from `0.4`–`0.7` remain unchanged.
 
@@ -21,18 +21,18 @@ The accepted Identity, relationship/provenance, canonical visual-asset, and agen
 | Manifest schema | `2` | Concrete manifest shape remains unchanged. |
 | Protocol | `0.8.0` | Shared conformance and baseline semantics. |
 | Concrete instance context | independent | Durable content version of one implementation. |
-| Conformance suite schema | `v1` | Machine fixture/feature/range/mode contract. |
+| Conformance suite schema | `v1` | Machine fixture/feature/range/mode/probe contract. |
 | Identity schema | `v1` | Universal Identity for all five subject types. |
 
 ## Conformance suite
 
 [`../../conformance.yaml`](../../conformance.yaml) publishes:
 
-- synthetic fixture descriptors for `person`, `organization`, `agent`, `project`, and `product`;
+- synthetic fixture descriptors for `person`, `organization`, `agent`, `project`, and `product`, each with explicit deterministic `expected_result`;
 - a protocol feature matrix;
-- supported protocol range `[0.8.0, 0.9.0)`;
-- `schema` and `minimal` consumer modes;
-- unknown-module compatibility behavior;
+- suite supported range `[0.8.0, 0.9.0)`;
+- per-consumer supported-range declarations for `schema` and `minimal`;
+- deterministic probe outcomes for provenance, canonical visual resolution/integrity, and unknown-module compatibility;
 - the generated-baseline contract.
 
 The fixtures are synthetic and provider-independent. They contain no named real-world identity or required provider account.
@@ -41,10 +41,19 @@ The fixtures are synthetic and provider-independent. They contain no named real-
 
 [`../../scripts/validate_conformance.py`](../../scripts/validate_conformance.py) proves the same fixture set through two intentionally different paths:
 
-- `schema` — JSON Schema validation plus universal Identity-envelope validation;
-- `minimal` — a small core reader that does not use JSON Schema or shared semantic validators.
+- `schema` — JSON Schema plus shared protocol semantic validators;
+- `minimal` — a small core reader that does not use JSON Schema or the shared relationship/visual semantic validators.
 
-Both must accept a registered unknown optional module when it is not requested and reject an unknown required/default-loaded module.
+Both modes must independently demonstrate the same externally observable outcomes:
+
+1. authored relationship provenance remains authored and bound to the publication owner;
+2. derived provenance is rejected from the canonical authored relationship resource;
+3. a valid canonical mark resolves deterministically;
+4. an integrity mismatch reports `integrity_error` rather than silently falling back to canonical bytes;
+5. an unknown optional module is ignored when not requested;
+6. an unknown required/default-loaded module is rejected.
+
+The regression suite runs each consumer mode repeatedly and requires identical machine results.
 
 These are independent consumer **modes**, not a claim that one repository contains two independent products. Product-level cross-consumer verification may add stronger evidence later; consumers still never become protocol authority.
 
@@ -65,9 +74,11 @@ Repository-relative schema/resource paths may still exist in concrete publicatio
 Machine-readable policy for this line is:
 
 ```text
-supported range:          >= 0.8.0 and < 0.9.0
-unknown optional module:  ignore when not requested
-unknown required module:  reject
+suite supported range:     >= 0.8.0 and < 0.9.0
+schema consumer range:     >= 0.8.0 and < 0.9.0
+minimal consumer range:    >= 0.8.0 and < 0.9.0
+unknown optional module:   ignore when not requested
+unknown required module:   reject
 ```
 
 The broader `1.x` compatibility guarantee and pre-1.0 migration floor remain the `0.9` freeze milestone.

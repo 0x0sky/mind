@@ -4,7 +4,7 @@ schema_version: 1
 
 protocol:
   id: mind
-  version: 0.7.0-rc.1
+  version: 0.7.0
   neutrality:
     subject: implementation_independent
     publication_owner: implementation_independent

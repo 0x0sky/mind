@@ -3,7 +3,7 @@
 schema_version: 2
 protocol:
   id: mind
-  version: 0.7.0-rc.1
+  version: 0.7.0
 mind:
   name: mind@synthetic-agent
   kind: agent

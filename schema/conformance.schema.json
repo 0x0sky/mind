@@ -105,14 +105,17 @@
     "probes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module"],
+      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module", "unknown_root_manifest_field", "removed_mind_kind", "removed_public_organizations"],
       "properties": {
         "authored_relationship": {"const": "preserved"},
         "derived_relationship": {"const": "rejected_from_canonical"},
         "canonical_visual_resolved": {"const": "resolved"},
         "canonical_visual_integrity_failure": {"const": "integrity_error"},
         "unknown_optional_module": {"const": "ignored_when_not_requested"},
-        "unknown_required_module": {"const": "rejected"}
+        "unknown_required_module": {"const": "rejected"},
+        "unknown_root_manifest_field": {"const": "rejected"},
+        "removed_mind_kind": {"const": "rejected"},
+        "removed_public_organizations": {"const": "rejected"}
       }
     },
     "compatibility": {

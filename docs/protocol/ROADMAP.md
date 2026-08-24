@@ -42,11 +42,24 @@ Delivered:
 - deterministic generated neutral baseline rather than a long-lived generic ontology;
 - dynamic tests preventing concrete `mind@0x0sky` data from leaking into the baseline;
 - synthetic fixture descriptors for person, organization, agent, project, and product;
+- explicit deterministic expected result for every required fixture;
 - a machine-runnable conformance suite and feature matrix;
-- machine-readable support range `[0.8.0, 0.9.0)`;
+- suite and per-consumer support range `[0.8.0, 0.9.0)`;
 - two independent consumer modes (`schema` and `minimal`) over the same fixture set;
-- explicit unknown optional-module and required-module behavior;
+- both modes preserving authored provenance and rejecting derived evidence from canonical authored relationships;
+- both modes resolving a valid canonical visual mark and reporting integrity failure deterministically;
+- explicit unknown optional-module and required-module behavior in both modes;
+- repeated-run regression proof that consumer outputs are reproducible;
 - neutral protocol schema `$id` namespace rather than reference-repository GitHub URLs.
+
+Acceptance evidence:
+
+- neutral baseline generation is byte-for-byte deterministic;
+- all five required fixture types validate;
+- fixture and probe results are reproducible;
+- both independent consumer modes pass the declared suite;
+- reference-instance content is rejected from the generated baseline;
+- supported protocol ranges are machine-readable.
 
 Consumers prove interoperability; they never become protocol authority.
 

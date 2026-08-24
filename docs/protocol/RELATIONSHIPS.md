@@ -1,6 +1,6 @@
 # Relationships and provenance
 
-Mind Protocol `0.5` treats a relationship as a canonical assertion involving the subject of one mind, not as a globally authoritative fact owned by a central graph.
+Mind Protocol treats a relationship as a canonical assertion involving the subject of one mind, not as a globally authoritative fact owned by a central graph.
 
 ## Canonical shape
 
@@ -41,8 +41,6 @@ These rules let each mind remain sovereign while still composing into a larger g
 
 Predicates use lowercase protocol vocabulary.
 
-`0.5` standardizes only the predicate needed for the existing migration: `member_of`.
-
 `member_of` is directed: `source --member_of--> organization`. The target must be `type: organization`.
 
 Other predicates may be carried by the schema so protocol experiments do not require a root-manifest change, but consumers must not invent semantics for an unknown predicate. New protocol-wide predicate meanings should be documented before they become interoperability requirements.
@@ -57,9 +55,9 @@ Other predicates may be carried by the schema so protocol experiments do not req
 
 Canonical mind resources use `kind: authored`. Authored means the publishing mind intentionally asserts the relationship. `authority` identifies the entity accountable for that publication and must equal `mind.owner`.
 
-Provider-derived relations are observations made by an integration or consumer, such as GitHub organization membership, repository ownership, social follows, or directory membership. They do not belong in canonical authored `relationships.yaml`.
+Provider-derived relations are observations made by an integration or consumer, such as GitHub organization membership, repository ownership, social follows, or directory membership. They do not belong in canonical authored `relationships.yaml` merely because a provider reports them.
 
-A renderer may display them, but it must preserve that they are derived and must not silently materialize them back into the mind.
+A renderer may display provider-derived evidence, but it must preserve that provenance and must not silently materialize derived observations back into the canonical mind.
 
 ## Confirmation
 
@@ -75,11 +73,17 @@ A mind may assert a relationship when its own subject is one endpoint.
 
 It must not publish a canonical relationship between two unrelated external entities. That would turn a subject-owned mind into an accidental global authority.
 
-## Legacy GitHub projection
+## Provider organization projections and 0.9 migration
 
-The root `public_organizations` field exists temporarily for older consumers. For a `0.5` mind that adopts authored relationships, each populated legacy entry must be backed by `subject --member_of--> organization`.
+Pre-`0.9` manifest schema v2 allowed provider-facing organization projections such as `public_organizations`. Those values were provider logins rather than canonical organization IDs.
 
-The legacy field does not become canonical relationship authority. Omission, empty-list, and populated-list semantics remain unchanged while legacy consumers exist.
+Manifest schema v3 removes those fields from the root contract. A non-empty legacy projection must be handled deliberately before removal:
+
+- if the publisher intends an authored semantic relationship and knows the canonical organization identity, preserve that meaning in a canonical relationship resource;
+- if the value remains only provider evidence, preserve it in an explicit provider integration;
+- never infer a canonical organization ID from a provider login.
+
+The v2 → v3 migrator therefore requires an explicit assertion before discarding a non-empty provider projection. See [`MIGRATION_0.9.md`](MIGRATION_0.9.md).
 
 ## Consumer merge policy
 
@@ -89,6 +93,6 @@ Deduplication is a presentation concern; provenance must remain recoverable afte
 
 ## Provider ids
 
-Provider-specific identifiers belong to integration evidence. GitHub numeric ids, installation ids, repository node ids, API URLs, and provider-specific membership record ids must not become universal relationship identity.
+Provider-specific identifiers belong to integration evidence. GitHub numeric ids, installation ids, repository node ids, API URLs, logins, and provider-specific membership record ids must not become universal relationship identity.
 
 Protocol relationship ids and entity refs remain provider-independent.

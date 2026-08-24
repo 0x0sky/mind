@@ -15,7 +15,7 @@ mind:
   # Compatibility classification retained for current consumers during the 0.x migration.
   kind: personal
   # Semantic version of the context published by this concrete mind.
-  context_version: 0.3.10
+  context_version: 0.3.11
   # Entity this mind describes and is authoritative about.
   subject:
     type: person
@@ -32,7 +32,7 @@ mind:
 # Omission retains the historical provider-discovered behavior for legacy
 # consumers; an empty list retains the historical "publish none" behavior.
 public_organizations:
-  - aiaiaiai-tech
+  - aiaiaiai-org
   - 0xda-market
   - nilx-one
 

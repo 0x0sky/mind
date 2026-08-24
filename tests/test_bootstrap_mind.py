@@ -67,23 +67,25 @@ class BootstrapMindTests(unittest.TestCase):
             self.assertEqual(envelope["identity"]["type"], "organization")
             self.assertEqual(envelope["identity"]["id"], "fixture-organization")
 
-    def test_reference_instance_is_not_copied_into_concrete_output(self) -> None:
+    def test_reference_instance_is_not_copied_into_authored_machine_content(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.bootstrap(Path(directory))
             manifest = (output / "manifest.yaml").read_text(encoding="utf-8")
             identity = (output / "identity" / "identity.yaml").read_text(
                 encoding="utf-8"
             )
-            readme = (output / "README.md").read_text(encoding="utf-8")
             self.assertNotIn("mind@0x0sky", manifest)
             self.assertNotIn("mind@0x0sky", identity)
-            self.assertNotIn("mind@0x0sky", readme)
+            self.assertNotIn("id: 0x0sky", manifest)
+            self.assertNotIn("id: 0x0sky", identity)
 
             repository = load_yaml_mapping(output / "mind-repository.yaml")
             concrete = repository["repository"]["roles"]["concrete_mind"]
             self.assertFalse(concrete["reference_implementation"])
             self.assertFalse(concrete["template_authority"])
-            self.assertFalse(repository["repository"]["roles"]["protocol_authority"]["enabled"])
+            self.assertFalse(
+                repository["repository"]["roles"]["protocol_authority"]["enabled"]
+            )
 
     def test_protocol_lock_pins_exact_release_and_contract_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -97,7 +99,11 @@ class BootstrapMindTests(unittest.TestCase):
             self.assertEqual(len(lock["vendored_contracts"]), 9)
             for descriptor in lock["vendored_contracts"].values():
                 self.assertRegex(descriptor["git_blob_sha1"], r"^[0-9a-f]{40}$")
-                self.assertTrue(descriptor["schema_id"].startswith("https://aiaiaiai.org/mind/schema/"))
+                self.assertTrue(
+                    descriptor["schema_id"].startswith(
+                        "https://aiaiaiai.org/mind/schema/"
+                    )
+                )
 
     def test_distinct_publication_owner_is_preserved(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

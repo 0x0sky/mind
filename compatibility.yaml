@@ -16,7 +16,7 @@ freeze:
   frozen_contracts:
     - path: schema/protocol.schema.json
       schema_id: https://aiaiaiai.org/mind/schema/protocol/v3
-      git_blob_sha1: 37fcdb58cff9fb9e292fb126bcf8e25f029fdc93
+      git_blob_sha1: 23bc8ffde889c7c20ca446e6fca8e914920f4fd2
     - path: schema/mind.schema.json
       schema_id: https://aiaiaiai.org/mind/schema/manifest/v3
       git_blob_sha1: cc89e3364c404a86fdce72a061195768ee460597
@@ -40,7 +40,7 @@ freeze:
       git_blob_sha1: a94e3a96a5f475a2757da4b4a8533f6b8b150540
     - path: schema/compatibility.schema.json
       schema_id: https://aiaiaiai.org/mind/schema/compatibility/v1
-      git_blob_sha1: e525fc254281fa67e3d8bf1bd0ec63be04716b04
+      git_blob_sha1: 2fe9f477ff6284e585e9a1ac1e8d0e6434cc964a
 
 forward_compatibility:
   unknown_optional_modules: ignore_when_not_requested

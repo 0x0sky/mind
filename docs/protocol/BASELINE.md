@@ -55,7 +55,7 @@ The canonical relationship is:
 Mind Protocol contracts
         ↓ generate
 neutral abstract baseline
-        ↓ bootstrap with explicit authored identity
+        ↓ bootstrap with authored subject and owner semantics
 concrete mind@<id>
 ```
 
@@ -73,7 +73,7 @@ another concrete Mind
 
 Use [`BOOTSTRAP.md`](BOOTSTRAP.md) and [`../../scripts/bootstrap_mind.py`](../../scripts/bootstrap_mind.py) to create a minimal concrete Mind from an exact immutable protocol release.
 
-Bootstrap introduces only explicit authored inputs: subject, publication owner, display name, context version, and repository visibility. It then creates the required Identity module/resource. Additional modules are added only when separately authored for that subject.
+Bootstrap requires explicit subject, display name, context version, and repository visibility. Publication owner defaults to that subject unless a complete distinct-owner override is supplied. Bootstrap then creates the required Identity module/resource. Additional modules are added only when separately authored for that subject.
 
 ## Determinism
 

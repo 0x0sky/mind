@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import Any
 
 from jsonschema import Draft202012Validator
 
@@ -22,6 +21,7 @@ IDENTITY_MODULE_PATH = ROOT / "identity/module.yaml"
 IDENTITY_RESOURCE_PATH = ROOT / "identity/identity.yaml"
 IDENTITY_SCHEMA_PATH = ROOT / "schema/identity.schema.json"
 IDENTITY_RESOURCE_SCHEMA = "schema/identity-resource.schema.json"
+VISUAL_ASSETS_SCHEMA = "schema/visual-assets.schema.json"
 
 EXPECTED_CONTRACTS = {
     "manifest": "schema/mind.schema.json",
@@ -29,6 +29,7 @@ EXPECTED_CONTRACTS = {
     "identity": "schema/identity.schema.json",
     "identity_resource": IDENTITY_RESOURCE_SCHEMA,
     "relationships": "schema/relationships.schema.json",
+    "visual_assets": VISUAL_ASSETS_SCHEMA,
 }
 
 
@@ -81,12 +82,16 @@ def validate_protocol() -> list[str]:
         except ValueError as error:
             errors.append(f"protocol.contracts.{contract_id}.schema: {error}")
 
+    visual_policy = protocol["visual_identity"]
+    resolver = visual_policy["asset_ref_resolution"]
+    if resolver["resource_schema"] != VISUAL_ASSETS_SCHEMA:
+        errors.append(
+            "protocol.visual_identity.asset_ref_resolution.resource_schema "
+            f"must be {VISUAL_ASSETS_SCHEMA!r}"
+        )
+
     descriptor = load_yaml_mapping(IDENTITY_MODULE_PATH)
-    identity_resource = (
-        descriptor.get("module", {})
-        .get("resources", {})
-        .get("identity")
-    )
+    identity_resource = descriptor.get("module", {}).get("resources", {}).get("identity")
     if not isinstance(identity_resource, dict):
         errors.append("identity module must declare resources.identity")
         return errors

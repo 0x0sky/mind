@@ -5,7 +5,13 @@
   "description": "Implementation-independent descriptor for the canonical Mind Protocol contracts.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "protocol", "contracts", "instance_policy"],
+  "required": [
+    "schema_version",
+    "protocol",
+    "contracts",
+    "visual_identity",
+    "instance_policy"
+  ],
   "$defs": {
     "semver": {
       "type": "string",
@@ -14,7 +20,10 @@
     "contract": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["schema", "role"],
+      "required": [
+        "schema",
+        "role"
+      ],
       "properties": {
         "schema": {
           "type": "string",
@@ -34,7 +43,11 @@
     "protocol": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "version", "neutrality"],
+      "required": [
+        "id",
+        "version",
+        "neutrality"
+      ],
       "properties": {
         "id": {
           "const": "mind"
@@ -45,13 +58,29 @@
         "neutrality": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["subject", "publication_owner", "provider", "repository_layout", "runtime"],
+          "required": [
+            "subject",
+            "publication_owner",
+            "provider",
+            "repository_layout",
+            "runtime"
+          ],
           "properties": {
-            "subject": {"const": "implementation_independent"},
-            "publication_owner": {"const": "implementation_independent"},
-            "provider": {"const": "implementation_independent"},
-            "repository_layout": {"const": "implementation_independent"},
-            "runtime": {"const": "implementation_independent"}
+            "subject": {
+              "const": "implementation_independent"
+            },
+            "publication_owner": {
+              "const": "implementation_independent"
+            },
+            "provider": {
+              "const": "implementation_independent"
+            },
+            "repository_layout": {
+              "const": "implementation_independent"
+            },
+            "runtime": {
+              "const": "implementation_independent"
+            }
           }
         }
       }
@@ -59,24 +88,171 @@
     "contracts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["manifest", "module", "identity", "identity_resource", "relationships"],
+      "required": [
+        "manifest",
+        "module",
+        "identity",
+        "identity_resource",
+        "relationships",
+        "visual_assets"
+      ],
       "properties": {
-        "manifest": {"$ref": "#/$defs/contract"},
-        "module": {"$ref": "#/$defs/contract"},
-        "identity": {"$ref": "#/$defs/contract"},
-        "identity_resource": {"$ref": "#/$defs/contract"},
-        "relationships": {"$ref": "#/$defs/contract"}
+        "manifest": {
+          "$ref": "#/$defs/contract"
+        },
+        "module": {
+          "$ref": "#/$defs/contract"
+        },
+        "identity": {
+          "$ref": "#/$defs/contract"
+        },
+        "identity_resource": {
+          "$ref": "#/$defs/contract"
+        },
+        "relationships": {
+          "$ref": "#/$defs/contract"
+        },
+        "visual_assets": {
+          "$ref": "#/$defs/contract"
+        }
+      }
+    },
+    "visual_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_ref_resolution",
+        "integrity",
+        "media_types",
+        "fallback",
+        "avatar"
+      ],
+      "properties": {
+        "asset_ref_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "resource_schema",
+            "discovery",
+            "selection"
+          ],
+          "properties": {
+            "resource_schema": {
+              "const": "schema/visual-assets.schema.json"
+            },
+            "discovery": {
+              "const": "registered_typed_resources"
+            },
+            "selection": {
+              "const": "unique_matching_ref"
+            }
+          }
+        },
+        "integrity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "descriptor",
+            "algorithm",
+            "required"
+          ],
+          "properties": {
+            "descriptor": {
+              "const": "versioned_descriptor"
+            },
+            "algorithm": {
+              "const": "sha256"
+            },
+            "required": {
+              "const": true
+            }
+          }
+        },
+        "media_types": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "normative",
+            "optional"
+          ],
+          "properties": {
+            "normative": {
+              "const": [
+                "image/svg+xml",
+                "image/png"
+              ]
+            },
+            "optional": {
+              "const": [
+                "image/webp"
+              ]
+            }
+          }
+        },
+        "fallback": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "unavailable_mark",
+            "missing_asset",
+            "unsupported_media",
+            "integrity_failure",
+            "derived_visuals"
+          ],
+          "properties": {
+            "unavailable_mark": {
+              "const": "presentation_fallback_allowed_noncanonical"
+            },
+            "missing_asset": {
+              "const": "observable_failure_presentation_fallback_allowed_noncanonical"
+            },
+            "unsupported_media": {
+              "const": "observable_failure_presentation_fallback_allowed_noncanonical"
+            },
+            "integrity_failure": {
+              "const": "hard_failure_presentation_fallback_allowed_noncanonical"
+            },
+            "derived_visuals": {
+              "const": "must_not_silently_replace_canonical"
+            }
+          }
+        },
+        "avatar": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "const": "presentation_only"
+            }
+          }
+        }
       }
     },
     "instance_policy": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["canonical_instance_branch", "instance_name", "protocol_contracts_are_instance_neutral", "instance_context_is_versioned_independently"],
+      "required": [
+        "canonical_instance_branch",
+        "instance_name",
+        "protocol_contracts_are_instance_neutral",
+        "instance_context_is_versioned_independently"
+      ],
       "properties": {
-        "canonical_instance_branch": {"const": "master"},
-        "instance_name": {"const": "mind@{subject.id}"},
-        "protocol_contracts_are_instance_neutral": {"const": "required"},
-        "instance_context_is_versioned_independently": {"const": "required"}
+        "canonical_instance_branch": {
+          "const": "master"
+        },
+        "instance_name": {
+          "const": "mind@{subject.id}"
+        },
+        "protocol_contracts_are_instance_neutral": {
+          "const": "required"
+        },
+        "instance_context_is_versioned_independently": {
+          "const": "required"
+        }
       }
     }
   }

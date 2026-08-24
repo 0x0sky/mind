@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -23,6 +23,12 @@ from validate_manifest import load_json_mapping, load_yaml_mapping
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL_REPOSITORY = "0x0sky/mind"
 CONCRETE_TYPES = ("person", "organization", "agent", "project", "product")
+RELEASE_CONTRACT_PATHS = (
+    "protocol.yaml",
+    "conformance.yaml",
+    "compatibility.yaml",
+    "schema",
+)
 
 
 def write_yaml(path: Path, value: dict[str, Any]) -> None:
@@ -37,6 +43,26 @@ def git_blob_sha1(path: Path) -> str:
     data = path.read_bytes()
     header = f"blob {len(data)}\0".encode("utf-8")
     return hashlib.sha1(header + data).hexdigest()
+
+
+def git_output(*arguments: str) -> str:
+    try:
+        result = subprocess.run(
+            ["git", *arguments],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError as error:
+        raise ValueError(f"cannot verify protocol release checkout: {error}") from error
+    if result.returncode != 0:
+        detail = result.stderr.strip() or result.stdout.strip() or "git command failed"
+        raise ValueError(
+            "cannot verify protocol release checkout: "
+            f"git {' '.join(arguments)}: {detail}"
+        )
+    return result.stdout.strip()
 
 
 def ensure_empty_output(output: Path) -> None:
@@ -75,6 +101,41 @@ def validate_source_tag(source_tag: str, protocol: dict[str, str]) -> None:
         )
     if source_tag in {"master", "main", "latest"}:
         raise ValueError("floating branches are forbidden as concrete release sources")
+
+
+def verify_release_checkout(source_tag: str) -> None:
+    """Prove CLI bootstrap is running from the exact immutable release tree."""
+    protocol = protocol_ref()
+    validate_source_tag(source_tag, protocol)
+
+    repository_root = Path(git_output("rev-parse", "--show-toplevel")).resolve()
+    if repository_root != ROOT.resolve():
+        raise ValueError(
+            "bootstrap must run from the Mind Protocol repository checkout "
+            f"at {ROOT.resolve()}"
+        )
+
+    head_sha = git_output("rev-parse", "HEAD")
+    tag_sha = git_output("rev-list", "-n", "1", f"refs/tags/{source_tag}")
+    if head_sha != tag_sha:
+        raise ValueError(
+            "checked-out HEAD must equal the immutable protocol release tag: "
+            f"HEAD {head_sha}, {source_tag} {tag_sha}"
+        )
+
+    dirty_contracts = git_output(
+        "status",
+        "--porcelain",
+        "--untracked-files=no",
+        "--",
+        *RELEASE_CONTRACT_PATHS,
+    )
+    if dirty_contracts:
+        raise ValueError(
+            "released protocol contract files differ from the tagged checkout; "
+            "restore protocol.yaml, conformance.yaml, compatibility.yaml, and schema/ "
+            "before bootstrapping"
+        )
 
 
 def concrete_manifest(
@@ -323,10 +384,22 @@ def bootstrap_mind(
             repository_visibility=repository_visibility,
         ),
     )
-    write_yaml(output / "identity" / "module.yaml", identity_module(owner, repository_visibility))
-    write_yaml(output / "identity" / "identity.yaml", identity_resource(subject, display_name))
-    write_yaml(output / "mind-repository.yaml", repository_metadata(protocol, subject, source_tag))
-    write_yaml(output / "protocol.lock.yaml", protocol_lock(protocol, source_tag, output))
+    write_yaml(
+        output / "identity" / "module.yaml",
+        identity_module(owner, repository_visibility),
+    )
+    write_yaml(
+        output / "identity" / "identity.yaml",
+        identity_resource(subject, display_name),
+    )
+    write_yaml(
+        output / "mind-repository.yaml",
+        repository_metadata(protocol, subject, source_tag),
+    )
+    write_yaml(
+        output / "protocol.lock.yaml",
+        protocol_lock(protocol, source_tag, output),
+    )
     (output / "README.md").write_text(
         generated_readme(protocol, subject, source_tag), encoding="utf-8"
     )
@@ -352,6 +425,7 @@ def parse_arguments() -> argparse.Namespace:
 def main() -> int:
     arguments = parse_arguments()
     try:
+        verify_release_checkout(arguments.source_tag)
         bootstrap_mind(
             arguments.output.resolve(),
             source_tag=arguments.source_tag,

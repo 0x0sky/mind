@@ -31,53 +31,38 @@ Provider discovery remains derived evidence rather than canonical authorship.
 
 ## 0.6 — Identity and canonical visual contract
 
+Status: **`0.6.0` stable source contract**
+
 ### `0.6.0-rc.1` — protocol / instance separation
 
-Status: **merged baseline**
+Status: **merged**
 
-Delivered:
-
-- implementation-independent `protocol.yaml`;
-- universal `schema/identity.schema.json`;
-- separate concrete identity-resource envelope;
-- explicit protocol/context version independence;
-- provider-independent canonical ids;
-- living concrete instance on `master` rather than a parallel generic ontology.
+Delivered implementation-independent `protocol.yaml`, universal Identity, a separate concrete identity-resource envelope, independent protocol/context versioning, provider-independent canonical ids, and a living concrete instance on `master` rather than a parallel generic ontology.
 
 ### `0.6.0-rc.2` — canonical visual asset contract
 
-Status: **current development candidate**
+Status: **merged**
 
-Protocol work:
+Delivered deterministic opaque `asset_ref` resolution, a typed visual-asset catalog, versioned descriptors with required SHA-256 integrity, normative SVG/PNG plus optional WebP policy, observable failure outcomes, derived-visual provenance protection, presentation-only avatar semantics, and synthetic person/organization/agent fixtures.
 
-- define deterministic opaque `asset_ref` resolution;
-- define a typed visual-asset catalog;
-- use versioned descriptors with required SHA-256 integrity;
-- require SVG and PNG consumer support;
-- allow WebP as consumer-optional;
-- define deterministic unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes;
-- prohibit silent replacement of canonical marks by derived/provider visuals;
-- keep `avatar` presentation-only;
-- prove the contract with synthetic person, organization, and agent fixtures.
+Real logos and marks for named identities remain separate implementation work.
 
-Real logos and marks for named identities are intentionally **not** protocol milestone dependencies.
+### `0.6.0` — stable
 
-### `0.6.0` — Identity and visual contract stable
-
-Stable source-contract gate:
+The stable source-contract gate is satisfied:
 
 - universal Identity boundary is stable;
 - concrete identity-resource envelope boundary is stable;
 - visual-asset resolution/failure semantics are stable;
 - subject/publication-owner boundary is stable;
-- migration notes from earlier identity-resource semantics are complete;
-- full protocol CI is green.
+- migration from earlier identity-resource semantics is documented in [`MIGRATION_0.6.md`](MIGRATION_0.6.md);
+- full protocol CI is required green on the stable-promotion PR.
 
-Tag/GitHub Release publication is separate.
+A source-contract merge is not a tag or GitHub Release.
 
 ## 0.7 — agent identity semantics
 
-### `0.7.0-rc.1`
+Next protocol milestone: **`0.7.0-rc.1`**.
 
 Prove `subject.type: agent` as first-class universal Identity using synthetic fixtures only:
 
@@ -88,9 +73,7 @@ Prove `subject.type: agent` as first-class universal Identity using synthetic fi
 - no biological-personhood assumption exists in schema or docs;
 - synthetic portrait remains outside canonical Identity by default.
 
-### `0.7.0`
-
-Stable when the agent fixture, subject/owner boundary tests, runtime-independence checks, and full protocol CI are green.
+`0.7.0` becomes stable when the agent fixture, subject/owner boundary tests, runtime-independence checks, and full protocol CI are green.
 
 ## 0.8 — neutral baseline and conformance
 

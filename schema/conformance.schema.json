@@ -5,11 +5,20 @@
   "description": "Machine-readable fixture, feature, compatibility, and consumer-mode contract for Mind Protocol conformance.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "protocol", "supported_range", "fixture_types", "fixtures", "features", "consumer_modes", "compatibility", "baseline"],
+  "required": ["schema_version", "protocol", "supported_range", "fixture_types", "fixtures", "features", "consumer_modes", "consumer_support", "probes", "compatibility", "baseline"],
   "$defs": {
     "semver": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "supported_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_inclusive", "maximum_exclusive"],
+      "properties": {
+        "minimum_inclusive": {"$ref": "#/$defs/semver"},
+        "maximum_exclusive": {"$ref": "#/$defs/semver"}
+      }
     },
     "entity_type": {
       "type": "string",
@@ -27,12 +36,13 @@
     "fixture": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "subject", "owner", "display_name"],
+      "required": ["kind", "subject", "owner", "display_name", "expected_result"],
       "properties": {
         "kind": {"type": "string", "enum": ["personal", "organization", "agent", "project", "product"]},
         "subject": {"$ref": "#/$defs/entity_ref"},
         "owner": {"$ref": "#/$defs/entity_ref"},
-        "display_name": {"type": "string", "minLength": 1}
+        "display_name": {"type": "string", "minLength": 1},
+        "expected_result": {"const": "pass"}
       }
     },
     "feature": {
@@ -42,6 +52,14 @@
       "properties": {
         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
         "support": {"type": "string", "enum": ["required", "optional"]}
+      }
+    },
+    "consumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported_range"],
+      "properties": {
+        "supported_range": {"$ref": "#/$defs/supported_range"}
       }
     }
   },
@@ -56,15 +74,7 @@
         "version": {"$ref": "#/$defs/semver"}
       }
     },
-    "supported_range": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["minimum_inclusive", "maximum_exclusive"],
-      "properties": {
-        "minimum_inclusive": {"$ref": "#/$defs/semver"},
-        "maximum_exclusive": {"$ref": "#/$defs/semver"}
-      }
-    },
+    "supported_range": {"$ref": "#/$defs/supported_range"},
     "fixture_types": {"const": ["person", "organization", "agent", "project", "product"]},
     "fixtures": {
       "type": "object",
@@ -84,6 +94,28 @@
       "items": {"$ref": "#/$defs/feature"}
     },
     "consumer_modes": {"const": ["schema", "minimal"]},
+    "consumer_support": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "minimal"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/consumer"},
+        "minimal": {"$ref": "#/$defs/consumer"}
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module"],
+      "properties": {
+        "authored_relationship": {"const": "preserved"},
+        "derived_relationship": {"const": "rejected_from_canonical"},
+        "canonical_visual_resolved": {"const": "resolved"},
+        "canonical_visual_integrity_failure": {"const": "integrity_error"},
+        "unknown_optional_module": {"const": "ignored_when_not_requested"},
+        "unknown_required_module": {"const": "rejected"}
+      }
+    },
     "compatibility": {
       "type": "object",
       "additionalProperties": false,

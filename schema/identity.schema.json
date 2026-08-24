@@ -104,6 +104,7 @@
         "visual_identity": {
           "type": "object",
           "additionalProperties": false,
+          "minProperties": 1,
           "properties": {
             "primary_mark": {
               "$ref": "#/$defs/primary_mark"

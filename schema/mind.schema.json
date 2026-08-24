@@ -190,13 +190,11 @@
       "properties": {
         "required": {
           "description": "Module IDs that must be loaded by default.",
-          "$ref": "#/$defs/module_ids",
-          "minItems": 1
+          "$ref": "#/$defs/module_ids"
         },
         "registered": {
           "description": "Complete set of module IDs available in the mind.",
-          "$ref": "#/$defs/module_ids",
-          "minItems": 1
+          "$ref": "#/$defs/module_ids"
         },
         "rules": {
           "description": "Architectural guarantees for registered modules.",
@@ -234,7 +232,6 @@
         "catalog": {
           "description": "Repository-relative descriptor path for every registered module.",
           "type": "object",
-          "minProperties": 1,
           "propertyNames": {
             "$ref": "#/$defs/module_id"
           },
@@ -318,8 +315,7 @@
       "properties": {
         "default": {
           "description": "Modules loaded for every consumer.",
-          "$ref": "#/$defs/module_ids",
-          "minItems": 1
+          "$ref": "#/$defs/module_ids"
         },
         "optional": {
           "description": "Modules loaded only when explicitly requested.",

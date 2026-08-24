@@ -232,6 +232,10 @@ def validate_manifest_semantics(
         )
     if mind["kind"] != "abstract" and mind["subject"]["id"] == "unspecified":
         errors.append("$.mind.subject.id: concrete minds cannot use 'unspecified'")
+    if mind["kind"] != "abstract" and (
+        mind["owner"]["type"] == "unspecified" or mind["owner"]["id"] == "unspecified"
+    ):
+        errors.append("$.mind.owner: concrete minds must declare a real publication owner")
     if mind["kind"] == "abstract":
         if mind["subject"] != {"type": "unspecified", "id": "unspecified"}:
             errors.append(
@@ -426,13 +430,14 @@ def validate_modules(
             errors.append(f"module[{catalog_id}]: {error}")
             continue
 
+        descriptor_errors = schema_errors(validator, descriptor)
         errors.extend(
-            f"module[{catalog_id}]{error[1:]}"
-            for error in schema_errors(validator, descriptor)
+            f"module[{catalog_id}]{error[1:]}" for error in descriptor_errors
         )
-        module = descriptor.get("module")
-        if not isinstance(module, dict):
+        if descriptor_errors:
             continue
+
+        module = descriptor["module"]
 
         descriptor_id = module.get("id")
         if descriptor_id != catalog_id:
@@ -455,16 +460,27 @@ def validate_modules(
             errors.append(f"module[{catalog_id}].dependencies: self-dependency is forbidden")
         graph[catalog_id] = dependencies & registered
 
-        for index, entrypoint in enumerate(module.get("entrypoints", [])):
-            if isinstance(entrypoint, str):
-                resolve_repository_file(
-                    root,
-                    entrypoint,
-                    f"module[{catalog_id}].entrypoints[{index}]",
-                    errors,
+        resources = module.get("resources", {})
+        if not module["entrypoints"] and not resources:
+            errors.append(
+                f"module[{catalog_id}]: declare at least one entrypoint or machine resource"
+            )
+
+        if manifest["mind"]["kind"] != "abstract":
+            owner = module["owner"]
+            if owner["type"] == "unspecified" or owner["id"] == "unspecified":
+                errors.append(
+                    f"module[{catalog_id}].owner: concrete minds require a real module owner"
                 )
 
-        resources = module.get("resources", {})
+        for index, entrypoint in enumerate(module["entrypoints"]):
+            resolve_repository_file(
+                root,
+                entrypoint,
+                f"module[{catalog_id}].entrypoints[{index}]",
+                errors,
+            )
+
         if isinstance(resources, dict):
             for resource_id, resource in resources.items():
                 if isinstance(resource, dict):

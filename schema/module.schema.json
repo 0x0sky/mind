@@ -116,7 +116,6 @@
           "items": {
             "$ref": "#/$defs/repo_path"
           },
-          "minItems": 1,
           "uniqueItems": true
         },
         "owner": {

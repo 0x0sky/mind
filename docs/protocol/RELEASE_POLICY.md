@@ -30,6 +30,28 @@ If the merge commit tree differs from the tested pull-request head tree, release
 
 This preserves `github-delivery.yaml`: correctness is not rerun after merge merely to obtain a new SHA, while the published tree is still proven identical to the tested tree.
 
+## Manual publication inputs
+
+`Publish Mind Protocol Release` deliberately avoids free-text version and commit inputs.
+
+The operator chooses only:
+
+- the Git branch through GitHub's native **Use workflow from** selector;
+- publication kind: `release` or `prerelease`.
+
+Everything else is derived from verified repository state:
+
+- exact target commit from the selected branch dispatch SHA;
+- protocol version from `protocol.yaml`;
+- tag as `v{protocol.version}`;
+- release title as `Mind Protocol {protocol.version}`;
+- release notes from `docs/protocol/releases/v{protocol.version}.md`;
+- artifact names from the same protocol version.
+
+The workflow rejects a non-branch ref, a selected branch other than the repository default branch, a branch that moved after dispatch, a publication kind inconsistent with semantic version state, a pre-existing immutable tag, or a target without the required green PR/tree evidence.
+
+The native branch selector is therefore the only release-target control. The current policy still publishes formal protocol releases only from the default branch (`master`); supporting dedicated release branches would require an explicit policy change rather than weakening this workflow implicitly.
+
 ## Schema identity across the release train
 
 A published JSON Schema `$id` identifies a schema shape, not one release number. If that same schema shape is intended to survive from `0.9.0` through the `1.0` release candidate and stable `1.0.0`, its bytes must not encode a single release version or lifecycle state merely to validate the current publication.

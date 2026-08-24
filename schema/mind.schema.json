@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/0x0sky/mind/schema/mind.schema.json",
+  "$id": "https://aiaiaiai.org/mind/schema/manifest/v2",
   "title": "Mind Manifest",
   "description": "Contract for manifest.yaml in a mind repository.",
   "type": "object",

@@ -6,7 +6,7 @@ The goal of `1.0` is a small, explicit contract that can represent and render pe
 
 ## 0.4 — readable protocol foundation
 
-Status: `0.4.0-rc.1`
+Status: **`0.4.0` stable contract**
 
 Goals:
 
@@ -21,7 +21,9 @@ Goals:
 - define optional `visual_identity.primary_mark`;
 - preserve current `public_organizations` provenance semantics.
 
-Stable `0.4.0` requires a migrated personal reference mind, at least one migrated organization mind, and verified consumer compatibility.
+Stable `0.4.0` required a migrated personal reference mind, at least one migrated organization mind, and verified consumer compatibility. Those gates are satisfied by the schema-v2 `0x0sky/mind` reference implementation, the migrated `aiaiaiai-tech/mind` organization instance, and explicit `mind-web` parser compatibility tests exercised by full CI.
+
+The stable promotion changes the shared protocol version, not the concrete subject context, so the personal reference mind keeps `mind.context_version: 0.3.8`.
 
 ## 0.5 — relationships and provenance
 

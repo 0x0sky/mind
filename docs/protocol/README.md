@@ -1,10 +1,10 @@
 # Mind Protocol 0.4
 
-Status: **`0.4.0-rc.1` prerelease candidate**
+Status: **`0.4.0` stable contract**
 
 Mind Protocol `0.4` is a consolidation release. Its purpose is to preserve the useful contracts that evolved after the original `baseline-v0.1.0`, make them explicit enough for a new human or AI consumer to read deterministically, and create a safe migration path toward `1.0`.
 
-The release candidate deliberately changes the manifest shape before `1.0` while retaining the fields used by current consumers.
+`0.4.0` deliberately changes the manifest shape before `1.0` while retaining the fields used by current consumers. The schema-v2 contract was promoted from `0.4.0-rc.1` only after a personal reference mind, an organization mind, and the current `mind-web` parser exercised the migration successfully.
 
 ## Entry point
 
@@ -32,12 +32,12 @@ Mind uses three independent versions.
 | Version | Example | Meaning |
 | --- | --- | --- |
 | Manifest schema | `2` | Shape of `manifest.yaml`. Increment when the machine contract changes incompatibly. |
-| Protocol | `0.4.0-rc.1` | Semantics and behavior shared by compatible minds and consumers. |
+| Protocol | `0.4.0` | Semantics and behavior shared by compatible minds and consumers. |
 | Context | `0.3.8` | Published durable content of one concrete mind instance. |
 
 A protocol release may use the same manifest schema across several protocol versions. A mind may update its own context without changing protocol or schema versions.
 
-Consumers must not infer one version from another.
+Consumers must not infer one version from another. Promoting the shared protocol from `0.4.0-rc.1` to `0.4.0` does not itself change the personal subject context, so the reference mind remains at context `0.3.8`.
 
 ## Subject and publication owner
 
@@ -147,22 +147,26 @@ An organization can use `logo`; a person can use `emblem`, `monogram`, or `signa
 
 A canonical mark references a repository-local, versioned asset. Provider avatars are derived presentation data unless the mind explicitly adopts an asset as canonical.
 
-`0.4` does not yet standardize avatar slots, portraits, responsive mark variants, palettes, typography, or full brand systems.
+`0.4` defines the contract but does not require a real mark yet. Real personal and organization assets, renderer fallback behavior, and the avatar decision belong to the `0.6` milestone. A real agent subject with independent publication ownership belongs to `0.7`.
+
+`0.4` does not standardize portrait slots, responsive mark variants, palettes, typography, or full brand systems.
 
 ## Compatibility strategy
 
-`0.4.0-rc.1` keeps the existing `mind.name`, `mind.kind`, `mind.context_version`, `mind.owner`, `public_organizations`, `modules`, and `loading` structures used by the current `mind-web` parser while adding new fields around them.
+`0.4.0` keeps the existing `mind.name`, `mind.kind`, `mind.context_version`, `mind.owner`, `public_organizations`, `modules`, and `loading` structures used by the current `mind-web` parser while adding new fields around them.
 
 This is deliberate: the reference consumer can continue reading the existing projection fields while it gains support for `protocol`, `subject`, typed resources, and visual identity.
 
 The manifest schema itself increments from `1` to `2` because a standards-aware consumer must be able to detect that the formal shape changed. Compatibility is explicit, not hidden behind an unchanged schema number.
 
+The compatibility gate is backed by `mind-web` CI tests that parse a schema-v2 `0.4` manifest and a module descriptor carrying typed resources while preserving the legacy projection fields consumed today.
+
 ## Migration from the 0.3 line
 
-A concrete `0.3.x` mind moves to `0.4.0-rc.1` by:
+A concrete `0.3.x` mind moves to `0.4.0` by:
 
 1. changing `schema_version` from `1` to `2`;
-2. adding `protocol.id: mind` and `protocol.version: 0.4.0-rc.1`;
+2. adding `protocol.id: mind` and `protocol.version: 0.4.0`;
 3. adding `mind.subject`;
 4. retaining `mind.kind` and `mind.owner`;
 5. adding `contract.explicit_subject: required`;
@@ -170,22 +174,18 @@ A concrete `0.3.x` mind moves to `0.4.0-rc.1` by:
 7. ensuring `identity` is required for every concrete mind;
 8. validating every module descriptor;
 9. optionally adding a typed identity resource;
-10. bumping the concrete mind's `context_version` only when its published context actually changes.
+10. bumping the concrete mind's `context_version` only when its published subject context actually changes.
 
-The `0x0sky` reference mind moves from context `0.3.7` to `0.3.8` because it adds a canonical machine-readable identity resource and protocol metadata.
+The `0x0sky` reference mind moved from context `0.3.7` to `0.3.8` when it added a canonical machine-readable identity resource and protocol metadata. The later rc-to-stable protocol promotion does not require another context bump.
 
-## Gate for stable 0.4.0
+## Stable 0.4.0 evidence
 
-`0.4.0` should not be published as stable merely because this reference repository passes CI.
+The roadmap gate for stable `0.4.0` is satisfied:
 
-The stable gate is:
+- the personal `0x0sky/mind` reference implementation validates on manifest schema v2;
+- `aiaiaiai-tech/mind` is migrated as a concrete organization mind on the same protocol contract;
+- `mind-web` carries explicit parser compatibility tests and passes full Browser + Rust CI on the integrated state.
 
-- reference personal mind validates on schema v2;
-- at least one organization mind migrates successfully;
-- the current `mind-web` consumer reads both pre-0.4 and 0.4 minds correctly during migration;
-- subject/owner semantics are exercised with a non-trivial ownership case;
-- identity resources validate deterministically;
-- visual `primary_mark` is exercised with at least one real canonical asset;
-- migration documentation contains no unresolved breaking ambiguity.
+Identity-resource validation and migration documentation are part of the contract itself and are exercised by Mind Contract CI.
 
-Until those conditions hold, `0.4.0-rc.*` is the correct release channel.
+Real canonical visual assets are intentionally **not** a `0.4` stability gate; they are the `0.6` milestone. A non-trivial agent subject whose publication owner differs from the subject is intentionally the `0.7` milestone. Keeping those gates in their own milestones prevents later features from becoming circular prerequisites for the foundation they depend on.

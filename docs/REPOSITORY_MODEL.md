@@ -24,14 +24,14 @@ exact immutable Mind Protocol release
             ↓
       neutral baseline
             ↓
- explicit subject + owner + Identity
+subject + publication-owner semantics + Identity
             ↓
       concrete mind@<id>
             ↓
  only authored modules/resources for that subject
 ```
 
-The neutral baseline contains no concrete identity. The bootstrap step introduces a subject only from explicit authored input.
+The neutral baseline contains no concrete identity. Bootstrap requires an explicit subject. Publication owner defaults to that subject; a different owner is permitted only as a complete explicit type/id override.
 
 ## What a GitHub fork means
 

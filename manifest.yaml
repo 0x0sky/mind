@@ -1,42 +1,35 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-# Version of the manifest shape. Mind Protocol 0.5 continues to use manifest schema version 2.
+# Version of the concrete mind manifest shape. Mind Protocol 0.6 continues to use manifest schema version 2.
 schema_version: 2
 
-# Protocol identity is independent from this concrete mind's context version.
+# Shared protocol semantics are declared independently in protocol.yaml.
 protocol:
   id: mind
-  version: 0.5.0-rc.1
+  version: 0.6.0-rc.1
 
-# Stable identity and context version of this mind.
+# This root manifest is the living concrete instance on master: mind@0x0sky.
 mind:
-  # Human-readable, stable name of the mind.
-  name: 0x0sky
+  name: mind@0x0sky
   # Compatibility classification retained for current consumers during the 0.x migration.
   kind: personal
-  # Semantic version of the context published by this concrete mind.
-  context_version: 0.3.10
-  # Entity this mind describes and is authoritative about.
+  # Semantic version of the durable context published by this concrete instance.
+  context_version: 0.4.0
   subject:
     type: person
     id: 0x0sky
-  # Entity accountable for owning or publishing this repository.
-  # The owner may differ from the subject for agent, project, or product minds.
   owner:
     type: person
     id: 0x0sky
 
 # Legacy GitHub-oriented compatibility projection.
-# In the 0.5 reference mind every listed organization is backed by a canonical
-# authored member_of relationship in relationships/relationships.yaml.
-# Omission retains the historical provider-discovered behavior for legacy
-# consumers; an empty list retains the historical "publish none" behavior.
+# Every listed organization is backed by a canonical authored member_of
+# relationship in relationships/relationships.yaml.
 public_organizations:
   - aiaiaiai-tech
   - 0xda-market
   - nilx-one
 
-# Repository-wide guarantees every consumer may rely on.
 contract:
   canonical_source: required
   explicit_subject: required

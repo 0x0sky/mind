@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/0x0sky/mind/schema/module.schema.json",
+  "title": "Mind Module Descriptor",
+  "description": "Contract for module.yaml files registered by a mind manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "module"
+  ],
+  "$defs": {
+    "module_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "unspecified",
+        "person",
+        "organization",
+        "agent",
+        "project",
+        "product"
+      ]
+    },
+    "entity_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/entity_type"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._/-]+$"
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "format",
+        "schema"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "yaml",
+            "json"
+          ]
+        },
+        "schema": {
+          "$ref": "#/$defs/repo_path"
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "purpose",
+        "stability",
+        "dependencies",
+        "entrypoints",
+        "owner",
+        "visibility"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/module_id"
+        },
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stability": {
+          "type": "string",
+          "enum": [
+            "stable",
+            "transient",
+            "archived"
+          ]
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/module_id"
+          },
+          "uniqueItems": true
+        },
+        "entrypoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repo_path"
+          },
+          "uniqueItems": true
+        },
+        "owner": {
+          "$ref": "#/$defs/entity_ref"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private"
+          ]
+        },
+        "resources": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/module_id"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/resource"
+          }
+        }
+      }
+    }
+  }
+}

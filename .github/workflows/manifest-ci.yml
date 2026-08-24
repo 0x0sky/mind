@@ -1,4 +1,4 @@
-name: Manifest CI
+name: Mind Contract CI
 
 on:
   push:
@@ -9,6 +9,7 @@ on:
       - schema/**
       - scripts/validate_manifest.py
       - "**/module.yaml"
+      - identity/identity.yaml
       - .github/workflows/manifest-ci.yml
   pull_request:
     paths:
@@ -16,6 +17,7 @@ on:
       - schema/**
       - scripts/validate_manifest.py
       - "**/module.yaml"
+      - identity/identity.yaml
       - .github/workflows/manifest-ci.yml
   workflow_dispatch:
 
@@ -24,7 +26,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate manifest
+    name: Validate mind contract
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -38,8 +40,8 @@ jobs:
       - name: Install validator dependencies
         run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.23.0
 
-      - name: Validate YAML syntax
+      - name: Validate manifest YAML syntax
         run: python scripts/validate_manifest.py --syntax-only
 
-      - name: Validate schema and cross-field rules
+      - name: Validate manifest, modules, and resources
         run: python scripts/validate_manifest.py

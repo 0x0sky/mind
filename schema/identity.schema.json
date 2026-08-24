@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/0x0sky/mind/schema/identity.schema.json",
+  "title": "Mind Identity Resource",
+  "description": "Machine-readable canonical identity resource for the subject of a mind.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "identity",
+    "validation"
+  ],
+  "$defs": {
+    "identity_type": {
+      "type": "string",
+      "enum": [
+        "person",
+        "organization",
+        "agent",
+        "project",
+        "product"
+      ]
+    },
+    "repo_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._/-]+$"
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "media_type"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repo_path"
+        },
+        "media_type": {
+          "type": "string",
+          "enum": [
+            "image/svg+xml",
+            "image/png",
+            "image/webp",
+            "image/jpeg"
+          ]
+        }
+      }
+    },
+    "primary_mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "asset",
+        "alt"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "logo",
+            "emblem",
+            "monogram",
+            "glyph",
+            "signature"
+          ]
+        },
+        "asset": {
+          "$ref": "#/$defs/asset"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id",
+        "display_name"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/identity_type"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visual_identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "primary_mark": {
+              "$ref": "#/$defs/primary_mark"
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema"
+      ],
+      "properties": {
+        "schema": {
+          "const": "schema/identity.schema.json"
+        }
+      }
+    }
+  }
+}

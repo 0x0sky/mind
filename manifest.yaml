@@ -27,8 +27,8 @@ mind:
     id: 0x0sky
 
 # Legacy GitHub-oriented compatibility projection.
-# In the 0.5 reference mind every listed organization is backed by a canonical
-# authored member_of relationship in relationships/relationships.yaml.
+# Values are provider logins and are not canonical Mind entity ids. Canonical
+# authored relationships live independently in relationships/relationships.yaml.
 # Omission retains the historical provider-discovered behavior for legacy
 # consumers; an empty list retains the historical "publish none" behavior.
 public_organizations:

@@ -4,7 +4,7 @@ schema_version: 2
 # Protocol identity is independent from this concrete mind's context version.
 protocol:
   id: mind
-  version: 0.4.0-rc.1
+  version: 0.4.0
 
 # Stable identity and context version of this mind.
 mind:

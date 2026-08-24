@@ -6,7 +6,7 @@ This repository is both the canonical public `mind` of **0x0sky** and the refere
 
 A mind is a versioned, inspectable, and forkable repository through which a person, organization, agent, project, or product can declare identity, context, relationships, boundaries, and meaning without binding that truth to one vendor or application.
 
-The current reference implementation targets **Mind Protocol `0.5.0-rc.1`**, manifest schema `2`, and context `0.3.9`.
+The current reference implementation targets **Mind Protocol `0.5.0-rc.1`**, manifest schema `2`, and context `0.3.11`.
 
 ## Model
 
@@ -35,7 +35,9 @@ A relationship becomes reciprocal only when the counterpart canonical mind indep
 
 ## Relationships
 
-The canonical relationship source is [`relationships/relationships.yaml`](relationships/relationships.yaml). The reference mind currently authors `member_of` relationships from `person:0x0sky` to `organization:aiaiaiai-tech`, `organization:0xda-market`, and `organization:nilx-one`.
+The canonical relationship source is [`relationships/relationships.yaml`](relationships/relationships.yaml). The reference mind currently authors `member_of` relationships from `person:0x0sky` to `organization:aiaiaiai`, `organization:0xda-market`, and `organization:nilx-one`.
+
+The canonical organization id `aiaiaiai` is provider-independent. The legacy `public_organizations` projection uses the current GitHub namespace `aiaiaiai-org` because that field remains provider-specific during the 0.5 migration.
 
 Provider-discovered GitHub memberships remain derived integration evidence. The root `public_organizations` field remains temporarily as a legacy projection, and every populated legacy entry in a mind adopting the relationships module must be backed by a canonical authored membership.
 
@@ -58,7 +60,7 @@ The optional `identity.visual_identity.primary_mark` contract introduced by `0.4
 
 ## mind-web
 
-[`mind-web`](https://github.com/aiaiaiai-tech/mind-web) is a consumer, not protocol authority. It may combine authored relationships with provider-derived evidence, but it must preserve provenance and must never promote derived observations into canonical authorship or reciprocal confirmation.
+[`mind-web`](https://github.com/aiaiaiai-org/mind-web) is a consumer, not protocol authority. It may combine authored relationships with provider-derived evidence, but it must preserve provenance and must never promote derived observations into canonical authorship or reciprocal confirmation.
 
 ## Privacy boundary
 

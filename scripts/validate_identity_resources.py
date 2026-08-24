@@ -12,6 +12,7 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from validate_manifest import (
+    load_json_mapping,
     load_schema,
     load_yaml_mapping,
     resolve_repository_file,
@@ -21,8 +22,7 @@ from validate_manifest import (
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "manifest.yaml"
-IDENTITY_SCHEMA = "schema/identity.schema.json"
-IDENTITY_RESOURCE_SCHEMA = "schema/identity-resource.schema.json"
+PROTOCOL_PATH = ROOT / "protocol.yaml"
 
 
 def validate_identity_envelope(
@@ -60,9 +60,11 @@ def validate_identity_envelope(
 
 
 def discover_identity_resources(
-    manifest: dict[str, Any], repository_root: Path
+    manifest: dict[str, Any],
+    repository_root: Path,
+    identity_resource_schema_ref: str,
 ) -> tuple[list[tuple[str, str, dict[str, Any]]], list[str]]:
-    """Discover typed Identity envelopes without assuming a provider or storage backend."""
+    """Discover typed Identity envelopes without assuming provider or resource location."""
     errors: list[str] = []
     discovered: list[tuple[str, str, dict[str, Any]]] = []
     root = repository_root.resolve()
@@ -95,7 +97,7 @@ def discover_identity_resources(
             if (
                 isinstance(resource_id, str)
                 and isinstance(resource, dict)
-                and resource.get("schema") == IDENTITY_RESOURCE_SCHEMA
+                and resource.get("schema") == identity_resource_schema_ref
             ):
                 discovered.append((module_id, resource_id, resource))
 
@@ -109,19 +111,31 @@ def validate_identity_resources(
     root = repository_root.resolve()
 
     try:
-        envelope_schema = load_schema(root / IDENTITY_RESOURCE_SCHEMA)
-        identity_schema = load_schema(root / IDENTITY_SCHEMA)
-    except ValueError as error:
-        return [str(error)]
+        protocol = load_yaml_mapping(root / "protocol.yaml")
+        contracts = protocol["contracts"]
+        identity_schema_ref = contracts["identity"]["schema"]
+        identity_resource_schema_ref = contracts["identity_resource"]["schema"]
+        if not isinstance(identity_schema_ref, str) or not isinstance(
+            identity_resource_schema_ref, str
+        ):
+            return ["protocol Identity contract schema refs must be strings"]
+        envelope_schema = load_schema(root / identity_resource_schema_ref)
+        identity_schema = load_schema(root / identity_schema_ref)
+    except (KeyError, TypeError, ValueError) as error:
+        return [f"cannot load protocol Identity contracts: {error}"]
 
-    resources, discovery_errors = discover_identity_resources(manifest, root)
+    resources, discovery_errors = discover_identity_resources(
+        manifest,
+        root,
+        identity_resource_schema_ref,
+    )
     errors.extend(discovery_errors)
 
     kind = manifest.get("mind", {}).get("kind")
     if kind != "abstract" and len(resources) != 1:
         errors.append(
             "concrete mind must publish exactly one resource using "
-            f"{IDENTITY_RESOURCE_SCHEMA}; found {len(resources)}"
+            f"{identity_resource_schema_ref}; found {len(resources)}"
         )
 
     for module_id, resource_id, resource in resources:
@@ -135,8 +149,18 @@ def validate_identity_resources(
         )
         if resource_path is None:
             continue
+
         try:
-            envelope = load_yaml_mapping(resource_path)
+            resource_format = resource.get("format")
+            if resource_format == "yaml":
+                envelope = load_yaml_mapping(resource_path)
+            elif resource_format == "json":
+                envelope = load_json_mapping(resource_path)
+            else:
+                errors.append(
+                    f"{prefix}.format: unsupported identity resource format {resource_format!r}"
+                )
+                continue
         except ValueError as error:
             errors.append(f"{prefix}.path: {error}")
             continue

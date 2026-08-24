@@ -1,24 +1,17 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
 name: Publish Mind Protocol Release
+run-name: Publish Mind Protocol from ${{ github.ref_name }} (${{ inputs.channel }})
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: Protocol version without v prefix
-        required: true
-        type: string
-      target_sha:
-        description: Exact master merge commit to tag and release
-        required: true
-        type: string
       channel:
-        description: GitHub release channel
+        description: Publication kind
         required: true
         type: choice
         options:
-          - stable
+          - release
           - prerelease
 
 permissions:
@@ -31,10 +24,10 @@ jobs:
     name: Publish verified protocol artifact
     runs-on: ubuntu-latest
     steps:
-      - name: Check out exact release commit
+      - name: Check out selected release commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.target_sha }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -45,40 +38,64 @@ jobs:
       - name: Install release-packaging dependencies
         run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.23.0
 
-      - name: Verify release target and metadata
+      - name: Derive and verify release metadata
         env:
-          VERSION: ${{ inputs.version }}
-          TARGET_SHA: ${{ inputs.target_sha }}
+          GH_TOKEN: ${{ github.token }}
           CHANNEL: ${{ inputs.channel }}
+          TARGET_BRANCH: ${{ github.ref_name }}
+          TARGET_SHA: ${{ github.sha }}
+          REF_TYPE: ${{ github.ref_type }}
         run: |
           set -euo pipefail
 
-          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
-          git fetch origin master --depth=1
-          test "$(git rev-parse origin/master)" = "$TARGET_SHA"
+          if [[ "$REF_TYPE" != "branch" ]]; then
+            echo "formal releases must be dispatched from a branch" >&2
+            exit 1
+          fi
 
-          ACTUAL_VERSION="$(python - <<'PY'
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+
+          DEFAULT_BRANCH="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.default_branch')"
+          if [[ "$TARGET_BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "formal protocol releases currently require the default branch: ${DEFAULT_BRANCH}" >&2
+            exit 1
+          fi
+
+          git fetch origin \
+            "refs/heads/${TARGET_BRANCH}:refs/remotes/origin/${TARGET_BRANCH}" \
+            --force --depth=1
+          REMOTE_SHA="$(git rev-parse "refs/remotes/origin/${TARGET_BRANCH}")"
+          if [[ "$REMOTE_SHA" != "$TARGET_SHA" ]]; then
+            echo "selected branch moved after dispatch; run the workflow again" >&2
+            exit 1
+          fi
+
+          VERSION="$(python - <<'PY'
           import yaml
           with open('protocol.yaml', encoding='utf-8') as handle:
               print(yaml.safe_load(handle)['protocol']['version'])
           PY
           )"
-          test "$ACTUAL_VERSION" = "$VERSION"
 
+          test -n "$VERSION"
           test -f "docs/protocol/releases/v${VERSION}.md"
 
           case "$CHANNEL" in
-            stable)
+            release)
               if [[ "$VERSION" == *-* ]]; then
-                echo "stable channel cannot publish a prerelease semantic version" >&2
+                echo "release requires a stable semantic version; protocol.yaml contains ${VERSION}" >&2
                 exit 1
               fi
               ;;
             prerelease)
               if [[ "$VERSION" != *-* ]]; then
-                echo "prerelease channel requires a prerelease semantic version" >&2
+                echo "prerelease requires a prerelease semantic version; protocol.yaml contains ${VERSION}" >&2
                 exit 1
               fi
+              ;;
+            *)
+              echo "unsupported publication kind: ${CHANNEL}" >&2
+              exit 1
               ;;
           esac
 
@@ -87,19 +104,27 @@ jobs:
             exit 1
           fi
 
+          {
+            echo "VERSION=${VERSION}"
+            echo "TARGET_BRANCH=${TARGET_BRANCH}"
+            echo "TARGET_SHA=${TARGET_SHA}"
+            echo "CHANNEL=${CHANNEL}"
+          } >> "$GITHUB_ENV"
+
+          echo "release target: ${TARGET_BRANCH}@${TARGET_SHA} -> v${VERSION} (${CHANNEL})"
+
       - name: Verify target tree came from green pull request CI
         env:
           GH_TOKEN: ${{ github.token }}
-          TARGET_SHA: ${{ inputs.target_sha }}
         run: |
           set -euo pipefail
 
           PR_NUMBER="$(
             gh api "repos/${GITHUB_REPOSITORY}/commits/${TARGET_SHA}/pulls" \
-              --jq '[.[] | select(.merged_at != null and .base.ref == "master")] | first | .number'
+              --jq "[.[] | select(.merged_at != null and .base.ref == \"${TARGET_BRANCH}\")] | first | .number"
           )"
           if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
-            echo "release target is not associated with a merged pull request into master" >&2
+            echo "release target is not associated with a merged pull request into ${TARGET_BRANCH}" >&2
             exit 1
           fi
 
@@ -115,7 +140,7 @@ jobs:
           TARGET_TREE="$(git rev-parse "${TARGET_SHA}^{tree}")"
           TESTED_TREE="$(git rev-parse "${PR_HEAD_SHA}^{tree}")"
           if [[ "$TARGET_TREE" != "$TESTED_TREE" ]]; then
-            echo "master release tree differs from the pull-request head that was tested" >&2
+            echo "release tree differs from the pull-request head that was tested" >&2
             exit 1
           fi
 
@@ -131,8 +156,6 @@ jobs:
           echo "release evidence: PR #${PR_NUMBER}, tested head ${PR_HEAD_SHA}, CI run ${RUN_ID}, tree ${TARGET_TREE}"
 
       - name: Build deterministic release artifact
-        env:
-          VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
           mkdir -p dist
@@ -144,9 +167,6 @@ jobs:
       - name: Publish GitHub Release and immutable tag
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ inputs.version }}
-          TARGET_SHA: ${{ inputs.target_sha }}
-          CHANNEL: ${{ inputs.channel }}
         run: |
           set -euo pipefail
 
@@ -168,10 +188,9 @@ jobs:
       - name: Verify published release metadata
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ inputs.version }}
-          CHANNEL: ${{ inputs.channel }}
         run: |
           set -euo pipefail
+
           gh release view "v${VERSION}" --json tagName,isPrerelease,url > release.json
           python - <<'PY'
           import json
@@ -180,8 +199,15 @@ jobs:
           data = json.load(open('release.json', encoding='utf-8'))
           expected_prerelease = os.environ['CHANNEL'] == 'prerelease'
           if data['tagName'] != f"v{os.environ['VERSION']}":
-              raise SystemExit('published tag name does not match requested version')
+              raise SystemExit('published tag name does not match protocol version')
           if data['isPrerelease'] is not expected_prerelease:
-              raise SystemExit('published prerelease state does not match requested channel')
+              raise SystemExit('published prerelease state does not match selected publication kind')
           print(data['url'])
           PY
+
+          git fetch origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}" --force
+          PUBLISHED_SHA="$(git rev-list -n 1 "v${VERSION}")"
+          if [[ "$PUBLISHED_SHA" != "$TARGET_SHA" ]]; then
+            echo "published tag does not point to the verified release commit" >&2
+            exit 1
+          fi

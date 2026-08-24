@@ -62,7 +62,6 @@ class IdentityResourceValidationTests(unittest.TestCase):
     def test_agent_identity_uses_same_universal_contract_with_distinct_owner(self) -> None:
         manifest = copy.deepcopy(self.manifest)
         manifest["mind"]["name"] = "mind@synthetic-agent"
-        manifest["mind"]["kind"] = "agent"
         manifest["mind"]["subject"] = {"type": "agent", "id": "synthetic-agent"}
         manifest["mind"]["owner"] = {
             "type": "organization",

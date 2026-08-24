@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaiaiai.org/mind/schema/protocol/v1",
+  "title": "Mind Protocol Descriptor",
+  "description": "Implementation-independent descriptor for the canonical Mind Protocol contracts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol", "contracts", "instance_policy"],
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "role"],
+      "properties": {
+        "schema": {
+          "type": "string",
+          "pattern": "^schema/[A-Za-z0-9_.-]+\\.json$"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "neutrality"],
+      "properties": {
+        "id": {
+          "const": "mind"
+        },
+        "version": {
+          "$ref": "#/$defs/semver"
+        },
+        "neutrality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["subject", "publication_owner", "provider", "repository_layout", "runtime"],
+          "properties": {
+            "subject": {"const": "implementation_independent"},
+            "publication_owner": {"const": "implementation_independent"},
+            "provider": {"const": "implementation_independent"},
+            "repository_layout": {"const": "implementation_independent"},
+            "runtime": {"const": "implementation_independent"}
+          }
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "module", "identity", "identity_resource", "relationships"],
+      "properties": {
+        "manifest": {"$ref": "#/$defs/contract"},
+        "module": {"$ref": "#/$defs/contract"},
+        "identity": {"$ref": "#/$defs/contract"},
+        "identity_resource": {"$ref": "#/$defs/contract"},
+        "relationships": {"$ref": "#/$defs/contract"}
+      }
+    },
+    "instance_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_instance_branch", "instance_name", "protocol_contracts_are_instance_neutral", "instance_context_is_versioned_independently"],
+      "properties": {
+        "canonical_instance_branch": {"const": "master"},
+        "instance_name": {"const": "mind@{subject.id}"},
+        "protocol_contracts_are_instance_neutral": {"const": "required"},
+        "instance_context_is_versioned_independently": {"const": "required"}
+      }
+    }
+  }
+}

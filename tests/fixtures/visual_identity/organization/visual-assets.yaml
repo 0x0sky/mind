@@ -1,0 +1,12 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+assets:
+  - ref: primary-mark
+    media_type: image/svg+xml
+    resource_path: primary.svg
+    integrity:
+      algorithm: sha256
+      digest: 11dc0999e834a0a342bd4cc178b3157ebf49e2ed06ce5673ccb4e5313d8833b9
+validation:
+  schema: schema/visual-assets.schema.json

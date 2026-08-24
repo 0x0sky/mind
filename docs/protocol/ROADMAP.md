@@ -2,7 +2,7 @@
 
 This roadmap describes protocol stabilization, not a promise that every domain feature must exist before `1.0`.
 
-The goal of `1.0` is a small, explicit contract that can represent and render personal, organization, and AI-agent identities without provider-specific hacks or hidden historical assumptions.
+The goal of `1.0` is a small, explicit contract that can represent and render personal, organization, and AI-agent identities without provider-specific hacks, repository-layout coupling, or hidden historical assumptions.
 
 ## 0.4 — readable protocol foundation
 
@@ -35,24 +35,58 @@ Goals:
 - provide an explicit migration path for `public_organizations` rather than silently changing its meaning;
 - keep provider-specific identifiers at integration boundaries.
 
-`0.5.0-rc.1` introduces a typed `relationships` module/resource while keeping manifest schema v2. The personal reference mind moves to context `0.3.9` because it now publishes canonical authored `member_of` relationships. `public_organizations` remains a legacy compatibility projection, and every populated legacy entry in a mind adopting the relationships module must be backed by a canonical authored membership.
+`0.5.0-rc.1` introduces a typed `relationships` module/resource while keeping manifest schema v2. The personal and `aiaiaiai-tech` minds now exercise reciprocal authored membership across independent canonical viewpoints.
 
-Stable `0.5.0` requires:
+Stable `0.5.0` still requires:
 
-- the personal reference relationship resource to validate;
-- at least one organization mind to independently publish a matching relation so reciprocal confirmation is exercised across canonical minds;
 - `mind-web` to consume canonical relationships while preserving authored versus provider-derived provenance;
 - deterministic legacy fallback during the `public_organizations` migration;
-- no provider-specific identifier leakage into the universal relationship resource.
+- no provider-specific identifier leakage into the universal relationship resource;
+- no unresolved reciprocal-reference ambiguity.
 
 No visual-system expansion is required for this milestone.
 
-## 0.6 — canonical visual identity
+## 0.6 — Identity abstraction and canonical visual identity
+
+Status: **`0.6.0-rc.1` staged next-version work; release blocked on stable `0.5.0`**
+
+`0.6` first separates universal Identity from any concrete mind implementation. Real visual assets are built on that boundary rather than baked into repository semantics.
+
+### RC1 — protocol / instance separation
 
 Goals:
 
-- exercise `primary_mark` with real repository-local assets;
+- introduce `protocol.yaml` as the implementation-independent protocol descriptor;
+- make `schema/identity.schema.json` the canonical universal Identity value;
+- separate concrete mind resource packaging into `schema/identity-resource.schema.json`;
+- remove repository paths, validation paths, provider bindings, and runtime/storage assumptions from universal Identity;
+- make `master` explicitly the living `mind@0x0sky` instance rather than a neutral template;
+- establish `mind@{subject.id}` as the concrete-instance naming convention;
+- keep protocol release version and instance context version independently meaningful;
+- avoid a long-lived parallel generic branch that could drift from released protocol contracts.
+
+Expected structural model:
+
+```text
+protocol.yaml                         neutral protocol authority
+schema/identity.schema.json           universal Identity
+
+master
+└── mind@0x0sky                       concrete living instance
+    ├── manifest.yaml
+    └── identity/identity.yaml
+        └── identity                  implements universal Identity
+```
+
+The universal Identity contract must remain readable without knowing GitHub, repository layout, a renderer, a database, a filesystem, or an AI runtime.
+
+### Later 0.6 RC — real visual identity
+
+Goals:
+
+- exercise `primary_mark` with real canonical assets;
 - migrate at least one personal identity and one organization identity;
+- resolve opaque `asset_ref` values through an explicit concrete-mind asset contract;
 - define deterministic renderer fallback behavior;
 - decide whether `avatar` is a presentation slot or a canonical identity artifact;
 - introduce variants only where actual renderer requirements justify them;
@@ -92,14 +126,14 @@ AI-specific behavior, model configuration, memory, prompts, and runtime state do
 
 Goals:
 
-- define a reproducible neutral baseline derived from the current protocol contract;
+- define a reproducible neutral baseline derived from a released `protocol.yaml` contract set;
 - stop treating an old long-lived foundation branch as the source of protocol truth;
 - add conformance fixtures for person, organization, agent, project, and product minds;
 - verify at least two independent consumers or consumer modes against the same fixtures;
 - publish explicit supported protocol ranges;
 - make baseline extraction deterministic enough that instance content cannot leak into a fork template.
 
-The neutral baseline should be an artifact of a protocol version, not a parallel ontology that can drift away from the reference implementation.
+The neutral baseline is an artifact of a protocol version, not a parallel ontology or branch that can drift away from the canonical protocol descriptor.
 
 ## 0.9 — compatibility freeze
 
@@ -116,9 +150,10 @@ No new major concept should enter the root manifest after this point without evi
 
 ## 1.0 — stable Mind contract
 
-`1.0` is ready when a new human, AI agent, or renderer can start at `manifest.yaml` and deterministically answer:
+`1.0` is ready when a new human, AI agent, or renderer can deterministically answer:
 
-- What protocol and manifest schema am I reading?
+- Which protocol contract am I implementing?
+- Is this data universal protocol semantics or one concrete mind instance?
 - What subject does this mind describe?
 - Who owns or publishes it?
 - What context version is published?
@@ -137,6 +172,7 @@ Required identity coverage:
 
 Required engineering properties:
 
+- universal Identity has no repository/provider/runtime coupling;
 - machine schemas and human documentation agree;
 - conformance validation catches subject drift, broken resources, dependency cycles, and missing assets;
 - current consumers have a documented migration path;

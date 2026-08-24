@@ -3,32 +3,6 @@
 name: Mind Contract CI
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - protocol.yaml
-      - conformance.yaml
-      - compatibility.yaml
-      - manifest.yaml
-      - schema/**
-      - docs/protocol/**
-      - scripts/validate_manifest.py
-      - scripts/validate_protocol.py
-      - scripts/validate_relationships.py
-      - scripts/validate_schemas.py
-      - scripts/validate_visual_assets.py
-      - scripts/validate_identity_resources.py
-      - scripts/validate_agent_identity.py
-      - scripts/validate_conformance.py
-      - scripts/validate_compatibility.py
-      - scripts/generate_baseline.py
-      - scripts/migrate_manifest_v2_to_v3.py
-      - tests/**
-      - "**/module.yaml"
-      - identity/identity.yaml
-      - relationships/relationships.yaml
-      - .github/workflows/manifest-ci.yml
   pull_request:
     paths:
       - protocol.yaml
@@ -47,12 +21,14 @@ on:
       - scripts/validate_conformance.py
       - scripts/validate_compatibility.py
       - scripts/generate_baseline.py
+      - scripts/build_release_bundle.py
       - scripts/migrate_manifest_v2_to_v3.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
       - relationships/relationships.yaml
       - .github/workflows/manifest-ci.yml
+      - .github/workflows/release.yml
   workflow_dispatch:
 
 permissions:
@@ -107,5 +83,8 @@ jobs:
       - name: Validate reproducible neutral baseline
         run: python scripts/generate_baseline.py --check
 
-      - name: Run validator and migration regression tests
+      - name: Validate reproducible formal release bundle
+        run: python scripts/build_release_bundle.py --check
+
+      - name: Run validator, migration, and release regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

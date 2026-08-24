@@ -1,12 +1,12 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-# Version of the concrete mind manifest shape. Mind Protocol 0.7 continues to use manifest schema version 2.
+# Version of the concrete mind manifest shape. Mind Protocol 0.8 continues to use manifest schema version 2.
 schema_version: 2
 
 # Shared protocol semantics are declared independently in protocol.yaml.
 protocol:
   id: mind
-  version: 0.7.0
+  version: 0.8.0
 
 # This root manifest is the living concrete instance on master: mind@0x0sky.
 mind:

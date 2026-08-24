@@ -6,93 +6,73 @@ The north star is a small implementation-independent contract for typed identity
 
 ## Version axes
 
-Mind keeps four independent version axes:
-
-- `protocol.version` — shared semantics and contracts;
-- manifest `schema_version` — machine shape of one concrete manifest;
-- concrete `mind.context_version` — durable content version of one implementation;
-- resource schema versions — machine contracts of typed resources.
-
-A protocol release never implies a concrete context release, and a concrete context change never implies a protocol release.
+Mind keeps independent version axes for protocol semantics, descriptor/manifest shapes, concrete context, and typed resource schemas. A protocol release never implies a concrete context release, and a concrete context change never implies a protocol release.
 
 ## 0.4 — readable protocol foundation
 
 Status: **stable**
 
-Delivered explicit subject/owner semantics, typed module resources, manifest schema v2, and the first universal visual-identity reference shape.
+Delivered explicit subject/owner semantics, typed module resources, manifest schema v2, and universal visual-reference shape.
 
 ## 0.5 — relationships and provenance
 
 Status: **accepted semantics carried forward**
 
-Delivered authored relationship direction, provenance, reciprocal confirmation, and a provider-independent canonical relationship boundary.
-
-Provider discovery remains derived evidence rather than canonical authorship.
+Delivered authored relationship direction, provenance, reciprocal confirmation, and provider-independent canonical relationship identity.
 
 ## 0.6 — Identity and canonical visual contract
 
 Status: **`0.6.0` stable source contract**
 
-Delivered universal Identity/resource separation, deterministic canonical visual-asset resolution and failure semantics, independent protocol/context versioning, and migration documentation.
-
-Real logos and marks for named identities remain separate implementation work.
+Delivered universal Identity/resource separation, deterministic canonical visual resolution/failure semantics, and independent protocol/context versioning.
 
 ## 0.7 — agent identity semantics
 
 Status: **`0.7.0` stable source contract**
 
-### `0.7.0-rc.1`
-
-Status: **merged**
-
-Delivered a synthetic first-class agent conformance case proving:
-
-- person, organization, and agent share the same universal Identity contract;
-- agent subject and publication owner may differ without requiring distinct ownership;
-- no provider account is required;
-- model, prompt, memory, runtime, tools, and execution state remain outside universal Identity;
-- biological-personhood assertions remain outside universal Identity;
-- synthetic/generated portraits remain presentation-only by default;
-- canonical agent emblem/glyph support remains available through the existing visual contract.
-
-### `0.7.0`
-
-Stable source-contract gate:
-
-- agent conformance fixture green;
-- subject/owner boundary documented and tested;
-- universal Identity remains runtime/provider independent;
-- no schema specialization for agent identity;
-- full protocol CI green;
-- stable promotion introduces no semantic delta beyond RC1.
-
-Tag/GitHub Release publication remains separately authorized.
+Delivered first-class agent Identity through the same universal schema, subject/owner independence, and explicit runtime/personhood/portrait boundaries.
 
 ## 0.8 — neutral baseline and conformance
 
-Next protocol milestone: **`0.8.0`**.
+Status: **`0.8.0` stable source contract**
 
-Protocol work:
+Delivered:
 
-- generate a neutral baseline deterministically from released protocol contracts;
-- prevent concrete instance data from leaking into that baseline;
-- provide synthetic/generic fixtures for person, organization, agent, project, and product;
-- publish a machine-runnable conformance suite;
-- publish a protocol feature matrix;
-- define machine-readable supported protocol ranges;
-- verify at least two independent consumers or consumer modes;
-- define unknown optional capability handling.
+- protocol descriptor schema `v2` with discoverable conformance policy;
+- deterministic generated neutral baseline rather than a long-lived generic ontology;
+- dynamic tests preventing concrete `mind@0x0sky` data from leaking into the baseline;
+- synthetic fixture descriptors for person, organization, agent, project, and product;
+- explicit deterministic expected result for every required fixture;
+- a machine-runnable conformance suite and feature matrix;
+- suite and per-consumer support range `[0.8.0, 0.9.0)`;
+- two independent consumer modes (`schema` and `minimal`) over the same fixture set;
+- both modes preserving authored provenance and rejecting derived evidence from canonical authored relationships;
+- both modes resolving a valid canonical visual mark and reporting integrity failure deterministically;
+- explicit unknown optional-module and required-module behavior in both modes;
+- repeated-run regression proof that consumer outputs are reproducible;
+- neutral protocol schema `$id` namespace rather than reference-repository GitHub URLs.
+
+Acceptance evidence:
+
+- neutral baseline generation is byte-for-byte deterministic;
+- all five required fixture types validate;
+- fixture and probe results are reproducible;
+- both independent consumer modes pass the declared suite;
+- reference-instance content is rejected from the generated baseline;
+- supported protocol ranges are machine-readable.
 
 Consumers prove interoperability; they never become protocol authority.
 
 ## 0.9 — compatibility freeze
 
+Next protocol milestone: **`0.9.0`**.
+
 Freeze the public compatibility surface before `1.0`:
 
-- resolve compatibility-only fields;
-- remove or formally deprecate pre-1.0 aliases;
-- freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, and visual-reference semantics;
-- define unknown optional-capability forward compatibility;
+- resolve compatibility-only fields, especially the future of `mind.kind` and `public_organizations`;
+- remove or formally deprecate pre-1.0 aliases with migration notes;
+- freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, visual-reference, baseline, and conformance semantics;
+- define unknown optional-capability forward compatibility beyond modules where justified;
 - define minimum `1.x` compatibility policy;
 - define the supported pre-1.0 migration floor;
 - prohibit new root-manifest concepts without protocol-wide evidence.
@@ -112,46 +92,12 @@ Prove the frozen contract exactly as intended to ship:
 
 ## `1.0.0` — stable Mind Protocol
 
-The first compatibility-guaranteed protocol must provide:
+The first compatibility-guaranteed protocol must provide implementation-independent Identity, explicit subject/owner, typed versioned resources, authored-vs-derived provenance, deterministic relationship and visual semantics, privacy/visibility boundaries, deterministic loading, optional-capability forward compatibility, provider-agnostic core, machine-readable supported range, reproducible neutral baseline, and a public conformance suite.
 
-- implementation-independent Identity;
-- explicit subject and publication owner;
-- typed versioned resources;
-- authored-vs-derived provenance;
-- deterministic relationship semantics;
-- deterministic visual identity reference and failure semantics;
-- privacy/visibility boundaries;
-- deterministic loading and module discovery;
-- optional-capability forward compatibility;
-- provider-agnostic core;
-- machine-readable supported version range;
-- reproducible neutral baseline;
-- public conformance suite.
-
-Required synthetic fixture coverage:
-
-- person;
-- organization;
-- agent;
-- project;
-- product.
-
-Release artifacts include the versioned contract set, release notes, migration guide, conformance suite, neutral baseline artifact, and compatibility policy.
+Required synthetic fixture coverage remains person, organization, agent, project, and product.
 
 Tags and GitHub Releases are separate publication actions.
 
 ## Non-goals for 1.0
 
-The core protocol does not require:
-
-- a full corporate brand system;
-- typography or marketing voice;
-- rich portrait systems;
-- animation or 3D renderer semantics;
-- AI model configuration;
-- AI prompts, memory, or runtime state;
-- private conversation archives;
-- provider-specific repository enrichment;
-- deployment topology;
-- migration of every existing named identity;
-- forcing every repository, project, or product to become a sovereign mind.
+The core protocol does not require a full corporate brand system, typography/marketing voice, rich portraits, animation/3D semantics, AI runtime configuration, private conversation archives, provider-specific enrichment, deployment topology, migration of every named identity, or forcing every project/product into a sovereign mind.

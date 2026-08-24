@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/0x0sky/mind/schema/relationships.schema.json",
+  "$id": "https://aiaiaiai.org/mind/schema/relationships/v1",
   "title": "Mind Authored Relationships Resource",
   "description": "Canonical authored relationships involving the subject of a mind.",
   "type": "object",

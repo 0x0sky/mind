@@ -22,6 +22,7 @@ IDENTITY_RESOURCE_PATH = ROOT / "identity/identity.yaml"
 IDENTITY_SCHEMA_PATH = ROOT / "schema/identity.schema.json"
 IDENTITY_RESOURCE_SCHEMA = "schema/identity-resource.schema.json"
 VISUAL_ASSETS_SCHEMA = "schema/visual-assets.schema.json"
+CONFORMANCE_SCHEMA = "schema/conformance.schema.json"
 
 EXPECTED_CONTRACTS = {
     "manifest": "schema/mind.schema.json",
@@ -30,6 +31,7 @@ EXPECTED_CONTRACTS = {
     "identity_resource": IDENTITY_RESOURCE_SCHEMA,
     "relationships": "schema/relationships.schema.json",
     "visual_assets": VISUAL_ASSETS_SCHEMA,
+    "conformance": CONFORMANCE_SCHEMA,
 }
 
 
@@ -90,6 +92,23 @@ def validate_protocol() -> list[str]:
             f"must be {VISUAL_ASSETS_SCHEMA!r}"
         )
 
+    conformance_ref = protocol["conformance"]["suite"]
+    try:
+        conformance = load_yaml_mapping(repository_file(conformance_ref))
+        conformance_schema = load_schema(repository_file(CONFORMANCE_SCHEMA))
+    except ValueError as error:
+        errors.append(f"protocol.conformance.suite: {error}")
+    else:
+        errors.extend(
+            f"conformance{error[1:]}"
+            for error in schema_errors(Draft202012Validator(conformance_schema), conformance)
+        )
+        if conformance.get("protocol") != {
+            "id": protocol["protocol"]["id"],
+            "version": protocol["protocol"]["version"],
+        }:
+            errors.append("conformance suite must target protocol id/version exactly")
+
     descriptor = load_yaml_mapping(IDENTITY_MODULE_PATH)
     identity_resource = descriptor.get("module", {}).get("resources", {}).get("identity")
     if not isinstance(identity_resource, dict):
@@ -98,15 +117,11 @@ def validate_protocol() -> list[str]:
     if identity_resource.get("path") != "identity/identity.yaml":
         errors.append("identity resource must resolve to identity/identity.yaml")
     if identity_resource.get("schema") != IDENTITY_RESOURCE_SCHEMA:
-        errors.append(
-            f"identity resource envelope must use {IDENTITY_RESOURCE_SCHEMA}"
-        )
+        errors.append(f"identity resource envelope must use {IDENTITY_RESOURCE_SCHEMA}")
 
     resource = load_yaml_mapping(IDENTITY_RESOURCE_PATH)
     if resource.get("validation", {}).get("schema") != IDENTITY_RESOURCE_SCHEMA:
-        errors.append(
-            f"identity resource validation.schema must be {IDENTITY_RESOURCE_SCHEMA}"
-        )
+        errors.append(f"identity resource validation.schema must be {IDENTITY_RESOURCE_SCHEMA}")
 
     identity = resource.get("identity")
     if not isinstance(identity, dict):

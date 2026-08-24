@@ -8,6 +8,7 @@ on:
       - master
     paths:
       - protocol.yaml
+      - conformance.yaml
       - manifest.yaml
       - schema/**
       - docs/protocol/**
@@ -18,6 +19,8 @@ on:
       - scripts/validate_visual_assets.py
       - scripts/validate_identity_resources.py
       - scripts/validate_agent_identity.py
+      - scripts/validate_conformance.py
+      - scripts/generate_baseline.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -26,6 +29,7 @@ on:
   pull_request:
     paths:
       - protocol.yaml
+      - conformance.yaml
       - manifest.yaml
       - schema/**
       - docs/protocol/**
@@ -36,6 +40,8 @@ on:
       - scripts/validate_visual_assets.py
       - scripts/validate_identity_resources.py
       - scripts/validate_agent_identity.py
+      - scripts/validate_conformance.py
+      - scripts/generate_baseline.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -85,6 +91,12 @@ jobs:
 
       - name: Validate first-class agent Identity fixture
         run: python scripts/validate_agent_identity.py
+
+      - name: Run dual-mode protocol conformance
+        run: python scripts/validate_conformance.py --mode all
+
+      - name: Validate reproducible neutral baseline
+        run: python scripts/generate_baseline.py --check
 
       - name: Run validator regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

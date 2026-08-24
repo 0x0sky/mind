@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaiaiai.org/mind/schema/conformance/v1",
+  "title": "Mind Protocol Conformance Suite",
+  "description": "Machine-readable fixture, feature, compatibility, and consumer-mode contract for Mind Protocol conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol", "supported_range", "fixture_types", "fixtures", "features", "consumer_modes", "consumer_support", "probes", "compatibility", "baseline"],
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "supported_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_inclusive", "maximum_exclusive"],
+      "properties": {
+        "minimum_inclusive": {"$ref": "#/$defs/semver"},
+        "maximum_exclusive": {"$ref": "#/$defs/semver"}
+      }
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": ["person", "organization", "agent", "project", "product"]
+    },
+    "entity_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"$ref": "#/$defs/entity_type"},
+        "id": {"type": "string", "pattern": "^fixture-[a-z0-9-]+$"}
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "subject", "owner", "display_name", "expected_result"],
+      "properties": {
+        "kind": {"type": "string", "enum": ["personal", "organization", "agent", "project", "product"]},
+        "subject": {"$ref": "#/$defs/entity_ref"},
+        "owner": {"$ref": "#/$defs/entity_ref"},
+        "display_name": {"type": "string", "minLength": 1},
+        "expected_result": {"const": "pass"}
+      }
+    },
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "support"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "support": {"type": "string", "enum": ["required", "optional"]}
+      }
+    },
+    "consumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["supported_range"],
+      "properties": {
+        "supported_range": {"$ref": "#/$defs/supported_range"}
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "mind"},
+        "version": {"$ref": "#/$defs/semver"}
+      }
+    },
+    "supported_range": {"$ref": "#/$defs/supported_range"},
+    "fixture_types": {"const": ["person", "organization", "agent", "project", "product"]},
+    "fixtures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["person", "organization", "agent", "project", "product"],
+      "properties": {
+        "person": {"$ref": "#/$defs/fixture"},
+        "organization": {"$ref": "#/$defs/fixture"},
+        "agent": {"$ref": "#/$defs/fixture"},
+        "project": {"$ref": "#/$defs/fixture"},
+        "product": {"$ref": "#/$defs/fixture"}
+      }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/feature"}
+    },
+    "consumer_modes": {"const": ["schema", "minimal"]},
+    "consumer_support": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "minimal"],
+      "properties": {
+        "schema": {"$ref": "#/$defs/consumer"},
+        "minimal": {"$ref": "#/$defs/consumer"}
+      }
+    },
+    "probes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module"],
+      "properties": {
+        "authored_relationship": {"const": "preserved"},
+        "derived_relationship": {"const": "rejected_from_canonical"},
+        "canonical_visual_resolved": {"const": "resolved"},
+        "canonical_visual_integrity_failure": {"const": "integrity_error"},
+        "unknown_optional_module": {"const": "ignored_when_not_requested"},
+        "unknown_required_module": {"const": "rejected"}
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_optional_modules", "unknown_required_modules"],
+      "properties": {
+        "unknown_optional_modules": {"const": "ignore_when_not_requested"},
+        "unknown_required_modules": {"const": "reject"}
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "source", "persistent_generic_ontology"],
+      "properties": {
+        "strategy": {"const": "generated_contract_bundle"},
+        "source": {"const": "protocol_contract_set"},
+        "persistent_generic_ontology": {"const": "forbidden"}
+      }
+    }
+  }
+}

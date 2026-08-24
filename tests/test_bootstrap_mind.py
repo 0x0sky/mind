@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from jsonschema import Draft202012Validator
 
@@ -16,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
-from bootstrap_mind import bootstrap_mind  # noqa: E402
+from bootstrap_mind import bootstrap_mind, verify_release_checkout  # noqa: E402
 from validate_identity_resources import validate_identity_envelope  # noqa: E402
 from validate_manifest import (  # noqa: E402
     load_schema,
@@ -44,6 +45,53 @@ class BootstrapMindTests(unittest.TestCase):
         arguments.update(overrides)
         bootstrap_mind(output, **arguments)  # type: ignore[arg-type]
         return output
+
+    @staticmethod
+    def release_git_output(*, head: str = "a" * 40, tag: str = "a" * 40, dirty: str = ""):
+        def output(*arguments: str) -> str:
+            if arguments == ("rev-parse", "--show-toplevel"):
+                return str(ROOT)
+            if arguments == ("rev-parse", "HEAD"):
+                return head
+            if arguments == ("rev-list", "-n", "1", f"refs/tags/{SOURCE_TAG}"):
+                return tag
+            if arguments[:4] == (
+                "status",
+                "--porcelain",
+                "--untracked-files=no",
+                "--",
+            ):
+                return dirty
+            raise AssertionError(f"unexpected git arguments: {arguments!r}")
+
+        return output
+
+    def test_exact_release_checkout_is_accepted(self) -> None:
+        with patch(
+            "bootstrap_mind.git_output",
+            side_effect=self.release_git_output(),
+        ):
+            verify_release_checkout(SOURCE_TAG)
+
+    def test_release_checkout_rejects_head_that_is_not_the_tag(self) -> None:
+        with patch(
+            "bootstrap_mind.git_output",
+            side_effect=self.release_git_output(head="a" * 40, tag="b" * 40),
+        ):
+            with self.assertRaisesRegex(ValueError, "HEAD must equal"):
+                verify_release_checkout(SOURCE_TAG)
+
+    def test_release_checkout_rejects_dirty_protocol_contracts(self) -> None:
+        with patch(
+            "bootstrap_mind.git_output",
+            side_effect=self.release_git_output(dirty=" M protocol.yaml"),
+        ):
+            with self.assertRaisesRegex(ValueError, "differ from the tagged checkout"):
+                verify_release_checkout(SOURCE_TAG)
+
+    def test_release_checkout_rejects_floating_source_name(self) -> None:
+        with self.assertRaisesRegex(ValueError, "source tag must exactly match"):
+            verify_release_checkout("master")
 
     def test_bootstrap_produces_valid_concrete_manifest_and_identity(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

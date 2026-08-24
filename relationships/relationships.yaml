@@ -3,14 +3,14 @@
 schema_version: 1
 
 relationships:
-  - id: member-of-aiaiaiai-tech
+  - id: member-of-aiaiaiai
     predicate: member_of
     source:
       type: person
       id: 0x0sky
     target:
       type: organization
-      id: aiaiaiai-tech
+      id: aiaiaiai
     direction: directed
     provenance:
       kind: authored
@@ -22,7 +22,7 @@ relationships:
       counterpart:
         entity:
           type: organization
-          id: aiaiaiai-tech
+          id: aiaiaiai
         relationship_id: member-0x0sky
 
   - id: member-of-0xda-market

@@ -2,113 +2,74 @@
 
 > An implementation-independent protocol for versioned identity and context, plus the canonical living mind of `0x0sky`.
 
-This repository deliberately contains two different things without conflating their authority:
+This repository contains two deliberately separate authorities:
 
-1. **Mind Protocol** — neutral contracts that must not depend on `0x0sky`, GitHub, a renderer, repository layout, or a runtime implementation;
-2. **`mind@0x0sky`** — one concrete sovereign mind instance implementing those contracts.
+1. **Mind Protocol** — neutral machine contracts, conformance, and baseline semantics;
+2. **`mind@0x0sky`** — one concrete sovereign instance on `master`.
 
-## Two entry points
+## Machine entry points
 
-| Entry point | Authority | Version axis |
-| --- | --- | --- |
-| [`protocol.yaml`](protocol.yaml) | canonical implementation-independent Mind Protocol contracts | `protocol.version` |
-| [`manifest.yaml`](manifest.yaml) | canonical concrete `mind@0x0sky` instance | `mind.context_version` |
+| Entry point | Authority |
+| --- | --- |
+| [`protocol.yaml`](protocol.yaml) | implementation-independent protocol descriptor |
+| [`conformance.yaml`](conformance.yaml) | fixtures, feature matrix, supported range, compatibility policy, consumer modes |
+| [`manifest.yaml`](manifest.yaml) | concrete `mind@0x0sky` context |
 
-The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is not a neutral identity template.
+The current source contract is **Mind Protocol `0.8.0`**. Protocol descriptor schema is `2`; manifest schema remains `2`; the concrete `mind@0x0sky` context remains independently versioned at `0.4.0`.
 
-The current stable source contract is **Mind Protocol `0.7.0`**. Manifest schema remains `2`, while the concrete instance context remains independently versioned.
+## Identity
 
-## Canonical Identity
+[`schema/identity.schema.json`](schema/identity.schema.json) is the universal Identity value for `person`, `organization`, `agent`, `project`, and `product`. It is provider-, repository-, storage-, renderer-, and runtime-independent.
 
-[`schema/identity.schema.json`](schema/identity.schema.json) is the canonical **Identity value**. It defines semantic identity only:
+Concrete publication packaging uses [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json). Canonical visual bytes resolve separately through [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json).
 
-- identity `type`;
-- stable provider-independent `id`;
-- canonical `display_name`;
-- optional visual identity through semantic mark metadata and an opaque `asset_ref`.
+Agent model/prompt/memory/runtime state and synthetic portraits are not universal Identity. A canonical agent emblem/glyph remains valid through the shared visual contract.
 
-It does **not** define provider ids, repository paths, URLs, validation-file locations, storage layout, runtime state, model configuration, prompts, memory, or renderer handles.
+## Relationships
 
-A concrete mind carries that value through [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json).
+Authored relationships remain canonical claims with explicit provenance and confirmation. Provider-discovered observations are derived evidence and never silently become authorship.
 
-## Agent identity
+## Conformance
 
-Mind Protocol `0.7.0` stabilizes `agent` as a first-class value of the same universal Identity contract used by people and organizations; there is no separate AI-specific Identity schema.
+Mind Protocol `0.8.0` adds [`conformance.yaml`](conformance.yaml) and [`schema/conformance.schema.json`](schema/conformance.schema.json).
 
-The synthetic agent conformance fixture proves that an agent subject may have a distinct publication owner and requires no provider account or AI runtime. Model, prompt, memory, runtime, execution state, and biological-personhood assertions remain outside universal Identity.
+The suite covers all five subject types with synthetic descriptors and runs through two consumer modes:
 
-A canonical agent mark may be an emblem or glyph under the existing visual-identity contract. A generated or synthetic portrait is presentation data by default and is not promoted into canonical Identity merely because the subject is an agent.
+- `schema` — JSON Schema + universal resource validation;
+- `minimal` — independent core-reader semantics without JSON Schema/shared semantic validators.
 
-See [`docs/protocol/AGENT_IDENTITY.md`](docs/protocol/AGENT_IDENTITY.md).
+Compatibility for this line is machine-readable: unknown optional modules may be ignored when not requested; unknown required/default-loaded modules must be rejected. The suite declares supported range `>=0.8.0 <0.9.0`.
 
-## Canonical visual assets
+Run:
 
-Mind Protocol `0.6.0` introduced [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), the concrete publication contract for resolving opaque canonical `asset_ref` values. Those semantics remain unchanged in `0.7.0`.
-
-The protocol keeps byte locations and integrity outside universal Identity:
-
-```text
-Identity.primary_mark.asset_ref       semantic opaque reference
-                │
-                ▼
-typed visual-assets resource          concrete publication descriptor
-                │
-                ├── media type
-                ├── publication-relative resource path
-                └── SHA-256 integrity
+```bash
+python scripts/validate_conformance.py --mode all
 ```
 
-Resolution and failure semantics are specified in [`docs/protocol/VISUAL_IDENTITY.md`](docs/protocol/VISUAL_IDENTITY.md). Provider avatars and generated portraits remain noncanonical presentation/evidence and cannot silently replace an authored canonical mark.
+## Neutral baseline
 
-## Instance model
+[`scripts/generate_baseline.py`](scripts/generate_baseline.py) deterministically generates a neutral protocol bundle with an abstract manifest. The output is never a second source of truth or a long-lived generic branch.
 
-Every concrete mind declares one `subject` and one publication `owner`. The canonical instance naming convention is:
+CI generates it twice, verifies byte equality, validates the abstract manifest, and rejects leakage of concrete root-instance identifiers.
 
-```text
-mind@{subject.id}
+```bash
+python scripts/generate_baseline.py --check
 ```
 
-The instance is authoritative only about its subject. Relationships involving other entities remain claims from this subject's perspective until independently confirmed by the counterpart canonical mind.
-
-## Modules
-
-```text
-mind@0x0sky
-├── identity
-├── relationships
-├── knowledge
-├── engineering
-├── systems
-└── writing
-```
-
-The root manifest remains a composition contract rather than a graph database.
+See [`docs/protocol/BASELINE.md`](docs/protocol/BASELINE.md).
 
 ## Schemas
 
-- [`schema/protocol.schema.json`](schema/protocol.schema.json) — neutral protocol descriptor;
-- [`schema/mind.schema.json`](schema/mind.schema.json) — concrete mind manifest;
-- [`schema/module.schema.json`](schema/module.schema.json) — module descriptors;
-- [`schema/identity.schema.json`](schema/identity.schema.json) — universal Identity value;
-- [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json) — concrete identity-resource envelope;
-- [`schema/relationships.schema.json`](schema/relationships.schema.json) — authored relationships;
-- [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json) — canonical visual-asset catalog.
+Published JSON Schema `$id` values use the neutral `aiaiaiai.org/mind/schema/...` protocol namespace. Historical `github.com/0x0sky/mind` schema authority is not carried into the generated baseline.
 
-## Versioning
+## Versioning and publication
 
-The axes are intentionally independent:
+Protocol, descriptor/manifest shapes, typed resource schemas, and concrete context are independent version axes. Merging the `0.8.0` source contract does not create a Git tag or GitHub Release; publication is a separate explicitly authorized action.
 
-- `protocol.version` changes when shared Mind semantics change;
-- manifest `schema_version` changes only when root manifest machine shape changes;
-- `mind.context_version` changes when durable context of one concrete mind changes;
-- resource/schema versions evolve with their own machine contracts.
+## Consumer boundary
 
-Merging protocol source changes is not a published release. Tags and GitHub Releases are separate actions.
-
-## mind-web
-
-[`mind-web`](https://github.com/aiaiaiai-org/mind-web) is a consumer, never protocol authority. It may combine authored facts with provider-derived evidence only when provenance remains distinguishable.
+Consumers such as [`mind-web`](https://github.com/aiaiaiai-org/mind-web) may prove interoperability but never define protocol truth.
 
 ## Privacy boundary
 
-Never commit secrets, credentials, private health or relationship information, transient personal state, or provider-derived observations presented as authored canonical truth. References are preferred over copies.
+Never commit credentials, secrets, private health/relationship information, transient personal state, or provider-derived observations presented as authored canonical truth.

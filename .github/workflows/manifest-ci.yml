@@ -16,6 +16,7 @@ on:
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
       - scripts/validate_visual_assets.py
+      - scripts/validate_identity_resources.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -32,6 +33,7 @@ on:
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
       - scripts/validate_visual_assets.py
+      - scripts/validate_identity_resources.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -66,6 +68,9 @@ jobs:
 
       - name: Validate manifest, modules, and resources
         run: python scripts/validate_manifest.py
+
+      - name: Validate universal Identity resources
+        run: python scripts/validate_identity_resources.py
 
       - name: Validate neutral protocol and instance binding
         run: python scripts/validate_protocol.py

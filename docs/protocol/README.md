@@ -16,9 +16,9 @@ A consumer still starts at `manifest.yaml`. Relationship semantics are discovere
 | --- | --- | --- |
 | Manifest schema | `2` | Shape of `manifest.yaml`. |
 | Protocol | `0.5.0-rc.1` | Shared semantics implemented by compatible minds and consumers. |
-| Context | `0.3.9` | Durable public context of this concrete `0x0sky` mind. |
+| Context | `0.3.11` | Durable public context of this concrete `0x0sky` mind. |
 
-The reference context moves from `0.3.8` to `0.3.9` because it now publishes canonical authored relationships. The manifest schema remains `2` because the root manifest shape did not change.
+The reference context is now `0.3.11`; context changes remain independent from manifest schema and protocol versions.
 
 ## Subject and publication owner
 
@@ -52,13 +52,13 @@ Provider discovery alone never counts as reciprocal confirmation.
 
 `public_organizations` remains in manifest schema v2 during the `0.5` migration because current consumers already use it. Its historical omission, empty-list, and populated-list meanings remain unchanged.
 
-For a mind that adopts the canonical relationships module, every organization listed in `public_organizations` must be backed by an authored directed `member_of` relationship from the manifest subject. This makes the old field a compatibility projection while `relationships/relationships.yaml` becomes relationship authority.
+The field contains GitHub organization logins and is therefore a provider-facing compatibility projection. Canonical `member_of` relationships use provider-independent entity ids. Those namespaces may differ: the current GitHub login `aiaiaiai-org` corresponds operationally to the organization whose canonical Mind entity id is `aiaiaiai`, but protocol 0.5 does not infer that correspondence from string shape.
 
-The reverse is not required: a canonical relationship may target an entity with no representable GitHub legacy projection.
+The relationship validator therefore validates authored relationship semantics independently from `public_organizations`; exact string equality between a provider login and a canonical entity id is neither required nor sufficient to establish identity. A future provider-binding contract must make such mappings explicit.
 
 ## Provider boundary
 
-Provider numeric ids, installation ids, API URLs, avatar URLs, and provider-specific membership records stay at integration boundaries. Protocol-level entity references remain provider-independent even when a canonical id happens to match a GitHub slug.
+Provider logins, numeric ids, installation ids, API URLs, avatar URLs, and provider-specific membership records stay at integration boundaries. Protocol-level entity references remain provider-independent even when a canonical id happens to match a GitHub slug.
 
 ## Module ownership
 
@@ -84,7 +84,7 @@ A concrete `0.4.0` mind adopts `0.5.0-rc.1` by:
 5. ensuring every canonical relationship involves `mind.subject`;
 6. ensuring authored provenance authority matches `mind.owner`;
 7. retaining `public_organizations` temporarily when legacy consumers still require it;
-8. backing every listed legacy organization with a canonical authored `member_of` relation;
+8. treating legacy GitHub logins and canonical entity ids as separate namespaces unless an explicit binding proves equivalence;
 9. keeping provider-discovered relationships outside canonical authored resources;
 10. bumping `mind.context_version` when the concrete mind actually publishes new durable relationship context.
 

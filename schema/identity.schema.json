@@ -23,7 +23,9 @@
         "asset_ref": {
           "description": "Opaque canonical asset identifier. Resolution belongs to the concrete mind implementation, not the universal identity value.",
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
         },
         "alt": {
           "type": "string",

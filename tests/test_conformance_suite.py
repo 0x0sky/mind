@@ -1,6 +1,6 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-"""Regression tests for Mind Protocol 0.8 conformance modes."""
+"""Regression tests for Mind Protocol conformance modes."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ sys.path.insert(0, str(SCRIPTS))
 from validate_conformance import (  # noqa: E402
     build_manifest,
     consumer_module_errors,
+    range_errors,
     run_mode,
 )
 from validate_manifest import load_yaml_mapping  # noqa: E402
@@ -54,6 +55,19 @@ class ConformanceSuiteTests(unittest.TestCase):
                 suite["consumer_support"][mode]["supported_range"],
                 suite["supported_range"],
             )
+
+    def test_rc_is_inside_rc_to_stable_exclusive_range(self) -> None:
+        declared = {
+            "minimum_inclusive": "1.0.0-rc.1",
+            "maximum_exclusive": "1.0.0",
+        }
+        self.assertEqual(
+            range_errors(declared, {"id": "mind", "version": "1.0.0-rc.1"}),
+            [],
+        )
+        self.assertTrue(
+            range_errors(declared, {"id": "mind", "version": "1.0.0"})
+        )
 
     def test_unknown_required_module_is_rejected(self) -> None:
         suite = load_yaml_mapping(ROOT / "conformance.yaml")

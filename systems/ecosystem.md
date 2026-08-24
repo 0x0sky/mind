@@ -1,52 +1,32 @@
 # ecosystem
 
-## Personal
+## Personal root
 
 - identity: `0x0sky`
 - GitHub: [github.com/0x0sky](https://github.com/0x0sky)
 
-`0x0sky` is the root identity of this public mind graph.
+`0x0sky` is the subject of this mind and the personal root from which this public ecosystem is described.
 
-## Organizational model
+## Canonical relationship source
 
-The ecosystem distinguishes the intended organizational structure from GitHub's namespace model.
+Authored identity relationships are no longer owned by this systems document.
 
-```text
-0x0sky                         owner / personal identity
+The canonical machine-readable claims live in [`../relationships/relationships.yaml`](../relationships/relationships.yaml). That resource currently publishes the personal subject's `member_of` relationships to `aiaiaiai-tech`, `0xda-market`, and `nilx-one`, with explicit authorship and confirmation state.
 
-4xAI tech. / aiaiaiai tech.   parent organization
-└── 0xda-market               digital commerce organization
-```
+Provider-discovered GitHub memberships may enrich a consumer projection, but they remain derived data and never become canonical merely because GitHub exposes them.
 
-`aiaiaiai tech.` (also referred to as `4xAI tech.`) is the conceptual parent organization for non-personal work. It currently exists as a GitHub organization and is intended to become a Ukrainian legal entity (ТОВ) in the future. `0x0sky` is the owner of the parent organization and its declared child organizations / namespaces.
+## Organization topology
 
-This hierarchy is an ecosystem and ownership model, not a GitHub-native relationship. GitHub represents `aiaiaiaitech`, `0xda-market`, and other organizations as peer namespaces; their equal technical representation on GitHub does not define their organizational ownership or governance relationship.
+Organization-internal hierarchy and ownership semantics belong to the corresponding organization minds rather than being duplicated as personal protocol truth.
 
-Personal identity and personal projects remain outside the corporate hierarchy unless explicitly declared otherwise.
+For `aiaiaiai tech.`, the organization mind is:
 
-## Organizations
+- [github.com/aiaiaiai-tech/mind](https://github.com/aiaiaiai-tech/mind)
 
-### aiaiaiai tech.
+The parent/child structure of organization namespaces should be read from that organization context and its own authored relationships as the `0.5` migration reaches it.
 
-- canonical role: parent organization for non-personal projects
-- owner: `0x0sky`
-- aliases: `4xAI tech.`, `4ai`, `4аі`
-- current form: GitHub organization
-- intended legal form: Ukrainian limited liability company (ТОВ)
-- GitHub organization: [github.com/aiaiaiaitech](https://github.com/aiaiaiaitech)
+## System boundary
 
-### 0xda-market
+This module may describe how repositories and products fit together, but it does not become the canonical source for their implementation details, deployment state, provider accounts, or identity relationships.
 
-- canonical role: child digital commerce organization under `aiaiaiai tech.`
-- owner: `0x0sky`
-- aliases: `market`, `маркет`
-- GitHub organization: [github.com/0xda-market](https://github.com/0xda-market)
-
-The GitHub organizations above are technically independent peer namespaces. Their parent-child relationship is declared by this ecosystem model rather than inferred from GitHub ownership or membership.
-
-## Scope boundary
-
-This document maps only the identity and organizations currently declared by
-`manifest.yaml`. External protocols, participants, relationship models,
-namespaces, and domains remain owned by their own repositories and are not
-inferred into this graph.
+References are preferred over copied truth.

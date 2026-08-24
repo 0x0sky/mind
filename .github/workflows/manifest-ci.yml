@@ -1,3 +1,5 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
 name: Mind Contract CI
 
 on:
@@ -8,16 +10,20 @@ on:
       - manifest.yaml
       - schema/**
       - scripts/validate_manifest.py
+      - scripts/validate_relationships.py
       - "**/module.yaml"
       - identity/identity.yaml
+      - relationships/relationships.yaml
       - .github/workflows/manifest-ci.yml
   pull_request:
     paths:
       - manifest.yaml
       - schema/**
       - scripts/validate_manifest.py
+      - scripts/validate_relationships.py
       - "**/module.yaml"
       - identity/identity.yaml
+      - relationships/relationships.yaml
       - .github/workflows/manifest-ci.yml
   workflow_dispatch:
 
@@ -45,3 +51,6 @@ jobs:
 
       - name: Validate manifest, modules, and resources
         run: python scripts/validate_manifest.py
+
+      - name: Validate relationship semantics and migration
+        run: python scripts/validate_relationships.py

@@ -1,191 +1,104 @@
-# Mind Protocol 0.4
+# Mind Protocol 0.5
 
-Status: **`0.4.0` stable contract**
+Status: **`0.5.0-rc.1` prerelease candidate**
 
-Mind Protocol `0.4` is a consolidation release. Its purpose is to preserve the useful contracts that evolved after the original `baseline-v0.1.0`, make them explicit enough for a new human or AI consumer to read deterministically, and create a safe migration path toward `1.0`.
+Mind Protocol `0.5` builds on the stable `0.4.0` foundation without changing the root manifest shape. Its purpose is to make authored relationships provider-independent, explicitly directional, provenance-aware, and confirmable without turning provider discovery into canonical truth.
 
-`0.4.0` deliberately changes the manifest shape before `1.0` while retaining the fields used by current consumers. The schema-v2 contract was promoted from `0.4.0-rc.1` only after a personal reference mind, an organization mind, and the current `mind-web` parser exercised the migration successfully.
+Manifest schema remains `2`. This is intentional evidence that manifest shape, protocol semantics, and one concrete mind's context version are independent version axes.
 
 ## Entry point
 
-A consumer starts at `manifest.yaml`.
-
-From that file it can determine, without repository-specific assumptions:
-
-1. which manifest schema it is reading;
-2. which Mind Protocol version the repository implements;
-3. which subject the mind describes;
-4. which entity owns or publishes the repository;
-5. which concrete context version is published;
-6. which modules exist and which are required;
-7. where each module descriptor lives;
-8. which modules load by default or only on request;
-9. which validation schemas apply;
-10. which repository-wide visibility and privacy guarantees apply.
-
-A consumer should not need README history, chat context, or `mind-web` implementation details to discover those contracts.
+A consumer still starts at `manifest.yaml`. Relationship semantics are discovered through the normal module catalog rather than a new root-manifest graph object.
 
 ## Version model
 
-Mind uses three independent versions.
-
-| Version | Example | Meaning |
+| Version | Current reference | Meaning |
 | --- | --- | --- |
-| Manifest schema | `2` | Shape of `manifest.yaml`. Increment when the machine contract changes incompatibly. |
-| Protocol | `0.4.0` | Semantics and behavior shared by compatible minds and consumers. |
-| Context | `0.3.8` | Published durable content of one concrete mind instance. |
+| Manifest schema | `2` | Shape of `manifest.yaml`. |
+| Protocol | `0.5.0-rc.1` | Shared semantics implemented by compatible minds and consumers. |
+| Context | `0.3.9` | Durable public context of this concrete `0x0sky` mind. |
 
-A protocol release may use the same manifest schema across several protocol versions. A mind may update its own context without changing protocol or schema versions.
-
-Consumers must not infer one version from another. Promoting the shared protocol from `0.4.0-rc.1` to `0.4.0` does not itself change the personal subject context, so the reference mind remains at context `0.3.8`.
+The reference context moves from `0.3.8` to `0.3.9` because it now publishes canonical authored relationships. The manifest schema remains `2` because the root manifest shape did not change.
 
 ## Subject and publication owner
 
-`mind.subject` identifies the entity the mind describes and is authoritative about.
+`mind.subject` remains the entity this mind describes and is authoritative about. `mind.owner` remains the entity accountable for publishing the repository.
 
-`mind.owner` identifies the entity accountable for owning or publishing the repository.
+Every authored relationship is validated against both boundaries: the subject must be one endpoint and `provenance.authority` must equal the publication owner.
 
-They are intentionally separate.
+## Relationship module
 
-For a personal mind:
+`0.5` introduces a typed `relationships` module with `schema/relationships.schema.json`.
 
-```yaml
-mind:
-  kind: personal
-  subject:
-    type: person
-    id: alice
-  owner:
-    type: person
-    id: alice
-```
+Each relationship defines a local stable id, predicate, source, target, direction, authored provenance, and confirmation state. The full contract is documented in [`RELATIONSHIPS.md`](RELATIONSHIPS.md).
 
-For an organization mind, subject and owner will normally also match.
+`relationship.id` is stable within the publishing mind, not a global provider id. `directed` uses `source -> target`; `symmetric` is semantically unordered. The `member_of` predicate used by the migration is directed and targets an organization.
 
-For an AI agent:
+## Provenance
 
-```yaml
-mind:
-  kind: agent
-  subject:
-    type: agent
-    id: magi
-  owner:
-    type: organization
-    id: example-org
-```
+Canonical `relationships.yaml` contains authored claims only. Its authority must match `mind.owner`.
 
-This allows an artificial identity to have a first-class mind without claiming that the AI owns a GitHub account or is biologically human.
+Provider-discovered GitHub membership, repository ownership, social following, directory membership, and similar observations are derived integration data. Consumers may combine them with authored edges but must preserve provenance and must not materialize provider observations back into canonical authored resources.
 
-`mind.kind` remains in `0.4` as a compatibility classification for existing consumers. The manifest validator requires it to agree with `mind.subject.type`. Consumers should begin treating `mind.subject` as the semantic source of truth.
+## Confirmation
 
-## Required identity module
+`confirmation.state` is `asserted` or `reciprocal`.
 
-Every concrete mind requires the `identity` module.
+`asserted` means this mind publishes the claim without referencing an independently authored counterpart claim. `reciprocal` means the counterpart canonical mind independently publishes the same semantic relationship and is referenced by counterpart entity plus that mind's local relationship id.
 
-The manifest identifies the subject at protocol level. The identity module owns richer subject context.
+Provider discovery alone never counts as reciprocal confirmation.
 
-In the reference implementation the module exposes a typed resource:
+## `public_organizations` migration
 
-```yaml
-module:
-  resources:
-    identity:
-      path: identity/identity.yaml
-      format: yaml
-      schema: schema/identity.schema.json
-```
+`public_organizations` remains in manifest schema v2 during the `0.5` migration because current consumers already use it. Its historical omission, empty-list, and populated-list meanings remain unchanged.
 
-Mind CI verifies that the resource's `identity.type` and `identity.id` match `manifest.yaml -> mind.subject`.
+For a mind that adopts the canonical relationships module, every organization listed in `public_organizations` must be backed by an authored directed `member_of` relationship from the manifest subject. This makes the old field a compatibility projection while `relationships/relationships.yaml` becomes relationship authority.
 
-This prevents a fork from accidentally retaining the upstream identity while publishing a different manifest subject.
+The reverse is not required: a canonical relationship may target an entity with no representable GitHub legacy projection.
 
-## Module contract
+## Provider boundary
 
-`0.4` makes module descriptors part of the validated protocol surface.
+Provider numeric ids, installation ids, API URLs, avatar URLs, and provider-specific membership records stay at integration boundaries. Protocol-level entity references remain provider-independent even when a canonical id happens to match a GitHub slug.
 
-Every registered `module.yaml` is checked against `schema/module.schema.json`. CI also verifies:
+## Module ownership
 
-- descriptor id matches the manifest catalog key;
-- dependencies resolve to registered modules;
-- self-dependencies are forbidden;
-- dependency cycles are forbidden;
-- entrypoints exist and stay inside the repository;
-- declared machine resources and schemas exist;
-- machine resources validate against their declared JSON Schema.
+- `identity` owns the subject's identity;
+- `relationships` owns authored relations and confirmation state;
+- `systems` owns software-ecosystem structure and implementation boundaries;
+- consumers own provider enrichment and projection.
 
-The root manifest therefore remains a composition contract rather than accumulating domain-specific fields.
+This keeps the root manifest a composition contract rather than a graph database.
 
-## Visual identity foundation
+## Visual identity
 
-Visual identity belongs to the identity module, not to the root manifest and not automatically to a `brand` object.
+The `visual_identity.primary_mark` foundation from `0.4` is unchanged. Real canonical visual assets remain the `0.6` milestone; `0.5` adds no palette, avatar, portrait, typography, or brand semantics.
 
-`0.4` defines only one canonical visual concept:
+## Migration from 0.4
 
-```yaml
-identity:
-  visual_identity:
-    primary_mark:
-      kind: logo
-      asset:
-        path: identity/assets/mark.svg
-        media_type: image/svg+xml
-      alt: Example
-```
+A concrete `0.4.0` mind adopts `0.5.0-rc.1` by:
 
-Supported initial mark kinds are:
+1. keeping `schema_version: 2`;
+2. changing `protocol.version` to `0.5.0-rc.1`;
+3. adding a `relationships` module only when the mind has authored relationship claims to publish;
+4. declaring `schema/relationships.schema.json` for its typed relationship resource;
+5. ensuring every canonical relationship involves `mind.subject`;
+6. ensuring authored provenance authority matches `mind.owner`;
+7. retaining `public_organizations` temporarily when legacy consumers still require it;
+8. backing every listed legacy organization with a canonical authored `member_of` relation;
+9. keeping provider-discovered relationships outside canonical authored resources;
+10. bumping `mind.context_version` when the concrete mind actually publishes new durable relationship context.
 
-- `logo`;
-- `emblem`;
-- `monogram`;
-- `glyph`;
-- `signature`.
+## Gate for stable 0.5.0
 
-This vocabulary is intentionally identity-type-neutral.
+`0.5.0` is not stable merely because the reference relationship schema validates.
 
-An organization can use `logo`; a person can use `emblem`, `monogram`, or `signature`; an AI agent can use `emblem` or `glyph`. A consumer reads the same contract in every case.
+The stabilization gate is:
 
-A canonical mark references a repository-local, versioned asset. Provider avatars are derived presentation data unless the mind explicitly adopts an asset as canonical.
+- the personal reference mind publishes and validates canonical authored relationships;
+- at least one organization mind independently publishes a matching relationship so reciprocal confirmation is exercised across two canonical minds;
+- `mind-web` consumes canonical relationships while preserving authored versus provider-derived provenance;
+- legacy `public_organizations` fallback remains deterministic during migration;
+- reciprocal-reference semantics have no unresolved ambiguity;
+- provider-specific ids remain outside the universal relationship resource.
 
-`0.4` defines the contract but does not require a real mark yet. Real personal and organization assets, renderer fallback behavior, and the avatar decision belong to the `0.6` milestone. A real agent subject with independent publication ownership belongs to `0.7`.
-
-`0.4` does not standardize portrait slots, responsive mark variants, palettes, typography, or full brand systems.
-
-## Compatibility strategy
-
-`0.4.0` keeps the existing `mind.name`, `mind.kind`, `mind.context_version`, `mind.owner`, `public_organizations`, `modules`, and `loading` structures used by the current `mind-web` parser while adding new fields around them.
-
-This is deliberate: the reference consumer can continue reading the existing projection fields while it gains support for `protocol`, `subject`, typed resources, and visual identity.
-
-The manifest schema itself increments from `1` to `2` because a standards-aware consumer must be able to detect that the formal shape changed. Compatibility is explicit, not hidden behind an unchanged schema number.
-
-The compatibility gate is backed by `mind-web` CI tests that parse a schema-v2 `0.4` manifest and a module descriptor carrying typed resources while preserving the legacy projection fields consumed today.
-
-## Migration from the 0.3 line
-
-A concrete `0.3.x` mind moves to `0.4.0` by:
-
-1. changing `schema_version` from `1` to `2`;
-2. adding `protocol.id: mind` and `protocol.version: 0.4.0`;
-3. adding `mind.subject`;
-4. retaining `mind.kind` and `mind.owner`;
-5. adding `contract.explicit_subject: required`;
-6. declaring `validation.module_schema`;
-7. ensuring `identity` is required for every concrete mind;
-8. validating every module descriptor;
-9. optionally adding a typed identity resource;
-10. bumping the concrete mind's `context_version` only when its published subject context actually changes.
-
-The `0x0sky` reference mind moved from context `0.3.7` to `0.3.8` when it added a canonical machine-readable identity resource and protocol metadata. The later rc-to-stable protocol promotion does not require another context bump.
-
-## Stable 0.4.0 evidence
-
-The roadmap gate for stable `0.4.0` is satisfied:
-
-- the personal `0x0sky/mind` reference implementation validates on manifest schema v2;
-- `aiaiaiai-tech/mind` is migrated as a concrete organization mind on the same protocol contract;
-- `mind-web` carries explicit parser compatibility tests and passes full Browser + Rust CI on the integrated state.
-
-Identity-resource validation and migration documentation are part of the contract itself and are exercised by Mind Contract CI.
-
-Real canonical visual assets are intentionally **not** a `0.4` stability gate; they are the `0.6` milestone. A non-trivial agent subject whose publication owner differs from the subject is intentionally the `0.7` milestone. Keeping those gates in their own milestones prevents later features from becoming circular prerequisites for the foundation they depend on.
+Until those conditions hold, `0.5.0-rc.*` is the correct channel.

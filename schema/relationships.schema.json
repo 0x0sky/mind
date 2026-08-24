@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/0x0sky/mind/schema/relationships.schema.json",
+  "title": "Mind Authored Relationships Resource",
+  "description": "Canonical authored relationships involving the subject of a mind.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "relationships",
+    "validation"
+  ],
+  "$defs": {
+    "entity_type": {
+      "type": "string",
+      "enum": [
+        "person",
+        "organization",
+        "agent",
+        "project",
+        "product"
+      ]
+    },
+    "entity_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/entity_type"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "relationship_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "predicate": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)*$"
+    },
+    "counterpart": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity",
+        "relationship_id"
+      ],
+      "properties": {
+        "entity": {
+          "$ref": "#/$defs/entity_ref"
+        },
+        "relationship_id": {
+          "$ref": "#/$defs/relationship_id"
+        }
+      }
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "asserted",
+            "reciprocal"
+          ]
+        },
+        "counterpart": {
+          "$ref": "#/$defs/counterpart"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "reciprocal"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "required": [
+              "counterpart"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "asserted"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "counterpart"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "authority"
+      ],
+      "properties": {
+        "kind": {
+          "const": "authored"
+        },
+        "authority": {
+          "$ref": "#/$defs/entity_ref"
+        }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "predicate",
+        "source",
+        "target",
+        "direction",
+        "provenance",
+        "confirmation"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/relationship_id"
+        },
+        "predicate": {
+          "$ref": "#/$defs/predicate"
+        },
+        "source": {
+          "$ref": "#/$defs/entity_ref"
+        },
+        "target": {
+          "$ref": "#/$defs/entity_ref"
+        },
+        "direction": {
+          "type": "string",
+          "enum": [
+            "directed",
+            "symmetric"
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        },
+        "confirmation": {
+          "$ref": "#/$defs/confirmation"
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relationship"
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema"
+      ],
+      "properties": {
+        "schema": {
+          "const": "schema/relationships.schema.json"
+        }
+      }
+    }
+  }
+}

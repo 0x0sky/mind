@@ -1,0 +1,20 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+module:
+  id: relationships
+  purpose: publish canonical authored relationships involving this mind's subject
+  stability: stable
+  dependencies:
+    - identity
+  entrypoints:
+    - relationships/README.md
+  owner:
+    type: person
+    id: 0x0sky
+  visibility: public
+  resources:
+    relationships:
+      path: relationships/relationships.yaml
+      format: yaml
+      schema: schema/relationships.schema.json

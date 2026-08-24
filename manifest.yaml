@@ -1,10 +1,12 @@
-# Version of the manifest shape. Mind Protocol 0.4 uses manifest schema version 2.
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+# Version of the manifest shape. Mind Protocol 0.5 continues to use manifest schema version 2.
 schema_version: 2
 
 # Protocol identity is independent from this concrete mind's context version.
 protocol:
   id: mind
-  version: 0.4.0
+  version: 0.5.0-rc.1
 
 # Stable identity and context version of this mind.
 mind:
@@ -13,7 +15,7 @@ mind:
   # Compatibility classification retained for current consumers during the 0.x migration.
   kind: personal
   # Semantic version of the context published by this concrete mind.
-  context_version: 0.3.8
+  context_version: 0.3.9
   # Entity this mind describes and is authoritative about.
   subject:
     type: person
@@ -24,11 +26,11 @@ mind:
     type: person
     id: 0x0sky
 
-# Optional authored public organization relations.
-# Omit the field to let consumers project provider-discovered memberships.
-# An empty list publishes none. A populated list explicitly publishes these
-# public GitHub organization relations; consumers must preserve manifest
-# provenance and may enrich the organization identity from GitHub.
+# Legacy GitHub-oriented compatibility projection.
+# In the 0.5 reference mind every listed organization is backed by a canonical
+# authored member_of relationship in relationships/relationships.yaml.
+# Omission retains the historical provider-discovered behavior for legacy
+# consumers; an empty list retains the historical "publish none" behavior.
 public_organizations:
   - aiaiaiai-tech
   - 0xda-market
@@ -36,77 +38,47 @@ public_organizations:
 
 # Repository-wide guarantees every consumer may rely on.
 contract:
-  # The repository is the canonical source of its published context.
   canonical_source: required
-  # The entity described by this mind must be declared explicitly.
   explicit_subject: required
-  # The entity accountable for publication must be declared explicitly.
   explicit_owner: required
-  # Published context must carry a semantic context_version.
   versioned_context: required
-  # Context must remain understandable to human readers.
   human_readable: required
-  # Context must remain parseable by software.
   machine_readable: required
-  # Credentials and other secrets must never be stored in the mind.
   secrets: forbidden
 
-# Module registry, dependency rules, and descriptor paths.
 modules:
-  # Modules every valid loading policy must load by default.
   required:
     - identity
-  # Complete set of module IDs available in this mind.
   registered:
     - identity
+    - relationships
     - knowledge
     - engineering
     - systems
     - writing
-  # Architectural guarantees applied to every registered module.
   rules:
-    # Each module must have one clear responsibility.
     single_responsibility: required
-    # Dependencies between modules must be declared explicitly.
     explicit_dependencies: required
-    # A module must be replaceable without rewriting unrelated modules.
     independently_replaceable: required
-    # The same durable context must not be copied between modules.
     duplicate_content: forbidden
-    # Shared context should be linked instead of duplicated.
     cross_reference: preferred
-    # Modules should be composed through references instead of inheritance.
     composition_over_inheritance: preferred
-  # One repository-relative descriptor path for every registered module.
   catalog:
-    # Descriptor for the identity module.
     identity: identity/module.yaml
-    # Descriptor for the knowledge module.
+    relationships: relationships/module.yaml
     knowledge: knowledge/module.yaml
-    # Descriptor for the engineering module.
     engineering: engineering/module.yaml
-    # Descriptor for the systems module.
     systems: systems/module.yaml
-    # Descriptor for the writing module.
     writing: writing/module.yaml
 
-# Stability and visibility vocabulary used by this mind.
 context:
-  # Meanings of the supported context lifecycles.
   stability:
-    # Stable context defines long-lived contracts.
     stable: long_lived_contracts
-    # Transient context represents current state.
     transient: current_state
-    # Archived context is ignored unless a consumer requests it.
     archived: ignored_unless_requested
-  # Repository-level publication and privacy policy.
   visibility:
-    # Visibility of this repository's durable context.
     repository: public
-    # The only category of context permitted in this public repository.
     allowed: durable_public_context
-    # Context categories that must never be published here.
     forbidden:
       - credentials
       - secrets
@@ -114,21 +86,16 @@ context:
       - private_relationship_data
       - transient_personal_state
 
-# Module sets used when consumers load this mind.
 loading:
-  # Modules loaded for every consumer; includes every required module.
   default:
     - identity
+    - relationships
     - knowledge
     - engineering
     - systems
-  # Registered modules loaded only when explicitly requested.
   optional:
     - writing
 
-# Machine-readable validation contracts used by Mind CI.
 validation:
-  # Repository-relative JSON Schema for manifest.yaml.
   schema: schema/mind.schema.json
-  # Repository-relative JSON Schema for every registered module descriptor.
   module_schema: schema/module.schema.json

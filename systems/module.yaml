@@ -1,10 +1,13 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
 schema_version: 1
 module:
   id: systems
-  purpose: map the public software ecosystem, declared organizations, and system boundaries
+  purpose: map the public software ecosystem and system boundaries without owning identity relationships
   stability: stable
   dependencies:
     - engineering
+    - relationships
   entrypoints:
     - systems/README.md
     - systems/ecosystem.md

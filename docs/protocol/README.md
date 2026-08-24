@@ -110,7 +110,7 @@ The neutral baseline is not itself a concrete Mind and is never a long-lived gen
 
 ## Concrete bootstrap
 
-[`../../scripts/bootstrap_mind.py`](../../scripts/bootstrap_mind.py) turns an exact checked-out release into a minimal concrete publication. It requires explicit subject, publication owner, display name, context version, and repository visibility.
+[`../../scripts/bootstrap_mind.py`](../../scripts/bootstrap_mind.py) turns an exact checked-out release into a minimal concrete publication. It requires explicit subject, display name, context version, and repository visibility. Publication owner defaults to the subject; a different owner is an explicit paired override.
 
 It creates only the required Identity module/resource plus exact protocol locks. It does not copy relationships, knowledge, engineering context, provider identities, visuals, or other content from the reference implementation.
 

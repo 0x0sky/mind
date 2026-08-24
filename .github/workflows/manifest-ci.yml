@@ -9,6 +9,7 @@ on:
     paths:
       - protocol.yaml
       - conformance.yaml
+      - compatibility.yaml
       - manifest.yaml
       - schema/**
       - docs/protocol/**
@@ -20,7 +21,9 @@ on:
       - scripts/validate_identity_resources.py
       - scripts/validate_agent_identity.py
       - scripts/validate_conformance.py
+      - scripts/validate_compatibility.py
       - scripts/generate_baseline.py
+      - scripts/migrate_manifest_v2_to_v3.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -30,6 +33,7 @@ on:
     paths:
       - protocol.yaml
       - conformance.yaml
+      - compatibility.yaml
       - manifest.yaml
       - schema/**
       - docs/protocol/**
@@ -41,7 +45,9 @@ on:
       - scripts/validate_identity_resources.py
       - scripts/validate_agent_identity.py
       - scripts/validate_conformance.py
+      - scripts/validate_compatibility.py
       - scripts/generate_baseline.py
+      - scripts/migrate_manifest_v2_to_v3.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -95,8 +101,11 @@ jobs:
       - name: Run dual-mode protocol conformance
         run: python scripts/validate_conformance.py --mode all
 
+      - name: Validate compatibility freeze and migration policy
+        run: python scripts/validate_compatibility.py
+
       - name: Validate reproducible neutral baseline
         run: python scripts/generate_baseline.py --check
 
-      - name: Run validator regression tests
+      - name: Run validator and migration regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

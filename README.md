@@ -16,7 +16,7 @@ This repository contains two deliberately separate authorities:
 | [`compatibility.yaml`](compatibility.yaml) | compatibility freeze, schema fingerprints, forward-compatibility and migration policy |
 | [`manifest.yaml`](manifest.yaml) | concrete `mind@0x0sky` context |
 
-The current source contract under development is **Mind Protocol `0.9.0`**. Protocol descriptor schema is `3`; manifest schema is `3`; conformance schema is `2`; the concrete `mind@0x0sky` context remains independently versioned at `0.4.0`.
+The current source contract under development is **Mind Protocol `1.0.0-rc.1`**. It remains unpublished until the separate prerelease action succeeds. Protocol descriptor schema is `3`; manifest schema is `3`; conformance schema is `2`; the concrete `mind@0x0sky` context remains independently versioned at `0.4.0`.
 
 ## Identity
 
@@ -28,7 +28,7 @@ Agent model/prompt/memory/runtime state and synthetic portraits are not universa
 
 ## Manifest v3
 
-Mind Protocol `0.9.0` removes two pre-1.0 compatibility fields from the core manifest:
+Mind Protocol `0.9.0` froze manifest schema v3 and removed two pre-1.0 compatibility fields from the core manifest. The RC carries that root shape forward unchanged:
 
 - `mind.kind` — redundant with canonical `mind.subject.type`;
 - `public_organizations` — GitHub/provider-specific projection that does not belong in the provider-agnostic root contract.
@@ -48,7 +48,9 @@ Authored relationships remain canonical claims with explicit provenance and conf
 - `schema` — JSON Schema plus shared protocol validators;
 - `minimal` — an independent core-reader path without JSON Schema or the shared relationship/visual semantic validators.
 
-Each mode declares supported range `>=0.9.0 <1.0.0` and must produce the same deterministic outcomes for provenance, canonical visual resolution/integrity, optional/required modules, and frozen root-manifest behavior.
+Each mode declares supported range `>=1.0.0-rc.1 <1.0.0` and must produce the same deterministic outcomes for provenance, canonical visual resolution/integrity, optional/required modules, and frozen root-manifest behavior.
+
+Range evaluation uses SemVer 2.0 prerelease precedence, so `1.0.0-rc.1 < 1.0.0`; build metadata does not alter precedence.
 
 Run:
 
@@ -58,7 +60,7 @@ python scripts/validate_conformance.py --mode all
 
 ## Compatibility freeze
 
-[`compatibility.yaml`](compatibility.yaml) is the machine-readable pre-1.0 freeze policy. It defines:
+[`compatibility.yaml`](compatibility.yaml) carries the machine-readable `0.9.0` freeze into the release candidate. It defines:
 
 - manifest schema `v3` as the frozen root shape;
 - `module` as the capability-negotiation unit;
@@ -70,6 +72,8 @@ python scripts/validate_conformance.py --mode all
 - deterministic v2 → v3 migration policy;
 - prohibition on inferring canonical IDs from provider logins.
 
+For `1.0.0-rc.1`, supported stable migration sources are `0.6.0`, `0.7.0`, `0.8.0`, and the formally published `0.9.0` line.
+
 Run:
 
 ```bash
@@ -80,7 +84,7 @@ python scripts/validate_compatibility.py
 
 [`scripts/generate_baseline.py`](scripts/generate_baseline.py) deterministically generates a neutral protocol bundle with an abstract manifest. The output is never a second source of truth or a long-lived generic branch.
 
-For `0.9`, the generated bundle carries protocol, conformance, compatibility, schemas, the abstract manifest, and a deterministic digest inventory. CI generates it twice, verifies byte equality, validates the abstract manifest, and rejects leakage of concrete root-instance identifiers.
+The generated bundle carries protocol, conformance, compatibility, schemas, the abstract manifest, and a deterministic digest inventory. CI generates it twice, verifies byte equality, validates the abstract manifest, and rejects leakage of concrete root-instance identifiers.
 
 ```bash
 python scripts/generate_baseline.py --check
@@ -94,17 +98,21 @@ Supported stable migration sources begin at `0.6.0`. The v2 → v3 migrator remo
 
 A non-empty provider organization projection may be removed only after its meaning has been preserved in canonical relationships or an explicit provider integration. The migrator never guesses canonical IDs from provider logins.
 
+A conforming `0.9.0` publication needs no manifest-shape migration for `1.0.0-rc.1`; it updates the protocol binding and keeps its independent context version unless durable authored context changes.
+
+See [`docs/protocol/MIGRATION_1.0.md`](docs/protocol/MIGRATION_1.0.md).
+
 ## Formal publication sequence
 
-Formal GitHub publication begins with:
+Formal GitHub publication sequence:
 
-1. `0.9.0` — first formal GitHub Release;
-2. `1.0.0-rc.1` — GitHub prerelease;
+1. `0.9.0` — first formal GitHub Release, published;
+2. `1.0.0-rc.1` — GitHub prerelease, next publication after this source candidate is verified;
 3. `1.0.0` — first compatibility-guaranteed stable release.
 
 Earlier `0.6.0`, `0.7.0`, and `0.8.0` remain source milestones rather than retroactive formal releases.
 
-Concrete named identity synchronization begins only after `1.0.0`; identity rollout consumes the stable protocol and never defines its universal semantics.
+A deliberately small compatibility-canary set synchronized after `0.9.0` and passed before this RC source candidate. That evidence does not make any named implementation protocol authority. The full named identity, visual-family, provider-binding, agent, project/product, and broader ecosystem rollout begins only after stable `1.0.0`.
 
 See [`docs/protocol/RELEASE_POLICY.md`](docs/protocol/RELEASE_POLICY.md) and [`docs/protocol/ROADMAP.md`](docs/protocol/ROADMAP.md).
 

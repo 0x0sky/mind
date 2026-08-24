@@ -15,7 +15,11 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_ROOT = REPOSITORY_ROOT / "scripts"
 sys.path.insert(0, str(SCRIPTS_ROOT))
 
-from validate_manifest import load_yaml_mapping, validate_manifest_semantics  # noqa: E402
+from validate_manifest import (  # noqa: E402
+    legacy_field_errors,
+    load_yaml_mapping,
+    validate_manifest_semantics,
+)
 from validate_relationships import validate_relationships  # noqa: E402
 
 
@@ -37,14 +41,24 @@ class ContractValidatorRegressionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate key"):
                 load_yaml_mapping(path)
 
-    def test_subject_type_cannot_drift_from_mind_kind(self) -> None:
+    def test_removed_mind_kind_has_deterministic_migration_diagnostic(self) -> None:
         candidate = copy.deepcopy(self.manifest)
-        candidate["mind"]["kind"] = "organization"
+        candidate["mind"]["kind"] = "personal"
+        errors = legacy_field_errors(candidate)
+        self.assertTrue(any("$.mind.kind" in error for error in errors), errors)
+
+    def test_removed_public_organizations_has_deterministic_migration_diagnostic(self) -> None:
+        candidate = copy.deepcopy(self.manifest)
+        candidate["public_organizations"] = ["provider-only-org"]
+        errors = legacy_field_errors(candidate)
+        self.assertTrue(any("$.public_organizations" in error for error in errors), errors)
+
+    def test_abstract_subject_requires_explicit_unspecified_owner(self) -> None:
+        candidate = copy.deepcopy(self.manifest)
+        candidate["mind"]["name"] = "mind"
+        candidate["mind"]["subject"] = {"type": "unspecified", "id": "unspecified"}
         errors = validate_manifest_semantics(candidate, REPOSITORY_ROOT)
-        self.assertTrue(
-            any("requires subject type 'organization'" in error for error in errors),
-            errors,
-        )
+        self.assertTrue(any("abstract minds must use" in error for error in errors), errors)
 
     def test_validation_paths_cannot_escape_repository(self) -> None:
         candidate = copy.deepcopy(self.manifest)
@@ -60,11 +74,6 @@ class ContractValidatorRegressionTests(unittest.TestCase):
         candidate["relationships"][0]["provenance"]["authority"]["id"] = "other-owner"
         errors = validate_relationships(self.manifest, candidate)
         self.assertTrue(any("must match $.mind.owner" in error for error in errors), errors)
-
-    def test_provider_projection_does_not_define_canonical_entity_id(self) -> None:
-        candidate_manifest = copy.deepcopy(self.manifest)
-        candidate_manifest["public_organizations"] = ["provider-only-org"]
-        self.assertEqual(validate_relationships(candidate_manifest, self.relationships), [])
 
     def test_reciprocal_confirmation_must_reference_other_endpoint(self) -> None:
         candidate = copy.deepcopy(self.relationships)

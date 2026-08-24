@@ -1,14 +1,14 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-schema_version: 1
+schema_version: 2
 
 protocol:
   id: mind
-  version: 0.8.0
+  version: 0.9.0
 
 supported_range:
-  minimum_inclusive: 0.8.0
-  maximum_exclusive: 0.9.0
+  minimum_inclusive: 0.9.0
+  maximum_exclusive: 1.0.0
 
 fixture_types:
   - person
@@ -19,7 +19,6 @@ fixture_types:
 
 fixtures:
   person:
-    kind: personal
     subject:
       type: person
       id: fixture-person
@@ -29,7 +28,6 @@ fixtures:
     display_name: Fixture Person
     expected_result: pass
   organization:
-    kind: organization
     subject:
       type: organization
       id: fixture-organization
@@ -39,7 +37,6 @@ fixtures:
     display_name: Fixture Organization
     expected_result: pass
   agent:
-    kind: agent
     subject:
       type: agent
       id: fixture-agent
@@ -49,7 +46,6 @@ fixtures:
     display_name: Fixture Agent
     expected_result: pass
   project:
-    kind: project
     subject:
       type: project
       id: fixture-project
@@ -59,7 +55,6 @@ fixtures:
     display_name: Fixture Project
     expected_result: pass
   product:
-    kind: product
     subject:
       type: product
       id: fixture-product
@@ -82,6 +77,8 @@ features:
     support: required
   - id: neutral_baseline
     support: required
+  - id: compatibility_freeze
+    support: required
   - id: unknown_optional_modules
     support: required
 
@@ -92,12 +89,12 @@ consumer_modes:
 consumer_support:
   schema:
     supported_range:
-      minimum_inclusive: 0.8.0
-      maximum_exclusive: 0.9.0
+      minimum_inclusive: 0.9.0
+      maximum_exclusive: 1.0.0
   minimal:
     supported_range:
-      minimum_inclusive: 0.8.0
-      maximum_exclusive: 0.9.0
+      minimum_inclusive: 0.9.0
+      maximum_exclusive: 1.0.0
 
 probes:
   authored_relationship: preserved
@@ -106,10 +103,15 @@ probes:
   canonical_visual_integrity_failure: integrity_error
   unknown_optional_module: ignored_when_not_requested
   unknown_required_module: rejected
+  unknown_root_manifest_field: rejected
+  removed_mind_kind: rejected
+  removed_public_organizations: rejected
 
 compatibility:
+  capability_unit: module
   unknown_optional_modules: ignore_when_not_requested
   unknown_required_modules: reject
+  unknown_root_manifest_fields: reject
 
 baseline:
   strategy: generated_contract_bundle

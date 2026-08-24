@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aiaiaiai.org/mind/schema/conformance/v1",
+  "$id": "https://aiaiaiai.org/mind/schema/conformance/v2",
   "title": "Mind Protocol Conformance Suite",
-  "description": "Machine-readable fixture, feature, compatibility, and consumer-mode contract for Mind Protocol conformance.",
+  "description": "Machine-readable fixture, feature, compatibility, probe, and consumer-range contract for Mind Protocol conformance.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "protocol", "supported_range", "fixture_types", "fixtures", "features", "consumer_modes", "consumer_support", "probes", "compatibility", "baseline"],
@@ -36,9 +36,8 @@
     "fixture": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "subject", "owner", "display_name", "expected_result"],
+      "required": ["subject", "owner", "display_name", "expected_result"],
       "properties": {
-        "kind": {"type": "string", "enum": ["personal", "organization", "agent", "project", "product"]},
         "subject": {"$ref": "#/$defs/entity_ref"},
         "owner": {"$ref": "#/$defs/entity_ref"},
         "display_name": {"type": "string", "minLength": 1},
@@ -64,7 +63,7 @@
     }
   },
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "protocol": {
       "type": "object",
       "additionalProperties": false,
@@ -106,23 +105,28 @@
     "probes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module"],
+      "required": ["authored_relationship", "derived_relationship", "canonical_visual_resolved", "canonical_visual_integrity_failure", "unknown_optional_module", "unknown_required_module", "unknown_root_manifest_field", "removed_mind_kind", "removed_public_organizations"],
       "properties": {
         "authored_relationship": {"const": "preserved"},
         "derived_relationship": {"const": "rejected_from_canonical"},
         "canonical_visual_resolved": {"const": "resolved"},
         "canonical_visual_integrity_failure": {"const": "integrity_error"},
         "unknown_optional_module": {"const": "ignored_when_not_requested"},
-        "unknown_required_module": {"const": "rejected"}
+        "unknown_required_module": {"const": "rejected"},
+        "unknown_root_manifest_field": {"const": "rejected"},
+        "removed_mind_kind": {"const": "rejected"},
+        "removed_public_organizations": {"const": "rejected"}
       }
     },
     "compatibility": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["unknown_optional_modules", "unknown_required_modules"],
+      "required": ["capability_unit", "unknown_optional_modules", "unknown_required_modules", "unknown_root_manifest_fields"],
       "properties": {
+        "capability_unit": {"const": "module"},
         "unknown_optional_modules": {"const": "ignore_when_not_requested"},
-        "unknown_required_modules": {"const": "reject"}
+        "unknown_required_modules": {"const": "reject"},
+        "unknown_root_manifest_fields": {"const": "reject"}
       }
     },
     "baseline": {

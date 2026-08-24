@@ -1,10 +1,10 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-schema_version: 2
+schema_version: 3
 
 protocol:
   id: mind
-  version: 0.8.0
+  version: 0.9.0
   neutrality:
     subject: implementation_independent
     publication_owner: implementation_independent
@@ -34,6 +34,9 @@ contracts:
   conformance:
     schema: schema/conformance.schema.json
     role: machine_runnable_conformance_suite
+  compatibility:
+    schema: schema/compatibility.schema.json
+    role: compatibility_freeze_and_migration_policy
 
 visual_identity:
   asset_ref_resolution:
@@ -66,9 +69,15 @@ conformance:
     source: protocol_contract_set
     persistent_generic_ontology: forbidden
   compatibility:
+    capability_unit: module
     range_semantics: minimum_inclusive_maximum_exclusive
     unknown_optional_modules: ignore_when_not_requested
     unknown_required_modules: reject
+    unknown_root_manifest_fields: reject
+
+compatibility:
+  policy: compatibility.yaml
+  status: frozen_pre_1_0
 
 instance_policy:
   canonical_instance_branch: master

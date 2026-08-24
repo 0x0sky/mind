@@ -23,6 +23,7 @@ IDENTITY_SCHEMA_PATH = ROOT / "schema/identity.schema.json"
 IDENTITY_RESOURCE_SCHEMA = "schema/identity-resource.schema.json"
 VISUAL_ASSETS_SCHEMA = "schema/visual-assets.schema.json"
 CONFORMANCE_SCHEMA = "schema/conformance.schema.json"
+COMPATIBILITY_SCHEMA = "schema/compatibility.schema.json"
 
 EXPECTED_CONTRACTS = {
     "manifest": "schema/mind.schema.json",
@@ -32,6 +33,7 @@ EXPECTED_CONTRACTS = {
     "relationships": "schema/relationships.schema.json",
     "visual_assets": VISUAL_ASSETS_SCHEMA,
     "conformance": CONFORMANCE_SCHEMA,
+    "compatibility": COMPATIBILITY_SCHEMA,
 }
 
 
@@ -58,10 +60,12 @@ def validate_protocol() -> list[str]:
         return errors
 
     manifest = load_yaml_mapping(MANIFEST_PATH)
-    if manifest["protocol"]["id"] != protocol["protocol"]["id"]:
-        errors.append("manifest protocol id must match protocol.yaml")
-    if manifest["protocol"]["version"] != protocol["protocol"]["version"]:
-        errors.append("manifest protocol version must match protocol.yaml")
+    protocol_ref = {
+        "id": protocol["protocol"]["id"],
+        "version": protocol["protocol"]["version"],
+    }
+    if manifest.get("protocol") != protocol_ref:
+        errors.append("manifest protocol id/version must match protocol.yaml")
 
     subject = manifest["mind"]["subject"]
     expected_instance_name = f"mind@{subject['id']}"
@@ -84,8 +88,7 @@ def validate_protocol() -> list[str]:
         except ValueError as error:
             errors.append(f"protocol.contracts.{contract_id}.schema: {error}")
 
-    visual_policy = protocol["visual_identity"]
-    resolver = visual_policy["asset_ref_resolution"]
+    resolver = protocol["visual_identity"]["asset_ref_resolution"]
     if resolver["resource_schema"] != VISUAL_ASSETS_SCHEMA:
         errors.append(
             "protocol.visual_identity.asset_ref_resolution.resource_schema "
@@ -103,11 +106,24 @@ def validate_protocol() -> list[str]:
             f"conformance{error[1:]}"
             for error in schema_errors(Draft202012Validator(conformance_schema), conformance)
         )
-        if conformance.get("protocol") != {
-            "id": protocol["protocol"]["id"],
-            "version": protocol["protocol"]["version"],
-        }:
+        if conformance.get("protocol") != protocol_ref:
             errors.append("conformance suite must target protocol id/version exactly")
+
+    compatibility_ref = protocol["compatibility"]["policy"]
+    try:
+        compatibility = load_yaml_mapping(repository_file(compatibility_ref))
+        compatibility_schema = load_schema(repository_file(COMPATIBILITY_SCHEMA))
+    except ValueError as error:
+        errors.append(f"protocol.compatibility.policy: {error}")
+    else:
+        errors.extend(
+            f"compatibility{error[1:]}"
+            for error in schema_errors(
+                Draft202012Validator(compatibility_schema), compatibility
+            )
+        )
+        if compatibility.get("protocol") != protocol_ref:
+            errors.append("compatibility policy must target protocol id/version exactly")
 
     descriptor = load_yaml_mapping(IDENTITY_MODULE_PATH)
     identity_resource = descriptor.get("module", {}).get("resources", {}).get("identity")
@@ -133,7 +149,6 @@ def validate_protocol() -> list[str]:
         f"identity{error[1:]}"
         for error in schema_errors(Draft202012Validator(identity_schema), identity)
     )
-
     if identity.get("type") != subject.get("type") or identity.get("id") != subject.get("id"):
         errors.append("canonical identity type/id must match manifest mind.subject exactly")
 
@@ -153,7 +168,7 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print("protocol and mind instance binding are valid")
+    print("protocol, conformance, compatibility, and mind instance binding are valid")
     return 0
 
 

@@ -1,12 +1,11 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-schema_version: 2
+schema_version: 3
 protocol:
   id: mind
-  version: 0.8.0
+  version: 0.9.0
 mind:
   name: mind@synthetic-agent
-  kind: agent
   context_version: 1.0.0
   subject:
     type: agent

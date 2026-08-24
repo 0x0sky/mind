@@ -40,8 +40,15 @@ class BaselineGenerationTests(unittest.TestCase):
             self.assertEqual(generated_manifest_errors(output), [])
             self.assertEqual(leakage_errors(output), [])
             manifest = load_yaml_mapping(output / "manifest.yaml")
-            self.assertEqual(manifest["mind"]["kind"], "abstract")
+            self.assertEqual(manifest["schema_version"], 3)
+            self.assertEqual(
+                manifest["mind"]["subject"],
+                {"type": "unspecified", "id": "unspecified"},
+            )
+            self.assertNotIn("kind", manifest["mind"])
+            self.assertNotIn("public_organizations", manifest)
             self.assertEqual(manifest["modules"]["registered"], [])
+            self.assertTrue((output / "compatibility.yaml").is_file())
 
     def test_full_baseline_check_passes(self) -> None:
         self.assertEqual(check_baseline(), [])

@@ -29,20 +29,20 @@ from validate_manifest import (
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL_PATH = ROOT / "protocol.yaml"
 CONFORMANCE_PATH = ROOT / "conformance.yaml"
+COMPATIBILITY_PATH = ROOT / "compatibility.yaml"
 SCHEMA_ROOT = ROOT / "schema"
 REFERENCE_MANIFEST = ROOT / "manifest.yaml"
 
 
 def abstract_manifest(protocol: dict[str, Any]) -> dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "protocol": {
             "id": protocol["protocol"]["id"],
             "version": protocol["protocol"]["version"],
         },
         "mind": {
             "name": "mind",
-            "kind": "abstract",
             "context_version": "0.0.0",
             "subject": {"type": "unspecified", "id": "unspecified"},
             "owner": {"type": "unspecified", "id": "unspecified"},
@@ -120,6 +120,7 @@ def generate_baseline(output: Path) -> dict[str, str]:
 
     shutil.copyfile(PROTOCOL_PATH, output / "protocol.yaml")
     shutil.copyfile(CONFORMANCE_PATH, output / "conformance.yaml")
+    shutil.copyfile(COMPATIBILITY_PATH, output / "compatibility.yaml")
     shutil.copytree(SCHEMA_ROOT, output / "schema")
     write_yaml(output / "manifest.yaml", abstract_manifest(protocol))
 
@@ -159,8 +160,13 @@ def generated_manifest_errors(output: Path) -> list[str]:
     }
     if manifest.get("protocol") != expected_protocol:
         errors.append("baseline manifest protocol must match generated protocol descriptor")
-    if manifest.get("mind", {}).get("kind") != "abstract":
-        errors.append("generated baseline must remain abstract")
+    subject = manifest.get("mind", {}).get("subject")
+    if subject != {"type": "unspecified", "id": "unspecified"}:
+        errors.append("generated baseline must retain explicit unspecified abstract subject")
+    if "kind" in manifest.get("mind", {}):
+        errors.append("generated baseline must not reintroduce removed mind.kind")
+    if "public_organizations" in manifest:
+        errors.append("generated baseline must not contain provider-specific organization projection")
     return errors
 
 
@@ -168,17 +174,13 @@ def reference_instance_tokens() -> set[str]:
     manifest = load_yaml_mapping(REFERENCE_MANIFEST)
     tokens: set[str] = {"github.com/0x0sky/mind"}
     mind = manifest.get("mind", {})
-    for key in ("name",):
-        value = mind.get(key)
-        if isinstance(value, str):
-            tokens.add(value)
+    name = mind.get("name")
+    if isinstance(name, str):
+        tokens.add(name)
     for key in ("subject", "owner"):
         entity = mind.get(key)
         if isinstance(entity, dict) and isinstance(entity.get("id"), str):
             tokens.add(entity["id"])
-    organizations = manifest.get("public_organizations")
-    if isinstance(organizations, list):
-        tokens.update(value for value in organizations if isinstance(value, str))
     return {token for token in tokens if len(token) >= 4}
 
 
@@ -213,7 +215,11 @@ def check_baseline() -> list[str]:
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="verify determinism, validity, and instance isolation")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="verify determinism, validity, compatibility, and instance isolation",
+    )
     parser.add_argument("--output", type=Path, help="directory to generate when not using --check")
     return parser.parse_args()
 

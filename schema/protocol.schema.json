@@ -1,18 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://aiaiaiai.org/mind/schema/protocol/v2",
+  "$id": "https://aiaiaiai.org/mind/schema/protocol/v3",
   "title": "Mind Protocol Descriptor",
-  "description": "Implementation-independent descriptor for the canonical Mind Protocol contracts and conformance package.",
+  "description": "Implementation-independent descriptor for the canonical Mind Protocol contracts, conformance package, and compatibility policy.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema_version",
-    "protocol",
-    "contracts",
-    "visual_identity",
-    "conformance",
-    "instance_policy"
-  ],
+  "required": ["schema_version", "protocol", "contracts", "visual_identity", "conformance", "compatibility", "instance_policy"],
   "$defs": {
     "semver": {
       "type": "string",
@@ -27,15 +20,12 @@
           "type": "string",
           "pattern": "^schema/[A-Za-z0-9_.-]+\\.json$"
         },
-        "role": {
-          "type": "string",
-          "minLength": 1
-        }
+        "role": {"type": "string", "minLength": 1}
       }
     }
   },
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "protocol": {
       "type": "object",
       "additionalProperties": false,
@@ -60,7 +50,7 @@
     "contracts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["manifest", "module", "identity", "identity_resource", "relationships", "visual_assets", "conformance"],
+      "required": ["manifest", "module", "identity", "identity_resource", "relationships", "visual_assets", "conformance", "compatibility"],
       "properties": {
         "manifest": {"$ref": "#/$defs/contract"},
         "module": {"$ref": "#/$defs/contract"},
@@ -68,7 +58,8 @@
         "identity_resource": {"$ref": "#/$defs/contract"},
         "relationships": {"$ref": "#/$defs/contract"},
         "visual_assets": {"$ref": "#/$defs/contract"},
-        "conformance": {"$ref": "#/$defs/contract"}
+        "conformance": {"$ref": "#/$defs/contract"},
+        "compatibility": {"$ref": "#/$defs/contract"}
       }
     },
     "visual_identity": {
@@ -144,13 +135,24 @@
         "compatibility": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["range_semantics", "unknown_optional_modules", "unknown_required_modules"],
+          "required": ["capability_unit", "range_semantics", "unknown_optional_modules", "unknown_required_modules", "unknown_root_manifest_fields"],
           "properties": {
+            "capability_unit": {"const": "module"},
             "range_semantics": {"const": "minimum_inclusive_maximum_exclusive"},
             "unknown_optional_modules": {"const": "ignore_when_not_requested"},
-            "unknown_required_modules": {"const": "reject"}
+            "unknown_required_modules": {"const": "reject"},
+            "unknown_root_manifest_fields": {"const": "reject"}
           }
         }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "status"],
+      "properties": {
+        "policy": {"const": "compatibility.yaml"},
+        "status": {"const": "frozen_pre_1_0"}
       }
     },
     "instance_policy": {

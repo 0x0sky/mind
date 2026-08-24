@@ -61,8 +61,6 @@ def validate_agent_case(
     owner = mind["owner"]
     identity = envelope["identity"]
 
-    if mind["kind"] != "agent":
-        errors.append("agent fixture mind.kind must be 'agent'")
     if subject["type"] != "agent":
         errors.append("agent fixture subject.type must be 'agent'")
     if mind["name"] != f"mind@{subject['id']}":

@@ -131,8 +131,9 @@ def validate_identity_resources(
     )
     errors.extend(discovery_errors)
 
-    kind = manifest.get("mind", {}).get("kind")
-    if kind != "abstract" and len(resources) != 1:
+    subject = manifest.get("mind", {}).get("subject")
+    abstract = isinstance(subject, dict) and subject.get("type") == "unspecified"
+    if not abstract and len(resources) != 1:
         errors.append(
             "concrete mind must publish exactly one resource using "
             f"{identity_resource_schema_ref}; found {len(resources)}"

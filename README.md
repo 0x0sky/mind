@@ -16,7 +16,7 @@ This repository deliberately contains two different things without conflating th
 
 The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is not a neutral identity template.
 
-The current development line targets **Mind Protocol `0.6.0-rc.2`**, manifest schema `2`, and keeps this concrete instance context independently versioned.
+The current stable source contract is **Mind Protocol `0.6.0`**, manifest schema `2`, while the concrete instance context remains independently versioned.
 
 ## Canonical Identity
 
@@ -33,7 +33,7 @@ A concrete mind carries that value through [`schema/identity-resource.schema.jso
 
 ## Canonical visual assets
 
-`0.6.0-rc.2` adds [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), a concrete publication contract for resolving opaque canonical `asset_ref` values.
+Mind Protocol `0.6.0` defines [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), a concrete publication contract for resolving opaque canonical `asset_ref` values.
 
 The protocol keeps byte locations and integrity outside universal Identity:
 
@@ -93,7 +93,7 @@ The axes are intentionally independent:
 - `mind.context_version` changes when durable context of one concrete mind changes;
 - resource/schema versions evolve with their own machine contracts.
 
-Merging protocol development is not a protocol release. Tags and GitHub Releases are separate actions.
+Merging protocol source changes is not a published release. Tags and GitHub Releases are separate actions.
 
 ## mind-web
 

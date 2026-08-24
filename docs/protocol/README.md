@@ -1,10 +1,10 @@
 # Mind Protocol 0.6
 
-Status: **`0.6.0-rc.2` development candidate**
+Status: **`0.6.0` stable source contract**
 
 `0.6` separates canonical protocol semantics from any one concrete identity implementation, then defines portable canonical visual-asset resolution on top of that boundary.
 
-The accepted `0.5` relationship/provenance semantics remain part of the line. Consumer conformance is intentionally deferred to `0.8`: a renderer or application may verify compatibility, but no consumer grants protocol stability or protocol authority.
+The accepted `0.5` relationship/provenance semantics remain part of the stable line. Consumer conformance remains a `0.8` milestone: a renderer or application may verify compatibility, but no consumer grants protocol authority.
 
 ## Two entry points
 
@@ -17,11 +17,11 @@ For this repository, `master` is the living canonical instance **`mind@0x0sky`**
 
 ## Version model
 
-| Version | Current development reference | Meaning |
+| Version | Stable reference | Meaning |
 | --- | --- | --- |
 | Protocol descriptor schema | `1` | Shape of `protocol.yaml`. |
 | Manifest schema | `2` | Shape of one concrete `manifest.yaml`. |
-| Protocol | `0.6.0-rc.2` | Shared semantics implemented by compatible minds and consumers. |
+| Protocol | `0.6.0` | Shared stable semantics implemented by compatible minds and consumers. |
 | Concrete instance context | independent | Durable content version of one implementation. |
 | Identity schema | `v1` | Universal implementation-independent Identity value. |
 | Identity-resource envelope | `v1` | Packaging of that value inside a concrete mind. |
@@ -29,9 +29,24 @@ For this repository, `master` is the living canonical instance **`mind@0x0sky`**
 
 These axes are independent. A protocol-version change does not imply a concrete context change.
 
+## Stable protocol boundaries
+
+The `0.6.0` source contract stabilizes:
+
+- universal Identity independent from provider, repository layout, storage, renderer, and runtime;
+- the concrete identity-resource envelope as packaging rather than Identity semantics;
+- explicit subject versus publication-owner semantics;
+- opaque canonical `primary_mark.asset_ref` values;
+- typed canonical visual-asset descriptors with required SHA-256 integrity;
+- deterministic missing/ambiguous/unsupported/integrity failure behavior;
+- the rule that derived/provider visuals cannot silently become canonical;
+- `avatar` as presentation-only for the `0.6` line.
+
+No named real-world identity or visual asset is required to define or test those boundaries.
+
 ## Protocol package
 
-`protocol.yaml` names the machine contracts that constitute the current protocol package:
+`protocol.yaml` names the machine contracts that constitute this line:
 
 - manifest composition;
 - module descriptors;
@@ -40,83 +55,38 @@ These axes are independent. A protocol-version change does not imply a concrete 
 - authored relationships;
 - canonical visual-asset catalog.
 
-It also publishes machine-readable visual-identity policy for resolution, integrity, media support, fallback, and avatar semantics.
-
-Merging protocol development into `master` is not itself a release. Tags and GitHub Releases are separate publication actions.
-
-## Identity split
-
-[`../../schema/identity.schema.json`](../../schema/identity.schema.json) defines only the canonical semantic Identity value. It has no provider binding, repository path, validation path, storage contract, runtime state, or renderer handle.
-
-A concrete mind carries that value through [`../../schema/identity-resource.schema.json`](../../schema/identity-resource.schema.json). The embedded Identity `type/id` must match `mind.subject`.
-
-Full semantics are defined in [`IDENTITY.md`](IDENTITY.md).
+Full Identity semantics are in [`IDENTITY.md`](IDENTITY.md), visual resolution in [`VISUAL_IDENTITY.md`](VISUAL_IDENTITY.md), relationship/provenance semantics in [`RELATIONSHIPS.md`](RELATIONSHIPS.md), and migration instructions in [`MIGRATION_0.6.md`](MIGRATION_0.6.md).
 
 ## Canonical visual assets
 
-`0.6.0-rc.2` completes the protocol-level visual boundary without requiring any named real-world identity or logo.
-
 Universal Identity keeps an opaque `visual_identity.primary_mark.asset_ref`. Concrete publications may expose a typed resource conforming to [`../../schema/visual-assets.schema.json`](../../schema/visual-assets.schema.json).
 
-Resolution is deterministic:
-
-- discover typed visual-asset resources;
-- select exactly one descriptor matching the opaque `asset_ref`;
-- enforce protocol media policy;
-- resolve the publication-relative asset location;
-- verify required SHA-256 integrity;
-- return an explicit outcome rather than silently substituting another visual.
+Resolution is deterministic: discover the typed resource, select exactly one matching descriptor, enforce media support, resolve the publication-relative resource, and verify SHA-256 before treating bytes as canonical.
 
 Normative media support is SVG and PNG. WebP is protocol-allowed but consumer-optional.
 
 Provider avatars, generated portraits, screenshots, or other derived visuals cannot silently become the canonical mark. `avatar` is presentation-only in the `0.6` line.
 
-See [`VISUAL_IDENTITY.md`](VISUAL_IDENTITY.md).
+## Conformance evidence
 
-## Synthetic conformance fixtures
+The source contract is guarded by:
 
-The protocol package includes synthetic visual-identity fixtures for:
+- validation of every published JSON Schema;
+- manifest/module/resource validation;
+- protocol descriptor and concrete-instance binding validation;
+- relationship/provenance validation;
+- synthetic canonical visual-asset fixtures for person, organization, and agent;
+- regression tests for unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes;
+- validator regression coverage for correctness-critical invariants.
 
-- person;
-- organization;
-- agent.
+This evidence stabilizes the source contract; it does not replace the broader independent-consumer conformance work planned for `0.8`.
 
-They prove the visual contract without making any real person, organization, agent, provider account, or repository asset a protocol dependency.
+## Migration
 
-Regression tests additionally prove deterministic unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes.
+See [`MIGRATION_0.6.md`](MIGRATION_0.6.md) for migration from pre-`0.6` identity resources and the RC candidates.
 
-## Relationships and provider projections
+`0.6.0` adds no semantic delta beyond `0.6.0-rc.2`; the stable promotion freezes the already-tested RC2 contract.
 
-The authored relationship and provenance model introduced in `0.5` remains intact. Canonical relationship entity ids remain provider-independent.
+## Publication boundary
 
-Provider-facing compatibility fields may contain provider identifiers. They must never be interpreted as canonical entity identity merely because strings happen to match.
-
-## Migration from earlier 0.6 candidates
-
-A concrete implementation adopting `0.6.0-rc.2` should:
-
-1. keep manifest schema `2` unless the manifest machine shape itself changes;
-2. declare protocol version `0.6.0-rc.2`;
-3. keep concrete context version unchanged when only the shared protocol version advances;
-4. continue treating `schema/identity.schema.json` as universal Identity;
-5. resolve authored `primary_mark.asset_ref` only through the typed visual-assets contract;
-6. never store repository paths, provider URLs, digests, or storage locators inside universal Identity;
-7. preserve derived provider visuals as noncanonical presentation/evidence;
-8. treat `avatar` as presentation-only.
-
-A concrete implementation with no canonical primary mark remains conformant; visual identity is optional.
-
-## Acceptance gate for `0.6.0-rc.2`
-
-The candidate is internally acceptable when:
-
-- `protocol.yaml` and every published JSON Schema validate;
-- universal Identity remains provider/storage/runtime independent;
-- asset-ref resolution is deterministic;
-- missing, ambiguous, unsupported-media, and integrity failures are observable;
-- provider-derived visuals cannot silently replace canonical marks;
-- synthetic person, organization, and agent visual fixtures validate;
-- no named real-world asset is required by protocol tests;
-- relationship/provenance and existing validator regression suites remain green.
-
-Publishing a tag or GitHub Release remains a separate action.
+The source tree may implement the stable `0.6.0` contract without a published protocol release. Git tags and GitHub Releases are separate explicitly authorized actions.

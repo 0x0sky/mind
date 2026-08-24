@@ -51,8 +51,8 @@ The protocol does not silently reinterpret the old field.
 
 The current resource publishes `0x0sky member_of`:
 
-- `organization:aiaiaiai-tech`;
-- `organization:0xda-market`;
-- `organization:nilx-one`.
+- `organization:aiaiaiai-tech` — `reciprocal`; counterpart `aiaiaiai-tech/mind` publishes local relationship `member-0x0sky`;
+- `organization:0xda-market` — `asserted`;
+- `organization:nilx-one` — `asserted`.
 
-All three are currently `asserted`. Reciprocal confirmation is added only after the corresponding canonical organization mind independently publishes a matching claim.
+Reciprocity is recorded only where the counterpart canonical mind independently publishes the same semantic relationship. The GitHub membership view is not used as a substitute for that assertion.

@@ -15,7 +15,7 @@ mind:
   # Compatibility classification retained for current consumers during the 0.x migration.
   kind: personal
   # Semantic version of the context published by this concrete mind.
-  context_version: 0.3.9
+  context_version: 0.3.10
   # Entity this mind describes and is authoritative about.
   subject:
     type: person

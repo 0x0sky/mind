@@ -18,7 +18,12 @@ relationships:
         type: person
         id: 0x0sky
     confirmation:
-      state: asserted
+      state: reciprocal
+      counterpart:
+        entity:
+          type: organization
+          id: aiaiaiai-tech
+        relationship_id: member-0x0sky
 
   - id: member-of-0xda-market
     predicate: member_of

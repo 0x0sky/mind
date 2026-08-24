@@ -9,7 +9,7 @@ Mind Protocol tag vX.Y.Z
         ↓
 neutral protocol baseline
         ↓
-explicit subject / owner / Identity
+subject + publication-owner semantics + Identity
         ↓
 concrete mind@<subject.id>
 ```
@@ -59,7 +59,14 @@ python scripts/bootstrap_mind.py \
 
 If `--owner-type` and `--owner-id` are omitted, owner defaults to the subject. Supplying only one is rejected.
 
-The `--source-tag` must exactly match the protocol version in the checked-out contract (`v{protocol.version}`). A floating branch name such as `master` is rejected as a release source.
+The `--source-tag` must exactly match the protocol version in the checked-out contract (`v{protocol.version}`). The CLI additionally proves all of the following before generating anything:
+
+- the command is running inside the Mind Protocol Git checkout;
+- the supplied tag exists locally;
+- the checked-out `HEAD` resolves to exactly the same commit as that tag;
+- `protocol.yaml`, `conformance.yaml`, `compatibility.yaml`, and `schema/` have no tracked local modifications relative to that tagged checkout.
+
+A floating branch such as `master`, a branch commit that merely declares the same version string, or a locally modified released contract is therefore rejected as a concrete bootstrap source.
 
 ## Generated minimum
 
@@ -119,7 +126,7 @@ Protocol `1.0.0` can therefore be consumed by concrete contexts `0.1.0`, `2.4.3`
 
 A prerelease such as `v1.0.0-rc.1` may be used for compatibility canaries after that prerelease is formally published. It should not be treated as the stable `1.x` compatibility guarantee.
 
-The same bootstrap mechanism is used; the exact prerelease tag is simply supplied as `--source-tag`.
+The same bootstrap mechanism is used; the exact prerelease tag is supplied as `--source-tag`, and the checkout proof applies identically.
 
 ## Verification
 
@@ -130,6 +137,8 @@ The protocol repository regression suite verifies that bootstrap:
 - binds Identity type/id to the manifest subject;
 - preserves distinct subject/publication-owner semantics;
 - creates no `mind@0x0sky` content in the generated concrete publication;
+- rejects a `HEAD` that differs from the named release tag;
+- rejects tracked modifications to the released protocol contract set;
 - records exact release consumption rather than floating `master`;
 - leaves protocol schemas unchanged.
 

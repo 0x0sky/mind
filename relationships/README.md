@@ -41,12 +41,13 @@ Consumers may combine those observations with authored relationships, but they m
 
 In the reference mind:
 
-- every listed legacy organization must be backed by an authored, directed `member_of` relationship from `person:0x0sky`;
-- the legacy field remains a compatibility projection rather than relationship authority;
-- provider-specific entries such as `aiaiaiai-org` may map to provider-independent relationship entities such as `organization:aiaiaiai`;
+- the legacy field contains GitHub organization logins and remains a provider-facing compatibility projection rather than relationship authority;
+- canonical `member_of` endpoints use provider-independent entity ids;
+- `aiaiaiai-org` therefore remains the GitHub login while the canonical relationship endpoint is `organization:aiaiaiai`;
+- exact string equality between a provider login and a canonical entity id is neither required nor sufficient to establish identity;
 - omission and `[]` keep their historical legacy-consumer meanings until the migration is completed explicitly.
 
-The protocol does not silently reinterpret the old field.
+The protocol does not silently reinterpret the old field. A future provider-binding contract must make any provider-to-canonical mapping explicit rather than infer it from naming conventions.
 
 ## Current authored relationships
 

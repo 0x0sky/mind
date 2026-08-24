@@ -10,7 +10,7 @@ on:
         required: true
         type: string
       target_sha:
-        description: Exact verified master commit to tag and release
+        description: Exact master merge commit to tag and release
         required: true
         type: string
       channel:
@@ -23,6 +23,8 @@ on:
 
 permissions:
   contents: write
+  actions: read
+  pull-requests: read
 
 jobs:
   publish:
@@ -84,6 +86,43 @@ jobs:
             echo "tag v${VERSION} already exists; release tags are immutable" >&2
             exit 1
           fi
+
+      - name: Verify target tree came from green pull request CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: ${{ inputs.target_sha }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="$(
+            gh api "repos/${GITHUB_REPOSITORY}/commits/${TARGET_SHA}/pulls" \
+              --jq '[.[] | select(.merged_at != null and .base.ref == "master" and .merge_commit_sha == env.TARGET_SHA)] | first | .number'
+          )"
+          if [[ -z "$PR_NUMBER" || "$PR_NUMBER" == "null" ]]; then
+            echo "release target is not the merge commit of a merged pull request into master" >&2
+            exit 1
+          fi
+
+          PR_HEAD_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '.head.sha')"
+          git fetch origin "$PR_HEAD_SHA" --depth=1
+
+          TARGET_TREE="$(git rev-parse "${TARGET_SHA}^{tree}")"
+          TESTED_TREE="$(git rev-parse "${PR_HEAD_SHA}^{tree}")"
+          if [[ "$TARGET_TREE" != "$TESTED_TREE" ]]; then
+            echo "master release tree differs from the pull-request head that was tested" >&2
+            exit 1
+          fi
+
+          RUN_ID="$(
+            gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/manifest-ci.yml/runs?head_sha=${PR_HEAD_SHA}&event=pull_request&status=completed&per_page=50" \
+              --jq '[.workflow_runs[] | select(.conclusion == "success")] | first | .id'
+          )"
+          if [[ -z "$RUN_ID" || "$RUN_ID" == "null" ]]; then
+            echo "no successful Mind Contract CI run found for tested pull-request head" >&2
+            exit 1
+          fi
+
+          echo "release evidence: PR #${PR_NUMBER}, tested head ${PR_HEAD_SHA}, CI run ${RUN_ID}, tree ${TARGET_TREE}"
 
       - name: Build deterministic release artifact
         env:

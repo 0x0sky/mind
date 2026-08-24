@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaiaiai.org/mind/schema/conformance/v1",
+  "title": "Mind Protocol Conformance Suite",
+  "description": "Machine-readable fixture, feature, compatibility, and consumer-mode contract for Mind Protocol conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol", "supported_range", "fixture_types", "fixtures", "features", "consumer_modes", "compatibility", "baseline"],
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": ["person", "organization", "agent", "project", "product"]
+    },
+    "entity_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"$ref": "#/$defs/entity_type"},
+        "id": {"type": "string", "pattern": "^fixture-[a-z0-9-]+$"}
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "subject", "owner", "display_name"],
+      "properties": {
+        "kind": {"type": "string", "enum": ["personal", "organization", "agent", "project", "product"]},
+        "subject": {"$ref": "#/$defs/entity_ref"},
+        "owner": {"$ref": "#/$defs/entity_ref"},
+        "display_name": {"type": "string", "minLength": 1}
+      }
+    },
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "support"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "support": {"type": "string", "enum": ["required", "optional"]}
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "mind"},
+        "version": {"$ref": "#/$defs/semver"}
+      }
+    },
+    "supported_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_inclusive", "maximum_exclusive"],
+      "properties": {
+        "minimum_inclusive": {"$ref": "#/$defs/semver"},
+        "maximum_exclusive": {"$ref": "#/$defs/semver"}
+      }
+    },
+    "fixture_types": {"const": ["person", "organization", "agent", "project", "product"]},
+    "fixtures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["person", "organization", "agent", "project", "product"],
+      "properties": {
+        "person": {"$ref": "#/$defs/fixture"},
+        "organization": {"$ref": "#/$defs/fixture"},
+        "agent": {"$ref": "#/$defs/fixture"},
+        "project": {"$ref": "#/$defs/fixture"},
+        "product": {"$ref": "#/$defs/fixture"}
+      }
+    },
+    "features": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/feature"}
+    },
+    "consumer_modes": {"const": ["schema", "minimal"]},
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_optional_modules", "unknown_required_modules"],
+      "properties": {
+        "unknown_optional_modules": {"const": "ignore_when_not_requested"},
+        "unknown_required_modules": {"const": "reject"}
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "source", "persistent_generic_ontology"],
+      "properties": {
+        "strategy": {"const": "generated_contract_bundle"},
+        "source": {"const": "protocol_contract_set"},
+        "persistent_generic_ontology": {"const": "forbidden"}
+      }
+    }
+  }
+}

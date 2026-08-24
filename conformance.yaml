@@ -1,0 +1,94 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+
+protocol:
+  id: mind
+  version: 0.8.0
+
+supported_range:
+  minimum_inclusive: 0.8.0
+  maximum_exclusive: 0.9.0
+
+fixture_types:
+  - person
+  - organization
+  - agent
+  - project
+  - product
+
+fixtures:
+  person:
+    kind: personal
+    subject:
+      type: person
+      id: fixture-person
+    owner:
+      type: person
+      id: fixture-person
+    display_name: Fixture Person
+  organization:
+    kind: organization
+    subject:
+      type: organization
+      id: fixture-organization
+    owner:
+      type: organization
+      id: fixture-organization
+    display_name: Fixture Organization
+  agent:
+    kind: agent
+    subject:
+      type: agent
+      id: fixture-agent
+    owner:
+      type: organization
+      id: fixture-publisher
+    display_name: Fixture Agent
+  project:
+    kind: project
+    subject:
+      type: project
+      id: fixture-project
+    owner:
+      type: organization
+      id: fixture-publisher
+    display_name: Fixture Project
+  product:
+    kind: product
+    subject:
+      type: product
+      id: fixture-product
+    owner:
+      type: organization
+      id: fixture-publisher
+    display_name: Fixture Product
+
+features:
+  - id: universal_identity
+    support: required
+  - id: identity_resource
+    support: required
+  - id: relationships_provenance
+    support: required
+  - id: canonical_visual_identity
+    support: optional
+  - id: agent_identity
+    support: required
+  - id: neutral_baseline
+    support: required
+  - id: unknown_optional_modules
+    support: required
+
+consumer_modes:
+  - schema
+  - minimal
+
+compatibility:
+  unknown_optional_modules: ignore_when_not_requested
+  unknown_required_modules: reject
+
+baseline:
+  strategy: generated_contract_bundle
+  source: protocol_contract_set
+  persistent_generic_ontology: forbidden

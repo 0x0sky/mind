@@ -1,10 +1,10 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-schema_version: 1
+schema_version: 2
 
 protocol:
   id: mind
-  version: 0.7.0
+  version: 0.8.0
   neutrality:
     subject: implementation_independent
     publication_owner: implementation_independent
@@ -31,6 +31,9 @@ contracts:
   visual_assets:
     schema: schema/visual-assets.schema.json
     role: canonical_visual_asset_resolution_resource
+  conformance:
+    schema: schema/conformance.schema.json
+    role: machine_runnable_conformance_suite
 
 visual_identity:
   asset_ref_resolution:
@@ -55,6 +58,17 @@ visual_identity:
     derived_visuals: must_not_silently_replace_canonical
   avatar:
     status: presentation_only
+
+conformance:
+  suite: conformance.yaml
+  baseline:
+    strategy: generated_contract_bundle
+    source: protocol_contract_set
+    persistent_generic_ontology: forbidden
+  compatibility:
+    range_semantics: minimum_inclusive_maximum_exclusive
+    unknown_optional_modules: ignore_when_not_requested
+    unknown_required_modules: reject
 
 instance_policy:
   canonical_instance_branch: master

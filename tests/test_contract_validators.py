@@ -61,17 +61,12 @@ class ContractValidatorRegressionTests(unittest.TestCase):
         errors = validate_relationships(self.manifest, candidate)
         self.assertTrue(any("must match $.mind.owner" in error for error in errors), errors)
 
-    def test_legacy_public_organization_requires_authored_membership(self) -> None:
-        candidate = copy.deepcopy(self.relationships)
-        candidate["relationships"] = [
-            relationship
-            for relationship in candidate["relationships"]
-            if relationship["target"]["id"] != "nilx-one"
-        ]
-        errors = validate_relationships(self.manifest, candidate)
-        self.assertTrue(
-            any("legacy projection must be backed" in error for error in errors),
-            errors,
+    def test_provider_projection_does_not_define_canonical_entity_id(self) -> None:
+        candidate_manifest = copy.deepcopy(self.manifest)
+        candidate_manifest["public_organizations"] = ["provider-only-org"]
+        self.assertEqual(
+            validate_relationships(candidate_manifest, self.relationships),
+            [],
         )
 
     def test_reciprocal_confirmation_must_reference_other_endpoint(self) -> None:

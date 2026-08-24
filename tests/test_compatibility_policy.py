@@ -42,10 +42,9 @@ class CompatibilityPolicyRegressionTests(unittest.TestCase):
         self.assertEqual(len(paths), len(set(paths)))
         self.assertEqual(len(schema_ids), len(set(schema_ids)))
 
-    def test_compatibility_schema_accepts_rc_policy_without_schema_byte_change(self) -> None:
+    def test_compatibility_schema_accepts_stable_policy_without_schema_byte_change(self) -> None:
         candidate = copy.deepcopy(self.policy)
-        candidate["protocol"]["version"] = "1.0.0-rc.1"
-        candidate["migration"]["supported_stable_lines"].append("0.9.0")
+        candidate["protocol"]["version"] = "1.0.0"
         errors = schema_errors(Draft202012Validator(self.compatibility_schema), candidate)
         self.assertEqual(errors, [])
 
@@ -73,13 +72,17 @@ class CompatibilityPolicyRegressionTests(unittest.TestCase):
 
     def test_migration_lines_advance_with_release_target(self) -> None:
         self.assertEqual(migration_policy_errors(self.policy), [])
+        self.assertEqual(
+            self.policy["migration"]["supported_stable_lines"],
+            ["0.6.0", "0.7.0", "0.8.0", "0.9.0"],
+        )
 
         candidate = copy.deepcopy(self.policy)
-        candidate["protocol"]["version"] = "1.0.0-rc.1"
-        candidate["migration"]["supported_stable_lines"].append("0.9.0")
+        candidate["protocol"]["version"] = "0.9.0"
+        candidate["migration"]["supported_stable_lines"] = ["0.6.0", "0.7.0", "0.8.0"]
         self.assertEqual(migration_policy_errors(candidate), [])
 
-        candidate["migration"]["supported_stable_lines"].remove("0.8.0")
+        candidate["migration"]["supported_stable_lines"].append("0.9.0")
         errors = migration_policy_errors(candidate)
         self.assertTrue(any("target release exactly" in error for error in errors), errors)
 

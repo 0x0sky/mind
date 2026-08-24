@@ -53,14 +53,21 @@ class RepositoryModelTests(unittest.TestCase):
         self.assertEqual(concrete["source"], "exact_immutable_protocol_release")
         self.assertEqual(concrete["mechanism"], "neutral_bootstrap")
 
-    def test_bootstrap_routing_is_explicit(self) -> None:
-        self.assertEqual(self.model["bootstrap"]["command"], "scripts/bootstrap_mind.py")
+    def test_bootstrap_routing_and_owner_default_are_explicit(self) -> None:
+        bootstrap = self.model["bootstrap"]
+        self.assertEqual(bootstrap["command"], "scripts/bootstrap_mind.py")
+        self.assertEqual(bootstrap["input_authority"], "exact_protocol_release_tag")
         self.assertEqual(
-            self.model["bootstrap"]["input_authority"], "exact_protocol_release_tag"
+            bootstrap["floating_master"],
+            "forbidden_for_release_consumption",
+        )
+        self.assertNotIn("publication_owner", bootstrap["requires_explicit"])
+        self.assertEqual(bootstrap["publication_owner"]["default"], "subject")
+        self.assertEqual(
+            bootstrap["publication_owner"]["explicit_override"], "supported"
         )
         self.assertEqual(
-            self.model["bootstrap"]["floating_master"],
-            "forbidden_for_release_consumption",
+            bootstrap["publication_owner"]["partial_override"], "forbidden"
         )
         self.assertEqual(
             self.model["routing"]["new_mind_creation"], "docs/protocol/BOOTSTRAP.md"

@@ -40,7 +40,7 @@ class ReleaseBundleTests(unittest.TestCase):
                 hashlib.sha256(second.read_bytes()).hexdigest(),
             )
 
-    def test_bundle_contains_release_and_baseline_contracts(self) -> None:
+    def test_bundle_contains_release_baseline_and_bootstrap_contracts(self) -> None:
         version = protocol_version()
         prefix = f"mind-protocol-v{version}/"
         with tempfile.TemporaryDirectory() as directory:
@@ -51,6 +51,7 @@ class ReleaseBundleTests(unittest.TestCase):
             self.assertIn(prefix + "protocol.yaml", entries)
             self.assertIn(prefix + "conformance.yaml", entries)
             self.assertIn(prefix + "compatibility.yaml", entries)
+            self.assertIn(prefix + "bootstrap-guide.md", entries)
             self.assertIn(prefix + "migration-guide.md", entries)
             self.assertIn(prefix + "release-notes.md", entries)
             self.assertIn(prefix + "release-manifest.json", entries)

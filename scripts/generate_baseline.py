@@ -32,6 +32,16 @@ CONFORMANCE_PATH = ROOT / "conformance.yaml"
 COMPATIBILITY_PATH = ROOT / "compatibility.yaml"
 SCHEMA_ROOT = ROOT / "schema"
 REFERENCE_MANIFEST = ROOT / "manifest.yaml"
+BASELINE_README = """# Mind Protocol neutral baseline
+
+This directory is a generated **abstract protocol artifact**. It is not a concrete Mind and must not be published unchanged as a person, organization, agent, project, or product Mind.
+
+Its manifest intentionally uses `subject: unspecified` and `owner: unspecified` and contains no concrete Identity module.
+
+To create a concrete Mind, start from the exact immutable protocol release that produced this baseline and use the documented concrete bootstrap path. Do not copy or rename content from the protocol repository's reference implementation.
+
+<!-- © 2026 aiaiaiai · aiaiaiai.org -->
+"""
 
 
 def abstract_manifest(protocol: dict[str, Any]) -> dict[str, Any]:
@@ -123,6 +133,7 @@ def generate_baseline(output: Path) -> dict[str, str]:
     shutil.copyfile(COMPATIBILITY_PATH, output / "compatibility.yaml")
     shutil.copytree(SCHEMA_ROOT, output / "schema")
     write_yaml(output / "manifest.yaml", abstract_manifest(protocol))
+    (output / "README.md").write_text(BASELINE_README, encoding="utf-8")
 
     files = snapshot(output)
     metadata = {
@@ -210,6 +221,9 @@ def check_baseline() -> list[str]:
             errors.append("baseline generation is not byte-for-byte deterministic")
         errors.extend(generated_manifest_errors(first))
         errors.extend(leakage_errors(first))
+        readme = (first / "README.md").read_text(encoding="utf-8")
+        if "not a concrete Mind" not in readme:
+            errors.append("generated baseline must identify itself as non-concrete")
     return errors
 
 

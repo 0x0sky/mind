@@ -5,13 +5,18 @@ name: Mind Contract CI
 on:
   pull_request:
     paths:
+      - README.md
+      - AGENTS.md
+      - mind-repository.yaml
       - protocol.yaml
       - conformance.yaml
       - compatibility.yaml
       - manifest.yaml
       - schema/**
+      - docs/REPOSITORY_MODEL.md
       - docs/protocol/**
       - scripts/semver.py
+      - scripts/bootstrap_mind.py
       - scripts/validate_manifest.py
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py
@@ -87,5 +92,5 @@ jobs:
       - name: Validate reproducible formal release bundle
         run: python scripts/build_release_bundle.py --check
 
-      - name: Run validator, migration, and release regression tests
+      - name: Run validator, bootstrap, migration, and release regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

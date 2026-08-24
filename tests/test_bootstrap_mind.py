@@ -26,12 +26,15 @@ from validate_manifest import (  # noqa: E402
     validate_modules,
 )
 
+PROTOCOL = load_yaml_mapping(ROOT / "protocol.yaml")["protocol"]
+SOURCE_TAG = f"v{PROTOCOL['version']}"
+
 
 class BootstrapMindTests(unittest.TestCase):
     def bootstrap(self, root: Path, **overrides: object) -> Path:
         output = root / "mind"
         arguments: dict[str, object] = {
-            "source_tag": "v1.0.0-rc.1",
+            "source_tag": SOURCE_TAG,
             "subject_type": "organization",
             "subject_id": "fixture-organization",
             "display_name": "Fixture Organization",
@@ -91,8 +94,8 @@ class BootstrapMindTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = self.bootstrap(Path(directory))
             lock = load_yaml_mapping(output / "protocol.lock.yaml")
-            self.assertEqual(lock["protocol"]["version"], "1.0.0-rc.1")
-            self.assertEqual(lock["source"]["tag"], "v1.0.0-rc.1")
+            self.assertEqual(lock["protocol"]["version"], PROTOCOL["version"])
+            self.assertEqual(lock["source"]["tag"], SOURCE_TAG)
             self.assertEqual(lock["source"]["floating_branch"], "forbidden")
             self.assertFalse(lock["reference_instance"]["template_authority"])
             self.assertEqual(lock["reference_instance"]["copy_content"], "forbidden")
@@ -150,7 +153,7 @@ class BootstrapMindTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "not empty"):
                 bootstrap_mind(
                     output,
-                    source_tag="v1.0.0-rc.1",
+                    source_tag=SOURCE_TAG,
                     subject_type="person",
                     subject_id="fixture-person",
                     display_name="Fixture Person",

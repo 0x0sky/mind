@@ -1,0 +1,36 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+
+protocol:
+  id: mind
+  version: 0.6.0-rc.1
+  neutrality:
+    subject: implementation_independent
+    publication_owner: implementation_independent
+    provider: implementation_independent
+    repository_layout: implementation_independent
+    runtime: implementation_independent
+
+contracts:
+  manifest:
+    schema: schema/mind.schema.json
+    role: concrete_instance_composition
+  module:
+    schema: schema/module.schema.json
+    role: concrete_instance_module_descriptor
+  identity:
+    schema: schema/identity.schema.json
+    role: canonical_identity_value
+  identity_resource:
+    schema: schema/identity-resource.schema.json
+    role: concrete_mind_resource_envelope
+  relationships:
+    schema: schema/relationships.schema.json
+    role: authored_relationship_resource
+
+instance_policy:
+  canonical_instance_branch: master
+  instance_name: mind@{subject.id}
+  protocol_contracts_are_instance_neutral: required
+  instance_context_is_versioned_independently: required

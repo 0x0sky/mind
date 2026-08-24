@@ -42,11 +42,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHANNEL: ${{ inputs.channel }}
-          TARGET_BRANCH: ${{ github.ref_name }}
-          TARGET_SHA: ${{ github.sha }}
-          REF_TYPE: ${{ github.ref_type }}
         run: |
           set -euo pipefail
+
+          TARGET_BRANCH="$GITHUB_REF_NAME"
+          TARGET_SHA="$GITHUB_SHA"
+          REF_TYPE="$GITHUB_REF_TYPE"
 
           if [[ "$REF_TYPE" != "branch" ]]; then
             echo "formal releases must be dispatched from a branch" >&2

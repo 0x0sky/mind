@@ -12,7 +12,6 @@ import sys
 import tempfile
 import zipfile
 from pathlib import Path
-from typing import Iterable
 
 from generate_baseline import generate_baseline
 from validate_manifest import load_yaml_mapping
@@ -24,6 +23,7 @@ CONFORMANCE_PATH = ROOT / "conformance.yaml"
 COMPATIBILITY_PATH = ROOT / "compatibility.yaml"
 SCHEMA_ROOT = ROOT / "schema"
 RELEASE_POLICY_PATH = ROOT / "docs" / "protocol" / "RELEASE_POLICY.md"
+BOOTSTRAP_GUIDE_PATH = ROOT / "docs" / "protocol" / "BOOTSTRAP.md"
 FIXED_ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 
 
@@ -69,6 +69,7 @@ def source_files(version: str) -> list[tuple[str, Path]]:
         ("conformance.yaml", CONFORMANCE_PATH),
         ("compatibility.yaml", COMPATIBILITY_PATH),
         ("release-policy.md", RELEASE_POLICY_PATH),
+        ("bootstrap-guide.md", BOOTSTRAP_GUIDE_PATH),
         ("migration-guide.md", migration_guide_path(version)),
         ("release-notes.md", release_notes_path(version)),
     ]
@@ -121,7 +122,12 @@ def write_zip(output: Path, version: str, files: dict[str, bytes]) -> None:
             info.create_system = 3
             info.external_attr = 0o100644 << 16
             info.compress_type = zipfile.ZIP_DEFLATED
-            archive.writestr(info, data, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
+            archive.writestr(
+                info,
+                data,
+                compress_type=zipfile.ZIP_DEFLATED,
+                compresslevel=9,
+            )
 
 
 def build_release_bundle(output: Path, *, expected_version: str | None = None) -> str:
@@ -163,6 +169,7 @@ def check_release_bundle() -> list[str]:
             prefix + "compatibility.yaml",
             prefix + "release-manifest.json",
             prefix + "release-policy.md",
+            prefix + "bootstrap-guide.md",
             prefix + "migration-guide.md",
             prefix + "release-notes.md",
             prefix + "neutral-baseline/baseline.json",
@@ -208,7 +215,11 @@ def main() -> int:
                 f"{digest}  {arguments.output.name}\n",
                 encoding="utf-8",
             )
-        print(json.dumps({"output": str(arguments.output), "sha256": digest}, sort_keys=True))
+        print(
+            json.dumps(
+                {"output": str(arguments.output), "sha256": digest}, sort_keys=True
+            )
+        )
         return 0
     except (OSError, TypeError, ValueError, zipfile.BadZipFile) as error:
         print(f"release bundle build failed: {error}", file=sys.stderr)

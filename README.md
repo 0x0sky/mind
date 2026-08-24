@@ -1,23 +1,66 @@
-# 0x0sky / mind
+# mind / mind@0x0sky
 
-> A GitHub-native protocol for versioned self-definition.
+> An implementation-independent protocol for versioned identity and context, plus the canonical living mind of `0x0sky`.
 
-This repository is both the canonical public `mind` of **0x0sky** and the reference implementation of Mind Protocol.
+This repository deliberately contains two different things without conflating their authority:
 
-A mind is a versioned, inspectable, and forkable repository through which a person, organization, agent, project, or product can declare identity, context, relationships, boundaries, and meaning without binding that truth to one vendor or application.
+1. **Mind Protocol** — neutral contracts that must not depend on `0x0sky`, GitHub, a renderer, repository layout, or a runtime implementation;
+2. **`mind@0x0sky`** — one concrete sovereign mind instance implementing those contracts.
 
-The current reference implementation targets **Mind Protocol `0.5.0-rc.1`**, manifest schema `2`, and context `0.3.9`.
+## Two entry points
 
-## Model
+| Entry point | Authority | Version axis |
+| --- | --- | --- |
+| [`protocol.yaml`](protocol.yaml) | canonical implementation-independent Mind Protocol contracts | `protocol.version` |
+| [`manifest.yaml`](manifest.yaml) | canonical concrete `mind@0x0sky` instance | `mind.context_version` |
 
-Every concrete mind declares one `subject` and one publication `owner`. A mind is authoritative only about its subject; relationship claims are canonical only when that subject is one endpoint.
+The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is not a neutral identity template.
 
-A relationship becomes reciprocal only when the counterpart canonical mind independently publishes a matching claim. Provider discovery may supply evidence, but it is not authorship.
+Neutral protocol truth is carried by `protocol.yaml`, protocol schemas, and protocol documentation on the same commit. A protocol release tag therefore identifies a released contract without pretending the concrete instance on that commit is generic.
+
+The current development line targets **Mind Protocol `0.6.0-rc.1`**, manifest schema `2`, and `mind@0x0sky` context `0.4.0`.
+
+## Canonical Identity
+
+[`schema/identity.schema.json`](schema/identity.schema.json) is the canonical **Identity value**. It is intentionally independent from any concrete mind resource envelope or storage implementation.
+
+It defines semantic identity only:
+
+- identity `type`;
+- stable provider-independent `id`;
+- canonical `display_name`;
+- optional visual identity expressed through semantic mark metadata and an opaque `asset_ref`.
+
+It does **not** define GitHub ids, repository paths, URLs, validation-file locations, storage layout, runtime state, or provider bindings.
+
+A concrete mind carries that value through an implementation envelope. For `mind@0x0sky`, [`identity/identity.yaml`](identity/identity.yaml) uses [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json), while the embedded `identity` value is independently validated against the universal Identity contract.
+
+```text
+Mind Protocol
+└── Identity                         universal value
+
+mind@0x0sky                          concrete instance on master
+├── manifest.yaml
+└── identity/identity.yaml
+    └── identity                     implements universal Identity
+```
+
+## Instance model
+
+Every concrete mind declares one `subject` and one publication `owner`. The conventional canonical instance name is:
+
+```text
+mind@{subject.id}
+```
+
+For this repository that is `mind@0x0sky`.
+
+The instance is authoritative only about its subject. Relationships involving other entities remain claims from this subject's perspective until independently confirmed by the counterpart canonical mind.
 
 ## Modules
 
 ```text
-0x0sky
+mind@0x0sky
 ├── identity
 ├── relationships
 ├── knowledge
@@ -26,7 +69,7 @@ A relationship becomes reciprocal only when the counterpart canonical mind indep
 └── writing
 ```
 
-- [`identity`](identity/README.md) — canonical public identity and typed subject metadata;
+- [`identity`](identity/README.md) — concrete implementation of the universal Identity contract;
 - [`relationships`](relationships/README.md) — authored entity relations, direction, provenance, and confirmation;
 - [`knowledge`](knowledge/README.md) — durable models and principles;
 - [`engineering`](engineering/README.md) — software practice and engineering contract;
@@ -35,30 +78,33 @@ A relationship becomes reciprocal only when the counterpart canonical mind indep
 
 ## Relationships
 
-The canonical relationship source is [`relationships/relationships.yaml`](relationships/relationships.yaml). The reference mind currently authors `member_of` relationships from `person:0x0sky` to `organization:aiaiaiai-tech`, `organization:0xda-market`, and `organization:nilx-one`.
+The canonical authored relationship source for this instance is [`relationships/relationships.yaml`](relationships/relationships.yaml). Provider-discovered memberships remain integration evidence and never become authored protocol truth automatically.
 
-Provider-discovered GitHub memberships remain derived integration evidence. The root `public_organizations` field remains temporarily as a legacy projection, and every populated legacy entry in a mind adopting the relationships module must be backed by a canonical authored membership.
+The canonical organization endpoint is `organization:aiaiaiai`; the current GitHub provider namespace is `aiaiaiai-org`. The GitHub-specific root `public_organizations` field remains temporarily as a legacy compatibility projection and therefore stores provider logins, not canonical entity ids.
 
-## Repository contract
+## Schemas
 
-[`manifest.yaml`](manifest.yaml) is the machine-readable entry point. Protocol schemas include:
-
-- [`schema/mind.schema.json`](schema/mind.schema.json) — root manifest;
+- [`schema/protocol.schema.json`](schema/protocol.schema.json) — neutral protocol descriptor;
+- [`schema/mind.schema.json`](schema/mind.schema.json) — concrete mind manifest;
 - [`schema/module.schema.json`](schema/module.schema.json) — module descriptors;
-- [`schema/identity.schema.json`](schema/identity.schema.json) — canonical identity resource;
-- [`schema/relationships.schema.json`](schema/relationships.schema.json) — canonical authored relationships.
+- [`schema/identity.schema.json`](schema/identity.schema.json) — universal Identity value;
+- [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json) — concrete mind identity-resource envelope;
+- [`schema/relationships.schema.json`](schema/relationships.schema.json) — authored relationships.
 
-The root manifest remains a composition contract; it does not become a graph database.
+## Versioning
 
-Protocol documentation lives in [`docs/protocol/README.md`](docs/protocol/README.md), relationship semantics in [`docs/protocol/RELATIONSHIPS.md`](docs/protocol/RELATIONSHIPS.md), and the staged path to `1.0` in [`docs/protocol/ROADMAP.md`](docs/protocol/ROADMAP.md).
+The version axes are intentionally independent:
 
-## Visual identity
+- `protocol.version` changes when shared Mind semantics change;
+- manifest `schema_version` changes only when the root manifest shape changes incompatibly;
+- `mind.context_version` changes when the durable context of one concrete mind changes;
+- resource/schema versions evolve with their own machine contracts.
 
-The optional `identity.visual_identity.primary_mark` contract introduced by `0.4` is unchanged in `0.5`. Real personal and organization assets, renderer fallback, and avatar semantics remain the `0.6` milestone.
+A change to `mind@0x0sky` does not imply a protocol release. A protocol release does not imply that another identity's mind context changed.
 
 ## mind-web
 
-[`mind-web`](https://github.com/aiaiaiai-tech/mind-web) is a consumer, not protocol authority. It may combine authored relationships with provider-derived evidence, but it must preserve provenance and must never promote derived observations into canonical authorship or reciprocal confirmation.
+[`mind-web`](https://github.com/aiaiaiai-org/mind-web) is a consumer, never protocol authority. It may combine authored facts with provider-derived evidence only when provenance remains distinguishable.
 
 ## Privacy boundary
 

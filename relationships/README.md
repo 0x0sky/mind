@@ -37,21 +37,22 @@ Consumers may combine those observations with authored relationships, but they m
 
 ## `public_organizations` migration
 
-`public_organizations` remains in the root manifest during the `0.5` migration because current consumers already understand it.
+`public_organizations` remains in the root manifest during the pre-1.0 migration because current consumers already understand it.
 
 In the reference mind:
 
-- every listed legacy organization must be backed by an authored, directed `member_of` relationship from `person:0x0sky`;
-- the legacy field remains a compatibility projection rather than relationship authority;
+- canonical membership meaning is authored in `relationships/relationships.yaml`;
+- the legacy field remains a GitHub-facing compatibility projection rather than relationship authority;
+- provider logins need not equal canonical organization ids — for example `aiaiaiai-org` projects the canonical `organization:aiaiaiai` relationship;
 - omission and `[]` keep their historical legacy-consumer meanings until the migration is completed explicitly.
 
-The protocol does not silently reinterpret the old field.
+Without an explicit provider-binding resource, CI must not infer canonical entity identity from provider login string equality. The protocol does not silently reinterpret the old field.
 
 ## Current authored relationships
 
 The current resource publishes `0x0sky member_of`:
 
-- `organization:aiaiaiai-tech` — `reciprocal`; counterpart `aiaiaiai-tech/mind` publishes local relationship `member-0x0sky`;
+- `organization:aiaiaiai` — `reciprocal`; counterpart `aiaiaiai-org/mind` publishes local relationship `member-0x0sky` for the same canonical organization identity;
 - `organization:0xda-market` — `asserted`;
 - `organization:nilx-one` — `asserted`.
 

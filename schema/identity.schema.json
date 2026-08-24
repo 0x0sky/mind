@@ -1,74 +1,31 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/0x0sky/mind/schema/identity.schema.json",
-  "title": "Mind Identity Resource",
-  "description": "Machine-readable canonical identity resource for the subject of a mind.",
+  "$id": "https://aiaiaiai.org/mind/schema/identity/v1",
+  "title": "Mind Identity",
+  "description": "Canonical implementation-independent identity value used by Mind Protocol.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema_version",
-    "identity",
-    "validation"
-  ],
+  "required": ["type", "id", "display_name"],
   "$defs": {
     "identity_type": {
       "type": "string",
-      "enum": [
-        "person",
-        "organization",
-        "agent",
-        "project",
-        "product"
-      ]
-    },
-    "repo_path": {
-      "type": "string",
-      "minLength": 1,
-      "pattern": "^[A-Za-z0-9._/-]+$"
-    },
-    "asset": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "path",
-        "media_type"
-      ],
-      "properties": {
-        "path": {
-          "$ref": "#/$defs/repo_path"
-        },
-        "media_type": {
-          "type": "string",
-          "enum": [
-            "image/svg+xml",
-            "image/png",
-            "image/webp",
-            "image/jpeg"
-          ]
-        }
-      }
+      "enum": ["person", "organization", "agent", "project", "product"]
     },
     "primary_mark": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "asset",
-        "alt"
-      ],
+      "required": ["kind", "asset_ref", "alt"],
       "properties": {
         "kind": {
           "type": "string",
-          "enum": [
-            "logo",
-            "emblem",
-            "monogram",
-            "glyph",
-            "signature"
-          ]
+          "enum": ["logo", "emblem", "monogram", "glyph", "signature"]
         },
-        "asset": {
-          "$ref": "#/$defs/asset"
+        "asset_ref": {
+          "description": "Opaque canonical asset identifier. Resolution belongs to the concrete mind implementation, not the universal identity value.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
         },
         "alt": {
           "type": "string",
@@ -78,50 +35,27 @@
     }
   },
   "properties": {
-    "schema_version": {
-      "const": 1
+    "type": {
+      "$ref": "#/$defs/identity_type"
     },
-    "identity": {
+    "id": {
+      "description": "Stable provider-independent identifier within the identity's declared namespace.",
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "description": "Canonical human-readable name; not a provider handle.",
+      "type": "string",
+      "minLength": 1
+    },
+    "visual_identity": {
+      "description": "Optional semantic visual identity. Asset resolution is deliberately outside this universal contract.",
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "type",
-        "id",
-        "display_name"
-      ],
+      "minProperties": 1,
       "properties": {
-        "type": {
-          "$ref": "#/$defs/identity_type"
-        },
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "display_name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "visual_identity": {
-          "type": "object",
-          "additionalProperties": false,
-          "minProperties": 1,
-          "properties": {
-            "primary_mark": {
-              "$ref": "#/$defs/primary_mark"
-            }
-          }
-        }
-      }
-    },
-    "validation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "schema"
-      ],
-      "properties": {
-        "schema": {
-          "const": "schema/identity.schema.json"
+        "primary_mark": {
+          "$ref": "#/$defs/primary_mark"
         }
       }
     }

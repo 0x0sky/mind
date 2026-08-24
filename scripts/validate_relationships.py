@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-"""Validate authored relationship semantics and legacy projection compatibility."""
+"""Validate authored relationship semantics independently of provider projections."""
 
 from __future__ import annotations
 
@@ -80,7 +80,6 @@ def validate_relationships(
     relationships = resource.get("relationships", [])
 
     seen_ids: set[str] = set()
-    authored_memberships: set[str] = set()
 
     for index, relationship in enumerate(relationships):
         prefix = f"$.relationships[{index}]"
@@ -107,8 +106,6 @@ def validate_relationships(
                 errors.append(f"{prefix}.direction: member_of must be directed")
             if target[0] != "organization":
                 errors.append(f"{prefix}.target.type: member_of target must be organization")
-            if source == subject and target[0] == "organization":
-                authored_memberships.add(target[1].casefold())
 
         confirmation = relationship["confirmation"]
         if confirmation["state"] == "reciprocal":
@@ -120,15 +117,10 @@ def validate_relationships(
                     "must identify the other relationship endpoint"
                 )
 
-    public_organizations = manifest.get("public_organizations")
-    if isinstance(public_organizations, list):
-        for index, organization in enumerate(public_organizations):
-            if organization.casefold() not in authored_memberships:
-                errors.append(
-                    "$.public_organizations"
-                    f"[{index}]: legacy projection must be backed by an authored "
-                    "member_of relationship from $.mind.subject"
-                )
+    # public_organizations is a legacy GitHub-facing compatibility projection.
+    # Its values are provider logins, while relationship entity ids are
+    # provider-independent. Exact string equality between the two namespaces is
+    # therefore neither required nor sufficient to prove entity identity.
 
     return errors
 

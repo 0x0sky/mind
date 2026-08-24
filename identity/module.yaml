@@ -1,7 +1,9 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
 schema_version: 1
 module:
   id: identity
-  purpose: define the canonical public identity represented by this mind
+  purpose: implement the canonical identity contract for the subject of this concrete mind
   stability: stable
   dependencies: []
   entrypoints:
@@ -15,4 +17,4 @@ module:
     identity:
       path: identity/identity.yaml
       format: yaml
-      schema: schema/identity.schema.json
+      schema: schema/identity-resource.schema.json

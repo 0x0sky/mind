@@ -7,9 +7,12 @@ on:
     branches:
       - master
     paths:
+      - protocol.yaml
       - manifest.yaml
       - schema/**
+      - docs/protocol/**
       - scripts/validate_manifest.py
+      - scripts/validate_protocol.py
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
       - tests/**
@@ -19,9 +22,12 @@ on:
       - .github/workflows/manifest-ci.yml
   pull_request:
     paths:
+      - protocol.yaml
       - manifest.yaml
       - schema/**
+      - docs/protocol/**
       - scripts/validate_manifest.py
+      - scripts/validate_protocol.py
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
       - tests/**
@@ -58,6 +64,9 @@ jobs:
 
       - name: Validate manifest, modules, and resources
         run: python scripts/validate_manifest.py
+
+      - name: Validate neutral protocol and instance binding
+        run: python scripts/validate_protocol.py
 
       - name: Validate relationship semantics and migration
         run: python scripts/validate_relationships.py

@@ -1,123 +1,127 @@
-# Mind Protocol 0.9
+# Mind Protocol 1.0 release candidate
 
-Status: **`0.9.0` compatibility-freeze source contract under development**
+Status: **`1.0.0-rc.1` source candidate; formal prerelease not yet published**
 
-`0.9` freezes the public compatibility surface before `1.0`. It removes pre-1.0 root-manifest compatibility debt, makes compatibility policy machine-readable, fingerprints the published schema set, defines forward-compatible capability negotiation, and establishes the supported migration floor.
+Mind Protocol is the implementation-independent contract in this repository. The same repository also contains the concrete living `mind@0x0sky` reference implementation, but that concrete instance is not protocol authority and is never a template for another Mind.
 
-The accepted Identity, relationship/provenance, canonical visual-asset, agent, conformance, and neutral-baseline boundaries from `0.4`–`0.8` remain in force.
+See [`../REPOSITORY_MODEL.md`](../REPOSITORY_MODEL.md) before interpreting the repository layout.
 
 ## Machine entry points
 
-- [`../../protocol.yaml`](../../protocol.yaml) — implementation-independent protocol descriptor, descriptor schema `v3`;
-- [`../../conformance.yaml`](../../conformance.yaml) — machine-readable conformance suite and feature matrix, schema `v2`;
-- [`../../compatibility.yaml`](../../compatibility.yaml) — compatibility freeze, fingerprints, 1.x policy, and migration floor;
-- [`../../manifest.yaml`](../../manifest.yaml) — the concrete living `mind@0x0sky` instance, manifest schema `v3`;
-- [`BASELINE.md`](BASELINE.md) — generated neutral baseline semantics;
+- [`../../mind-repository.yaml`](../../mind-repository.yaml) — repository-role routing; repository metadata, **not** protocol contract;
+- [`../../protocol.yaml`](../../protocol.yaml) — implementation-independent protocol descriptor, schema `v3`;
+- [`../../conformance.yaml`](../../conformance.yaml) — conformance suite and feature matrix, schema `v2`;
+- [`../../compatibility.yaml`](../../compatibility.yaml) — compatibility freeze, schema fingerprints, 1.x policy, migration floor;
+- [`../../manifest.yaml`](../../manifest.yaml) — concrete `mind@0x0sky` reference instance only;
+- [`BASELINE.md`](BASELINE.md) — generated abstract neutral baseline;
+- [`BOOTSTRAP.md`](BOOTSTRAP.md) — canonical creation path for a new concrete Mind;
 - [`RELEASE_POLICY.md`](RELEASE_POLICY.md) — formal publication sequence and release gates.
 
-## Version model
+## Authority model
 
-| Version | Current reference | Meaning |
-| --- | --- | --- |
-| Protocol descriptor schema | `3` | Adds discoverable compatibility policy authority. |
-| Manifest schema | `3` | Removes `mind.kind` and provider-specific `public_organizations`. |
-| Protocol | `0.9.0` | Compatibility-freeze line before 1.0. |
-| Concrete instance context | independent (`0.4.0` in this repository) | Durable content version of one implementation. |
-| Conformance suite schema | `v2` | Frozen-root and capability-unit probes in addition to 0.8 evidence. |
-| Compatibility policy schema | `v1` | Machine freeze, schema fingerprints, forward compatibility, migration floor. |
-| Identity schema | `v1` | Universal Identity for all five subject types. |
-
-## Manifest v3
-
-The pre-1.0 root shape is deliberately smaller.
-
-Removed:
-
-- `mind.kind` — classification already exists as `mind.subject.type`;
-- `public_organizations` and older provider-organization aliases — provider logins are not canonical entity IDs.
-
-The core manifest therefore has one identity classification source and no GitHub-specific organization projection.
-
-Unknown root-manifest fields are rejected. Adding a new root concept requires an explicit future manifest schema revision and protocol-wide evidence.
-
-## Capability negotiation
-
-`module` is the protocol capability unit.
-
-Forward compatibility is:
+The core rule is simple:
 
 ```text
-unknown optional module, not requested: ignore
-unknown required module:                reject
-unknown default-loaded module:          reject
-unknown root manifest field:            reject
+protocol.yaml        → universal Mind semantics
+manifest.yaml        → only mind@0x0sky concrete content
+mind-repository.yaml → tells humans/agents which authority applies
 ```
 
-Compatible future additions belong in optional modules or versioned optional resources where semantics permit. The root manifest is not an extension bag.
+A GitHub fork of this repository is valid for protocol development. It is not the canonical way to create another concrete Mind because `master` carries the `mind@0x0sky` implementation and history.
 
-## Compatibility freeze
+New concrete Minds are bootstrapped from an exact immutable protocol release through the neutral baseline. See [`BOOTSTRAP.md`](BOOTSTRAP.md).
 
-[`../../compatibility.yaml`](../../compatibility.yaml) freezes the public schema set by both `$id` and exact Git blob fingerprint.
+## Current version model
 
-That prevents a schema from changing silently while keeping the same public identity/version. During the `0.9` milestone the fingerprints may move as the freeze is finalized; once `0.9.0` is formally released, changing frozen schema bytes requires the appropriate protocol/schema evolution rather than editing in place.
+| Axis | Current reference | Meaning |
+| --- | --- | --- |
+| Protocol descriptor schema | `3` | Descriptor shape and lifecycle/contract discovery. |
+| Manifest schema | `3` | Frozen root shape from `0.9.0`. |
+| Protocol | `1.0.0-rc.1` | Final-contract release candidate. |
+| Concrete `mind@0x0sky` context | `0.4.0` | Independent durable content version. |
+| Conformance suite schema | `2` | Dual consumer modes and deterministic probes. |
+| Compatibility policy schema | `1` | Schema fingerprints, forward compatibility, migration policy. |
+| Identity schema | `1` | Universal Identity for all five subject types. |
 
-The policy also defines the initial `1.x` rule:
+Protocol and concrete context versions are independent. Protocol tags belong to this protocol repository; concrete consumer repositories do not reuse them as context tags.
 
-- `1.0.0` is the compatibility baseline;
-- compatible additions use optional modules or versioned optional resources;
-- breaking core changes require a new major protocol version;
-- consumers honor their declared supported protocol range.
+## Frozen manifest and capability model
 
-Validate:
+Manifest schema v3, frozen in `0.9.0`, removes:
 
-```bash
-python scripts/validate_compatibility.py
+- `mind.kind` — canonical classification is `mind.subject.type`;
+- provider-specific organization projections such as `public_organizations`.
+
+Unknown root fields are rejected. Compatible extension happens through optional modules or versioned optional resources rather than an unstructured root extension bag.
+
+`module` remains the capability-negotiation unit:
+
+```text
+unknown optional module, not requested → ignore
+unknown required module                 → reject
+unknown default-loaded module           → reject
+unknown root manifest field             → reject
 ```
 
-## Conformance suite
+## Compatibility and schema immutability
 
-The suite still covers synthetic `person`, `organization`, `agent`, `project`, and `product` subjects through two intentionally distinct reader paths:
+[`../../compatibility.yaml`](../../compatibility.yaml) fingerprints each published JSON Schema by `$id` and exact Git blob SHA-1. The `1.0.0-rc.1` source candidate reuses the `0.9.0` schema identities only because those schema bytes are unchanged.
 
-- `schema` — JSON Schema plus shared protocol semantic validators;
-- `minimal` — independent core-reader logic without JSON Schema/shared relationship/visual semantic validators.
+Release-specific protocol version, lifecycle state, and migration-source policy are enforced semantically instead of mutating reusable schema bytes.
 
-For `0.9`, both modes declare `[0.9.0, 1.0.0)` and preserve the 0.8 deterministic probes for provenance, canonical visual resolution/integrity, and optional/required modules. They additionally prove the frozen root behavior: removed aliases and unknown root fields are rejected.
+Supported stable migration sources for the RC are:
 
-Run:
+- `0.6.0`;
+- `0.7.0`;
+- `0.8.0`;
+- formal `0.9.0`.
+
+## Conformance
+
+The suite covers synthetic `person`, `organization`, `agent`, `project`, and `product` subjects through two independent reader modes:
+
+- `schema` — JSON Schema plus shared semantic validators;
+- `minimal` — independent reader logic without the shared relationship/visual validators.
+
+The RC support range is:
+
+```text
+>= 1.0.0-rc.1
+<  1.0.0
+```
+
+Range evaluation follows strict SemVer 2.0 prerelease precedence.
 
 ```bash
 python scripts/validate_conformance.py --mode all
 ```
 
-## Migration floor
-
-The supported stable pre-1.0 migration floor is **`0.6.0`**.
-
-Stable source lines `0.6.0`, `0.7.0`, and `0.8.0` may migrate into `0.9.0` through the supported migration contract. Older lines fail deterministically and must use an earlier documented migration path first.
-
-Manifest v2 → v3 rules:
-
-1. require `mind.kind` to agree with `mind.subject.type` before removing it;
-2. preserve any non-empty provider organization projection in canonical relationships or an explicit provider integration before removing it;
-3. never infer canonical IDs from provider logins;
-4. do not bump a concrete `mind.context_version` solely because protocol packaging migrated.
-
-The migration utility is [`../../scripts/migrate_manifest_v2_to_v3.py`](../../scripts/migrate_manifest_v2_to_v3.py).
-
 ## Neutral baseline
 
-The generated baseline now uses manifest schema `v3` and includes `compatibility.yaml` along with protocol, conformance, all published schemas, and deterministic digest metadata.
+[`../../scripts/generate_baseline.py`](../../scripts/generate_baseline.py) produces a deterministic abstract bundle with:
 
-The baseline remains generated, reproducible, provider-independent, and free of concrete `mind@0x0sky` content.
+- `subject: unspecified`;
+- `owner: unspecified`;
+- no Identity module;
+- no named reference-instance content;
+- exact protocol/conformance/compatibility/schema contracts.
 
-See [`BASELINE.md`](BASELINE.md).
+The neutral baseline is not itself a concrete Mind and is never a long-lived generic branch. See [`BASELINE.md`](BASELINE.md).
 
-## Formal release boundary
+## Concrete bootstrap
 
-`0.9.0` is the **first formal GitHub Release** of Mind Protocol. `1.0.0-rc.1` will be a GitHub prerelease. `1.0.0` will be the first compatibility-guaranteed stable release.
+[`../../scripts/bootstrap_mind.py`](../../scripts/bootstrap_mind.py) turns an exact checked-out release into a minimal concrete publication. It requires explicit subject, publication owner, display name, context version, and repository visibility.
 
-Earlier `0.6.0`–`0.8.0` remain historical source milestones and are not retroactively published as formal releases.
+It creates only the required Identity module/resource plus exact protocol locks. It does not copy relationships, knowledge, engineering context, provider identities, visuals, or other content from the reference implementation.
 
-Concrete named identity synchronization begins after stable `1.0.0`, outside the protocol stabilization milestones.
+See [`BOOTSTRAP.md`](BOOTSTRAP.md).
 
-See [`RELEASE_POLICY.md`](RELEASE_POLICY.md).
+## Release boundary
+
+`0.9.0` is the first formal GitHub Release and has already been published. The next publication is `1.0.0-rc.1` as a GitHub prerelease after the final source tree receives green PR/tree verification. Stable `1.0.0` begins the compatibility-guaranteed `1.x` line.
+
+Merging source is not publishing a release. Tags and GitHub Releases remain separate explicit actions.
+
+See [`RELEASE_POLICY.md`](RELEASE_POLICY.md), [`ROADMAP.md`](ROADMAP.md), and [`MIGRATION_1.0.md`](MIGRATION_1.0.md).
+
+<!-- © 2026 aiaiaiai · aiaiaiai.org -->

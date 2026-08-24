@@ -4,13 +4,15 @@ This roadmap tracks **protocol stabilization only**. Concrete personal minds, or
 
 The north star is a small implementation-independent contract for typed identity, context, relationships, provenance, visual identity references, resource loading, compatibility, and deterministic conformance.
 
+Formal publication policy is defined in [`RELEASE_POLICY.md`](RELEASE_POLICY.md).
+
 ## Version axes
 
 Mind keeps independent version axes for protocol semantics, descriptor/manifest shapes, concrete context, and typed resource schemas. A protocol release never implies a concrete context release, and a concrete context change never implies a protocol release.
 
 ## 0.4 — readable protocol foundation
 
-Status: **stable**
+Status: **stable source milestone**
 
 Delivered explicit subject/owner semantics, typed module resources, manifest schema v2, and universal visual-reference shape.
 
@@ -22,19 +24,23 @@ Delivered authored relationship direction, provenance, reciprocal confirmation, 
 
 ## 0.6 — Identity and canonical visual contract
 
-Status: **`0.6.0` stable source contract**
+Status: **`0.6.0` stable source milestone**
 
 Delivered universal Identity/resource separation, deterministic canonical visual resolution/failure semantics, and independent protocol/context versioning.
 
+No retroactive formal GitHub Release is planned for `0.6.0`.
+
 ## 0.7 — agent identity semantics
 
-Status: **`0.7.0` stable source contract**
+Status: **`0.7.0` stable source milestone**
 
 Delivered first-class agent Identity through the same universal schema, subject/owner independence, and explicit runtime/personhood/portrait boundaries.
 
+No retroactive formal GitHub Release is planned for `0.7.0`.
+
 ## 0.8 — neutral baseline and conformance
 
-Status: **`0.8.0` stable source contract**
+Status: **`0.8.0` stable source milestone**
 
 Delivered:
 
@@ -61,23 +67,45 @@ Acceptance evidence:
 - reference-instance content is rejected from the generated baseline;
 - supported protocol ranges are machine-readable.
 
-Consumers prove interoperability; they never become protocol authority.
+`0.8.0` remains a source milestone and will not be retroactively promoted into the first formal release.
 
 ## 0.9 — compatibility freeze
 
-Next protocol milestone: **`0.9.0`**.
+Current protocol milestone: **`0.9.0`**.
+
+`0.9.0` is the **first formal GitHub Release**.
 
 Freeze the public compatibility surface before `1.0`:
 
-- resolve compatibility-only fields, especially the future of `mind.kind` and `public_organizations`;
-- remove or formally deprecate pre-1.0 aliases with migration notes;
-- freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, visual-reference, baseline, and conformance semantics;
-- define unknown optional-capability forward compatibility beyond modules where justified;
-- define minimum `1.x` compatibility policy;
-- define the supported pre-1.0 migration floor;
+- remove `mind.kind` in favor of the canonical `mind.subject.type`;
+- remove `public_organizations` from the provider-agnostic root manifest;
+- preserve organization semantics through canonical relationships or provider integrations before migration;
+- use manifest schema `v3` as the frozen pre-1.0 root shape;
+- freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, visual-reference, baseline, conformance, and compatibility contracts;
+- freeze exact published schema contents through machine-validated fingerprints;
+- keep `module` as the capability negotiation unit;
+- reject unknown root-manifest fields unless a future manifest schema revision explicitly introduces them;
+- preserve forward compatibility through unknown optional modules that are not requested;
+- reject unknown required/default-loaded modules;
+- define the `1.x` compatibility policy;
+- support migration from stable protocol lines beginning at `0.6.0`;
+- prohibit provider-login-to-canonical-id inference;
 - prohibit new root-manifest concepts without protocol-wide evidence.
 
+Release gate:
+
+- full CI green on the final release commit;
+- compatibility freeze/fingerprint validation green;
+- supported migration suite green;
+- dual-mode conformance green;
+- reproducible neutral baseline green;
+- final semantic review clean;
+- tag `v0.9.0` points to the exact verified commit;
+- GitHub Release `Mind Protocol 0.9.0` is published with the required artifacts.
+
 ## `1.0.0-rc.1` — final protocol release candidate
+
+Publication: **GitHub prerelease**.
 
 Prove the frozen contract exactly as intended to ship:
 
@@ -88,15 +116,36 @@ Prove the frozen contract exactly as intended to ship:
 - supported pre-1.0 migrations;
 - unknown optional-capability behavior;
 - no named-identity dependency;
-- no required provider dependency.
+- no required provider dependency;
+- no semantic drift from the frozen `0.9` surface except deliberately reviewed finalization required for `1.0`.
+
+If a blocking semantic defect is found after `rc.1`, publish another RC instead of mutating the existing tag or silently changing the candidate.
 
 ## `1.0.0` — stable Mind Protocol
+
+Publication: **first compatibility-guaranteed stable GitHub Release**.
 
 The first compatibility-guaranteed protocol must provide implementation-independent Identity, explicit subject/owner, typed versioned resources, authored-vs-derived provenance, deterministic relationship and visual semantics, privacy/visibility boundaries, deterministic loading, optional-capability forward compatibility, provider-agnostic core, machine-readable supported range, reproducible neutral baseline, and a public conformance suite.
 
 Required synthetic fixture coverage remains person, organization, agent, project, and product.
 
-Tags and GitHub Releases are separate publication actions.
+`1.0.0` should be a stable promotion of the accepted final RC contract. Semantic change after the final RC requires renewed review and conformance evidence.
+
+## After `1.0.0` — concrete identity synchronization
+
+Only after the compatibility-guaranteed stable protocol is published do we begin ecosystem identity rollout.
+
+This separate implementation phase includes, as appropriate:
+
+- canonical `mind@0x0sky` identity content;
+- aiaiaiai organization identity;
+- child organization identities;
+- agent identities;
+- canonical named visual assets;
+- provider bindings;
+- synchronization into protocol consumers and ecosystem repositories.
+
+Identity rollout **consumes** Mind Protocol `1.0`; named identities and their rollout state do not become protocol authority.
 
 ## Non-goals for 1.0
 

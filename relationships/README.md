@@ -43,6 +43,7 @@ In the reference mind:
 
 - every listed legacy organization must be backed by an authored, directed `member_of` relationship from `person:0x0sky`;
 - the legacy field remains a compatibility projection rather than relationship authority;
+- provider-specific entries such as `aiaiaiai-org` may map to provider-independent relationship entities such as `organization:aiaiaiai`;
 - omission and `[]` keep their historical legacy-consumer meanings until the migration is completed explicitly.
 
 The protocol does not silently reinterpret the old field.
@@ -51,7 +52,7 @@ The protocol does not silently reinterpret the old field.
 
 The current resource publishes `0x0sky member_of`:
 
-- `organization:aiaiaiai-tech` — `reciprocal`; counterpart `aiaiaiai-tech/mind` publishes local relationship `member-0x0sky`;
+- `organization:aiaiaiai` — `reciprocal`; counterpart `aiaiaiai-org/mind` publishes local relationship `member-0x0sky`;
 - `organization:0xda-market` — `asserted`;
 - `organization:nilx-one` — `asserted`.
 

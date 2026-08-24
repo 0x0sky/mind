@@ -49,6 +49,9 @@ class BaselineGenerationTests(unittest.TestCase):
             self.assertNotIn("public_organizations", manifest)
             self.assertEqual(manifest["modules"]["registered"], [])
             self.assertTrue((output / "compatibility.yaml").is_file())
+            readme = (output / "README.md").read_text(encoding="utf-8")
+            self.assertIn("not a concrete Mind", readme)
+            self.assertIn("subject: unspecified", readme)
 
     def test_full_baseline_check_passes(self) -> None:
         self.assertEqual(check_baseline(), [])

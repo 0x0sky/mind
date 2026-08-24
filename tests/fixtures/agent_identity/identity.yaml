@@ -1,0 +1,9 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+identity:
+  type: agent
+  id: synthetic-agent
+  display_name: Synthetic Agent
+validation:
+  schema: schema/identity-resource.schema.json

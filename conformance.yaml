@@ -27,6 +27,7 @@ fixtures:
       type: person
       id: fixture-person
     display_name: Fixture Person
+    expected_result: pass
   organization:
     kind: organization
     subject:
@@ -36,6 +37,7 @@ fixtures:
       type: organization
       id: fixture-organization
     display_name: Fixture Organization
+    expected_result: pass
   agent:
     kind: agent
     subject:
@@ -45,6 +47,7 @@ fixtures:
       type: organization
       id: fixture-publisher
     display_name: Fixture Agent
+    expected_result: pass
   project:
     kind: project
     subject:
@@ -54,6 +57,7 @@ fixtures:
       type: organization
       id: fixture-publisher
     display_name: Fixture Project
+    expected_result: pass
   product:
     kind: product
     subject:
@@ -63,6 +67,7 @@ fixtures:
       type: organization
       id: fixture-publisher
     display_name: Fixture Product
+    expected_result: pass
 
 features:
   - id: universal_identity
@@ -83,6 +88,24 @@ features:
 consumer_modes:
   - schema
   - minimal
+
+consumer_support:
+  schema:
+    supported_range:
+      minimum_inclusive: 0.8.0
+      maximum_exclusive: 0.9.0
+  minimal:
+    supported_range:
+      minimum_inclusive: 0.8.0
+      maximum_exclusive: 0.9.0
+
+probes:
+  authored_relationship: preserved
+  derived_relationship: rejected_from_canonical
+  canonical_visual_resolved: resolved
+  canonical_visual_integrity_failure: integrity_error
+  unknown_optional_module: ignored_when_not_requested
+  unknown_required_module: rejected
 
 compatibility:
   unknown_optional_modules: ignore_when_not_requested

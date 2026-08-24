@@ -103,6 +103,9 @@ probes:
   canonical_visual_integrity_failure: integrity_error
   unknown_optional_module: ignored_when_not_requested
   unknown_required_module: rejected
+  unknown_root_manifest_field: rejected
+  removed_mind_kind: rejected
+  removed_public_organizations: rejected
 
 compatibility:
   capability_unit: module

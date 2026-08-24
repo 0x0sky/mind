@@ -1,0 +1,69 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+scope: repository_metadata
+protocol_contract: false
+
+repository:
+  id: 0x0sky/mind
+  default_branch: master
+  roles:
+    protocol_authority:
+      enabled: true
+      canonical: true
+      entrypoint: protocol.yaml
+      release_authority: true
+    concrete_mind:
+      enabled: true
+      entrypoint: manifest.yaml
+      canonical_for_subject:
+        type: person
+        id: 0x0sky
+      reference_implementation: true
+      template_authority: false
+
+routing:
+  protocol_definition: protocol.yaml
+  protocol_conformance: conformance.yaml
+  protocol_compatibility: compatibility.yaml
+  reference_instance: manifest.yaml
+  repository_model: docs/REPOSITORY_MODEL.md
+  new_mind_creation: docs/protocol/BOOTSTRAP.md
+
+fork_policy:
+  protocol_development:
+    github_fork: allowed
+    meaning: contribute_to_or_experiment_with_protocol_source
+  concrete_mind_creation:
+    github_fork_of_master: forbidden_as_template
+    copy_reference_instance_content: forbidden
+    source: exact_immutable_protocol_release
+    mechanism: neutral_bootstrap
+
+bootstrap:
+  command: scripts/bootstrap_mind.py
+  input_authority: exact_protocol_release_tag
+  floating_master: forbidden_for_release_consumption
+  starts_from: generated_neutral_baseline
+  requires_explicit:
+    - subject
+    - publication_owner
+    - display_name
+    - context_version
+    - repository_visibility
+
+version_axes:
+  protocol_version:
+    authority: protocol.yaml
+    tags_live_here: true
+  concrete_context_version:
+    authority: manifest.yaml
+    independent_from_protocol: true
+    protocol_tags_must_not_be_used_as_context_tags: true
+
+invariants:
+  - protocol_contracts_do_not_depend_on_0x0sky_identity
+  - mind_at_0x0sky_is_canonical_only_for_subject_0x0sky
+  - mind_at_0x0sky_is_not_a_template_authority
+  - new_concrete_minds_are_bootstrapped_from_an_exact_protocol_release
+  - protocol_consumers_do_not_source_contracts_from_floating_master

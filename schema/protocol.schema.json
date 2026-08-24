@@ -152,7 +152,9 @@
       "required": ["policy", "status"],
       "properties": {
         "policy": {"const": "compatibility.yaml"},
-        "status": {"const": "frozen_pre_1_0"}
+        "status": {
+          "enum": ["frozen_pre_1_0", "release_candidate", "stable_1_x"]
+        }
       }
     },
     "instance_policy": {

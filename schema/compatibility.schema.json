@@ -11,6 +11,10 @@
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
     },
+    "stable_semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
     "frozen_contract": {
       "type": "object",
       "additionalProperties": false,
@@ -39,7 +43,7 @@
       "required": ["id", "version"],
       "properties": {
         "id": {"const": "mind"},
-        "version": {"const": "0.9.0"}
+        "version": {"$ref": "#/$defs/semver"}
       }
     },
     "freeze": {
@@ -86,8 +90,13 @@
       "additionalProperties": false,
       "required": ["floor_inclusive", "supported_stable_lines", "below_floor", "manifest_v2_to_v3"],
       "properties": {
-        "floor_inclusive": {"const": "0.6.0"},
-        "supported_stable_lines": {"const": ["0.6.0", "0.7.0", "0.8.0"]},
+        "floor_inclusive": {"$ref": "#/$defs/stable_semver"},
+        "supported_stable_lines": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stable_semver"}
+        },
         "below_floor": {"const": "deterministic_unsupported_version"},
         "manifest_v2_to_v3": {
           "type": "object",

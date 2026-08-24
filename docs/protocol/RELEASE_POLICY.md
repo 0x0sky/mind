@@ -30,6 +30,19 @@ If the merge commit tree differs from the tested pull-request head tree, release
 
 This preserves `github-delivery.yaml`: correctness is not rerun after merge merely to obtain a new SHA, while the published tree is still proven identical to the tested tree.
 
+## Schema identity across the release train
+
+A published JSON Schema `$id` identifies a schema shape, not one release number. If that same schema shape is intended to survive from `0.9.0` through the `1.0` release candidate and stable `1.0.0`, its bytes must not encode a single release version or lifecycle state merely to validate the current publication.
+
+Exact release binding remains semantic and machine-checked:
+
+- `protocol.yaml`, `conformance.yaml`, `compatibility.yaml`, and the canonical concrete manifest must target the same exact protocol version;
+- compatibility lifecycle state must match the release version;
+- supported migration lines must match the release target;
+- every published schema remains fingerprinted by immutable `$id` and exact Git blob SHA-1.
+
+A real schema-shape change still requires an explicitly versioned schema identity rather than silent mutation under an already published `$id`.
+
 ## `0.9.0`
 
 `0.9.0` is the first formal release because it freezes the public compatibility surface before `1.0`.
@@ -56,6 +69,23 @@ Required release artifacts:
 - migration guide;
 - release notes;
 - deterministic release manifest and bundle digest.
+
+## Post-0.9 compatibility canaries
+
+After the exact `v0.9.0` release is published and verified, a deliberately small set of existing concrete minds may synchronize to it before the `1.0` release candidate. This is compatibility-canary work, not the full identity rollout.
+
+The canary scope is intentionally narrow:
+
+- migrate concrete manifests/resources to the released contract where needed;
+- pin the exact protocol release rather than a moving branch;
+- verify canonical identity IDs remain distinct from provider/account IDs;
+- verify authored provenance and subject/publication-owner boundaries;
+- exercise optional-module and canonical-visual behavior already defined by the protocol;
+- report any incompatibility back to the protocol release train before the RC.
+
+Canary repositories consume the protocol and never become protocol authority. Canary synchronization must not add a named implementation requirement, provider dependency, visual-brand requirement, or consumer-specific rule to the universal contract.
+
+The full named identity, visual-family, provider-binding, agent, project/product, and ecosystem rollout remains deferred until stable `1.0.0`.
 
 ## `1.0.0-rc.1`
 
@@ -98,18 +128,19 @@ Publication requires:
 
 The `1.x` compatibility promise begins at `1.0.0`, not at any pre-1.0 source milestone or release.
 
-## Post-1.0 identity rollout
+## Post-1.0 full identity rollout
 
-Concrete identity synchronization begins **after `1.0.0`**.
+After stable `1.0.0`, the deliberately narrow compatibility-canary phase may expand into the full concrete ecosystem rollout.
 
-The rollout may include:
+That rollout may include:
 
-- `mind@0x0sky` canonical identity content;
-- aiaiaiai organization identity;
-- child organization identities;
+- canonical personal identity content;
+- parent and child organization identities;
 - agent identities;
-- canonical named visual assets;
-- provider bindings and ecosystem integrations.
+- canonical named visual assets and the shared visual family;
+- provider bindings and ecosystem integrations;
+- project and product identities where they are genuinely sovereign minds;
+- synchronization into protocol consumers.
 
 Those rollouts consume Mind Protocol `1.0`; they do not define or gate the protocol itself. A concrete rollout may discover a protocol defect, but named identity data must never be promoted into the universal contract merely because one implementation needs it.
 

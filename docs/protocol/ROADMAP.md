@@ -10,6 +10,8 @@ Formal publication policy is defined in [`RELEASE_POLICY.md`](RELEASE_POLICY.md)
 
 Mind keeps independent version axes for protocol semantics, descriptor/manifest shapes, concrete context, and typed resource schemas. A protocol release never implies a concrete context release, and a concrete context change never implies a protocol release.
 
+Published schema identities are versioned independently from protocol releases. When one schema shape intentionally survives across the `0.9.0` → `1.0.0-rc.1` → `1.0.0` train, release-specific version/lifecycle bindings belong in semantic validation rather than forcing byte changes under the same `$id`.
+
 ## 0.4 — readable protocol foundation
 
 Status: **stable source milestone**
@@ -83,6 +85,8 @@ Freeze the public compatibility surface before `1.0`:
 - use manifest schema `v3` as the frozen pre-1.0 root shape;
 - freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, visual-reference, baseline, conformance, and compatibility contracts;
 - freeze exact published schema contents through machine-validated fingerprints;
+- keep release numbers and lifecycle states out of reusable schema bytes when the same `$id` is intended to survive the release train;
+- enforce exact protocol version, lifecycle state, and migration-source binding semantically;
 - keep `module` as the capability negotiation unit;
 - reject unknown root-manifest fields unless a future manifest schema revision explicitly introduces them;
 - preserve forward compatibility through unknown optional modules that are not requested;
@@ -94,14 +98,22 @@ Freeze the public compatibility surface before `1.0`:
 
 Release gate:
 
-- full CI green on the final release commit;
+- full CI green on the final release PR head;
 - compatibility freeze/fingerprint validation green;
 - supported migration suite green;
 - dual-mode conformance green;
 - reproducible neutral baseline green;
 - final semantic review clean;
-- tag `v0.9.0` points to the exact verified commit;
+- tag `v0.9.0` points to the exact verified merge commit whose tree equals the tested PR-head tree;
 - GitHub Release `Mind Protocol 0.9.0` is published with the required artifacts.
+
+### After `0.9.0` publication — compatibility canaries
+
+Once the exact `v0.9.0` artifact is published, a deliberately small set of existing concrete minds may synchronize to that release before `1.0.0-rc.1`.
+
+This phase is for compatibility evidence only. It may exercise manifest/resource migration, exact protocol pinning, canonical-vs-provider identity boundaries, provenance, optional modules, and already-defined canonical visual behavior. It must not introduce a named identity, provider, renderer, or repository as protocol authority.
+
+Any incompatibility found by a canary returns to the protocol release train as evidence for a reviewed fix or another RC decision. Full named identity, visual-family, provider-binding, agent, project/product, and ecosystem synchronization remains deferred until stable `1.0.0`.
 
 ## `1.0.0-rc.1` — final protocol release candidate
 
@@ -113,7 +125,7 @@ Prove the frozen contract exactly as intended to ship:
 - clean neutral-baseline generation;
 - all required synthetic identity-type fixtures;
 - visual resolution/failure fixtures;
-- supported pre-1.0 migrations;
+- supported pre-1.0 migrations, including the formal `0.9.0` line;
 - unknown optional-capability behavior;
 - no named-identity dependency;
 - no required provider dependency;
@@ -131,18 +143,18 @@ Required synthetic fixture coverage remains person, organization, agent, project
 
 `1.0.0` should be a stable promotion of the accepted final RC contract. Semantic change after the final RC requires renewed review and conformance evidence.
 
-## After `1.0.0` — concrete identity synchronization
+## After `1.0.0` — full concrete identity rollout
 
-Only after the compatibility-guaranteed stable protocol is published do we begin ecosystem identity rollout.
+Only after the compatibility-guaranteed stable protocol is published does the narrow canary phase expand into the full ecosystem identity rollout.
 
 This separate implementation phase includes, as appropriate:
 
-- canonical `mind@0x0sky` identity content;
-- aiaiaiai organization identity;
-- child organization identities;
+- canonical personal identity content;
+- parent and child organization identities;
 - agent identities;
-- canonical named visual assets;
+- canonical named visual assets and the shared visual family;
 - provider bindings;
+- project and product identities where they are genuinely sovereign minds;
 - synchronization into protocol consumers and ecosystem repositories.
 
 Identity rollout **consumes** Mind Protocol `1.0`; named identities and their rollout state do not become protocol authority.

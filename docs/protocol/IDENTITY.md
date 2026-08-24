@@ -37,7 +37,9 @@ Classifies the semantic subject. It is not a hosting-account type and must not b
 
 ### `id`
 
-Stable identifier chosen by the identity's canonical context. Provider numeric ids, installation ids, API URLs, account database ids, and transient aliases do not belong here.
+Stable identifier chosen by the identity's canonical context. Provider numeric ids, installation ids, API URLs, account database ids, repository namespaces, and transient aliases do not belong here.
+
+For example, the organization Identity may be `organization:aiaiaiai` while its current GitHub provider namespace is `aiaiaiai-org`. Those are deliberately different identifiers in different layers.
 
 ### `display_name`
 
@@ -91,7 +93,7 @@ Examples:
 
 ```text
 mind@0x0sky
-mind@aiaiaiai-tech
+mind@aiaiaiai
 mind@magi
 ```
 
@@ -112,7 +114,7 @@ or intentionally different:
 
 ```text
 subject: agent:magi
-owner:   organization:aiaiaiai-tech
+owner:   organization:aiaiaiai
 ```
 
 This prevents hosting implementation from being confused with biological personhood, legal ownership, or autonomous infrastructure ownership.
@@ -129,6 +131,8 @@ Provider mappings are integrations. They may resolve an identity to:
 - a runtime account.
 
 Those mappings may provide evidence or presentation data, but they do not modify the canonical Identity value unless the canonical mind explicitly authors a semantic change.
+
+Legacy provider-facing projections may therefore contain provider identifiers that are not string-equal to canonical Identity ids. A consumer must not infer identity equality from provider-string equality or inequality alone.
 
 ## Invariant
 

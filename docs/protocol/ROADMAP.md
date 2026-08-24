@@ -49,31 +49,41 @@ Real logos and marks for named identities remain separate implementation work.
 
 ### `0.6.0` — stable
 
-The stable source-contract gate is satisfied:
-
-- universal Identity boundary is stable;
-- concrete identity-resource envelope boundary is stable;
-- visual-asset resolution/failure semantics are stable;
-- subject/publication-owner boundary is stable;
-- migration from earlier identity-resource semantics is documented in [`MIGRATION_0.6.md`](MIGRATION_0.6.md);
-- full protocol CI is required green on the stable-promotion PR.
+The stable source-contract gate is satisfied: universal Identity, resource-envelope, visual-resolution, subject/owner, migration, and full-CI boundaries are established.
 
 A source-contract merge is not a tag or GitHub Release.
 
 ## 0.7 — agent identity semantics
 
-Next protocol milestone: **`0.7.0-rc.1`**.
+### `0.7.0-rc.1`
 
-Prove `subject.type: agent` as first-class universal Identity using synthetic fixtures only:
+Status: **current development candidate**
+
+Protocol work:
+
+- prove `subject.type: agent` through the same universal Identity schema used by other subject types;
+- prove subject and publication owner may differ without requiring them to differ;
+- use synthetic fixtures only;
+- require no provider account for agent identity semantics;
+- keep model, prompt, memory, runtime, and execution state outside universal Identity;
+- keep biological-personhood assertions outside the agent Identity contract;
+- keep synthetic/generated portraits outside canonical Identity by default while preserving canonical emblem/glyph support through the existing visual contract.
+
+Acceptance gate:
 
 - person, organization, and agent share the same Identity contract;
-- agent subject may differ from publication owner;
-- no provider account is required;
-- model, prompt, memory, runtime, and execution state remain outside universal Identity;
-- no biological-personhood assumption exists in schema or docs;
-- synthetic portrait remains outside canonical Identity by default.
+- the synthetic agent fixture validates;
+- distinct publication ownership validates;
+- same-owner publication remains valid;
+- provider/runtime fields are rejected from universal Identity;
+- no biological-personhood assumption is required by schema or documentation;
+- full protocol CI is green.
 
-`0.7.0` becomes stable when the agent fixture, subject/owner boundary tests, runtime-independence checks, and full protocol CI are green.
+### `0.7.0`
+
+Stable when the RC1 semantics above are unchanged, the agent fixture and owner/runtime boundary tests remain green, and the stable-promotion PR introduces no new semantic delta.
+
+Release/tag publication remains separately authorized.
 
 ## 0.8 — neutral baseline and conformance
 

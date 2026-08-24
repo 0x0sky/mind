@@ -1,10 +1,10 @@
-# Mind Protocol 0.6
+# Mind Protocol 0.7
 
-Status: **`0.6.0` stable source contract**
+Status: **`0.7.0-rc.1` development candidate**
 
-`0.6` separates canonical protocol semantics from any one concrete identity implementation, then defines portable canonical visual-asset resolution on top of that boundary.
+`0.7` builds on the stable `0.6.0` Identity and canonical-visual contract by proving that agent subjects are ordinary first-class protocol identities rather than a special AI runtime object.
 
-The accepted `0.5` relationship/provenance semantics remain part of the stable line. Consumer conformance remains a `0.8` milestone: a renderer or application may verify compatibility, but no consumer grants protocol authority.
+The accepted relationship/provenance and visual-identity semantics remain unchanged. Broader independent-consumer conformance remains the `0.8` milestone.
 
 ## Two entry points
 
@@ -13,80 +13,79 @@ Mind exposes two explicit machine entry points with different authority:
 - [`../../protocol.yaml`](../../protocol.yaml) — implementation-independent protocol descriptor;
 - [`../../manifest.yaml`](../../manifest.yaml) — one concrete mind instance.
 
-For this repository, `master` is the living canonical instance **`mind@0x0sky`**. It is not the neutral protocol baseline.
+For this repository, `master` is the living canonical instance **`mind@0x0sky`**. It is not the neutral protocol baseline or the agent conformance fixture.
 
 ## Version model
 
-| Version | Stable reference | Meaning |
+| Version | Current reference | Meaning |
 | --- | --- | --- |
 | Protocol descriptor schema | `1` | Shape of `protocol.yaml`. |
 | Manifest schema | `2` | Shape of one concrete `manifest.yaml`. |
-| Protocol | `0.6.0` | Shared stable semantics implemented by compatible minds and consumers. |
+| Protocol | `0.7.0-rc.1` | Shared semantics being proven by this candidate. |
 | Concrete instance context | independent | Durable content version of one implementation. |
-| Identity schema | `v1` | Universal implementation-independent Identity value. |
+| Identity schema | `v1` | Universal Identity used equally by person, organization, agent, project, and product subjects. |
 | Identity-resource envelope | `v1` | Packaging of that value inside a concrete mind. |
 | Visual-assets catalog | `v1` | Packaging and integrity contract for canonical visual bytes. |
 
-These axes are independent. A protocol-version change does not imply a concrete context change.
+No manifest or Identity schema bump is needed merely to prove the already-supported `agent` type.
 
-## Stable protocol boundaries
+## Stable 0.6 boundaries carried forward
 
-The `0.6.0` source contract stabilizes:
+`0.7` preserves:
 
 - universal Identity independent from provider, repository layout, storage, renderer, and runtime;
-- the concrete identity-resource envelope as packaging rather than Identity semantics;
+- concrete identity-resource packaging separate from Identity semantics;
 - explicit subject versus publication-owner semantics;
 - opaque canonical `primary_mark.asset_ref` values;
-- typed canonical visual-asset descriptors with required SHA-256 integrity;
-- deterministic missing/ambiguous/unsupported/integrity failure behavior;
-- the rule that derived/provider visuals cannot silently become canonical;
-- `avatar` as presentation-only for the `0.6` line.
+- deterministic visual resolution/failure behavior;
+- derived/provider visuals remaining noncanonical;
+- presentation-only avatar semantics.
 
-No named real-world identity or visual asset is required to define or test those boundaries.
+## First-class agent Identity
 
-## Protocol package
+The synthetic fixture in [`../../tests/fixtures/agent_identity/`](../../tests/fixtures/agent_identity/) exercises the same manifest, Identity, and identity-resource schemas used by any other concrete mind.
 
-`protocol.yaml` names the machine contracts that constitute this line:
+It proves:
 
-- manifest composition;
-- module descriptors;
-- universal Identity;
-- concrete identity-resource envelope;
-- authored relationships;
-- canonical visual-asset catalog.
+- `mind.kind: agent` binds to `mind.subject.type: agent`;
+- `identity.type/id` bind exactly to the manifest subject;
+- an agent subject may have a different organization publication owner;
+- the same-owner case remains legal — distinct ownership is a capability, not a requirement;
+- no provider account is required for agent identity semantics;
+- model, prompt, memory, runtime, and execution state are rejected from universal Identity;
+- biological-personhood assertions are not part of the agent Identity contract;
+- synthetic/generated portrait fields are not canonical Identity by default.
 
-Full Identity semantics are in [`IDENTITY.md`](IDENTITY.md), visual resolution in [`VISUAL_IDENTITY.md`](VISUAL_IDENTITY.md), relationship/provenance semantics in [`RELATIONSHIPS.md`](RELATIONSHIPS.md), and migration instructions in [`MIGRATION_0.6.md`](MIGRATION_0.6.md).
+An agent may still author a canonical emblem or glyph using the existing visual-identity contract. The protocol does not equate `visual_identity` with portrait data.
 
-## Canonical visual assets
-
-Universal Identity keeps an opaque `visual_identity.primary_mark.asset_ref`. Concrete publications may expose a typed resource conforming to [`../../schema/visual-assets.schema.json`](../../schema/visual-assets.schema.json).
-
-Resolution is deterministic: discover the typed resource, select exactly one matching descriptor, enforce media support, resolve the publication-relative resource, and verify SHA-256 before treating bytes as canonical.
-
-Normative media support is SVG and PNG. WebP is protocol-allowed but consumer-optional.
-
-Provider avatars, generated portraits, screenshots, or other derived visuals cannot silently become the canonical mark. `avatar` is presentation-only in the `0.6` line.
+Full semantics are in [`AGENT_IDENTITY.md`](AGENT_IDENTITY.md).
 
 ## Conformance evidence
 
-The source contract is guarded by:
+The candidate is guarded by:
 
 - validation of every published JSON Schema;
 - manifest/module/resource validation;
+- generic universal Identity-envelope validation;
 - protocol descriptor and concrete-instance binding validation;
 - relationship/provenance validation;
-- synthetic canonical visual-asset fixtures for person, organization, and agent;
-- regression tests for unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes;
-- validator regression coverage for correctness-critical invariants.
+- canonical visual-asset fixtures;
+- the synthetic agent fixture validator;
+- regression tests for owner separation, runtime/provider exclusion, biological-personhood exclusion, and synthetic portrait exclusion.
 
-This evidence stabilizes the source contract; it does not replace the broader independent-consumer conformance work planned for `0.8`.
+The agent fixture is synthetic and provider-independent; no named agent or hosting account is a protocol dependency.
 
-## Migration
+## Migration from 0.6
 
-See [`MIGRATION_0.6.md`](MIGRATION_0.6.md) for migration from pre-`0.6` identity resources and the RC candidates.
+A `0.6.0` implementation adopting this candidate should:
 
-`0.6.0` adds no semantic delta beyond `0.6.0-rc.2`; the stable promotion freezes the already-tested RC2 contract.
+1. declare protocol `0.7.0-rc.1` only when it implements the agent semantics being proven here;
+2. keep manifest schema `2` unless its manifest shape independently changes;
+3. keep its context version unchanged unless its own durable content changes;
+4. continue using the same universal Identity and identity-resource schemas;
+5. avoid introducing AI-runtime or provider-account fields into universal Identity;
+6. preserve all accepted relationship and visual-identity semantics.
 
 ## Publication boundary
 
-The source tree may implement the stable `0.6.0` contract without a published protocol release. Git tags and GitHub Releases are separate explicitly authorized actions.
+Merging the source candidate does not create a prerelease tag or GitHub Release. Publication remains a separate explicitly authorized action.

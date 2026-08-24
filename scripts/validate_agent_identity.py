@@ -70,11 +70,6 @@ def validate_agent_case(
     if require_distinct_owner_fixture and owner == subject:
         errors.append("agent fixture must prove that publication owner may differ from subject")
 
-    if "visual_identity" in identity:
-        errors.append(
-            "synthetic agent fixture must not make a portrait or generated visual canonical by default"
-        )
-
     identity_validator = Draft202012Validator(identity_schema)
     for field in FORBIDDEN_AGENT_IDENTITY_FIELDS:
         candidate = copy.deepcopy(identity)

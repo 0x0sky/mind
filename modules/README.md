@@ -15,6 +15,8 @@ Each `module.yaml` is validated by [`../schema/module.schema.json`](../schema/mo
 - `visibility` — public or private handling expectations;
 - optional `resources` — typed machine-readable data owned by the module.
 
+A module may expose only machine-readable resources and therefore have an empty `entrypoints` list. Every module must declare at least one entrypoint or one typed resource; an empty module is invalid.
+
 ## Machine-readable resources
 
 A resource lets a module expose structured data without adding module-specific fields to the root manifest.
@@ -47,6 +49,8 @@ The identity resource is the first protocol-defined resource. Future modules may
 - Self-dependencies and dependency cycles are forbidden.
 - Every declared entrypoint must exist inside the repository.
 - Every declared resource and resource schema must exist inside the repository.
+- A module must declare at least one entrypoint or resource.
+- Concrete minds must assign a real module owner; `unspecified` is reserved for abstract baseline semantics.
 - Optional consumers must be able to ignore optional modules safely.
 - Concrete implementations may choose any folder names; registration belongs in `manifest.yaml`.
 - Module-specific data belongs in typed resources instead of new root-manifest fields unless the concept is genuinely protocol-wide.

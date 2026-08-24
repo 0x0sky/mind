@@ -15,6 +15,7 @@ on:
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
+      - scripts/validate_visual_assets.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -30,6 +31,7 @@ on:
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py
       - scripts/validate_schemas.py
+      - scripts/validate_visual_assets.py
       - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
@@ -70,6 +72,9 @@ jobs:
 
       - name: Validate relationship semantics and migration
         run: python scripts/validate_relationships.py
+
+      - name: Validate canonical visual asset fixtures
+        run: python scripts/validate_visual_assets.py
 
       - name: Run validator regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v

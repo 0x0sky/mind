@@ -1,10 +1,10 @@
 # Mind Protocol 0.6
 
-Status: **`0.6.0-rc.1` development candidate**
+Status: **`0.6.0-rc.2` development candidate**
 
-`0.6` separates canonical protocol semantics from any one concrete identity implementation before the visual-identity contract is exercised with real assets.
+`0.6` separates canonical protocol semantics from any one concrete identity implementation, then defines portable canonical visual-asset resolution on top of that boundary.
 
-The accepted `0.5` relationship/provenance semantics are carried forward into this line. Consumer conformance is intentionally deferred to the `0.8` milestone: a renderer or application may verify compatibility, but no consumer grants protocol stability or protocol authority.
+The accepted `0.5` relationship/provenance semantics remain part of the line. Consumer conformance is intentionally deferred to `0.8`: a renderer or application may verify compatibility, but no consumer grants protocol stability or protocol authority.
 
 ## Two entry points
 
@@ -13,9 +13,7 @@ Mind exposes two explicit machine entry points with different authority:
 - [`../../protocol.yaml`](../../protocol.yaml) — implementation-independent protocol descriptor;
 - [`../../manifest.yaml`](../../manifest.yaml) — one concrete mind instance.
 
-For this repository, `master` is the living canonical instance **`mind@0x0sky`**.
-
-`protocol.yaml` is not an abstract mind instance and does not invent an `unspecified` identity. It describes the contracts that any compatible concrete mind may implement.
+For this repository, `master` is the living canonical instance **`mind@0x0sky`**. It is not the neutral protocol baseline.
 
 ## Version model
 
@@ -23,109 +21,102 @@ For this repository, `master` is the living canonical instance **`mind@0x0sky`**
 | --- | --- | --- |
 | Protocol descriptor schema | `1` | Shape of `protocol.yaml`. |
 | Manifest schema | `2` | Shape of one concrete `manifest.yaml`. |
-| Protocol | `0.6.0-rc.1` | Shared semantics implemented by compatible minds and consumers. |
-| `mind@0x0sky` context | `0.4.0` | Durable context of this concrete instance. |
+| Protocol | `0.6.0-rc.2` | Shared semantics implemented by compatible minds and consumers. |
+| Concrete instance context | independent | Durable content version of one implementation. |
 | Identity schema | `v1` | Universal implementation-independent Identity value. |
 | Identity-resource envelope | `v1` | Packaging of that value inside a concrete mind. |
+| Visual-assets catalog | `v1` | Packaging and integrity contract for canonical visual bytes. |
 
-These axes are independent.
+These axes are independent. A protocol-version change does not imply a concrete context change.
 
-## Canonical protocol descriptor
+## Protocol package
 
-`protocol.yaml` names the schemas that constitute the current protocol package and explicitly requires neutrality from:
+`protocol.yaml` names the machine contracts that constitute the current protocol package:
 
-- subject implementation;
-- publication owner implementation;
-- provider;
-- repository layout;
-- runtime.
+- manifest composition;
+- module descriptors;
+- universal Identity;
+- concrete identity-resource envelope;
+- authored relationships;
+- canonical visual-asset catalog.
 
-A protocol release tag identifies the contracts on that commit. The concrete `mind@0x0sky` context present on the same commit remains an instance, not protocol ontology.
+It also publishes machine-readable visual-identity policy for resolution, integrity, media support, fallback, and avatar semantics.
 
-Merging protocol development into `master` is not itself a release. Tags and GitHub Releases remain separate explicitly authorized publication actions.
+Merging protocol development into `master` is not itself a release. Tags and GitHub Releases are separate publication actions.
 
 ## Identity split
 
-Prior releases used `schema/identity.schema.json` both as semantic Identity and as a repository resource envelope. That coupled the universal concept to `schema_version`, a validation-file path, and repository-local asset paths.
+[`../../schema/identity.schema.json`](../../schema/identity.schema.json) defines only the canonical semantic Identity value. It has no provider binding, repository path, validation path, storage contract, runtime state, or renderer handle.
 
-`0.6.0-rc.1` separates those responsibilities.
-
-### Universal Identity
-
-[`../../schema/identity.schema.json`](../../schema/identity.schema.json) defines only the canonical semantic value:
-
-```yaml
-type: person
-id: 0x0sky
-display_name: 0x0sky
-```
-
-It has no GitHub fields, repository path, validation path, storage contract, runtime state, or provider binding.
-
-Optional visual identity uses semantic mark metadata and an opaque `asset_ref`. Asset resolution belongs to a concrete mind implementation and is deliberately deferred to a later `0.6` RC.
+A concrete mind carries that value through [`../../schema/identity-resource.schema.json`](../../schema/identity-resource.schema.json). The embedded Identity `type/id` must match `mind.subject`.
 
 Full semantics are defined in [`IDENTITY.md`](IDENTITY.md).
 
-### Concrete identity resource
+## Canonical visual assets
 
-[`../../schema/identity-resource.schema.json`](../../schema/identity-resource.schema.json) defines the envelope used by a mind repository to carry one Identity value.
+`0.6.0-rc.2` completes the protocol-level visual boundary without requiring any named real-world identity or logo.
 
-For `mind@0x0sky`, [`../../identity/identity.yaml`](../../identity/identity.yaml) is that concrete resource. CI independently validates the embedded value against the universal Identity schema and requires its `type/id` to equal `mind.subject` exactly.
+Universal Identity keeps an opaque `visual_identity.primary_mark.asset_ref`. Concrete publications may expose a typed resource conforming to [`../../schema/visual-assets.schema.json`](../../schema/visual-assets.schema.json).
 
-## Instance naming
+Resolution is deterministic:
 
-The canonical concrete-instance convention is:
+- discover typed visual-asset resources;
+- select exactly one descriptor matching the opaque `asset_ref`;
+- enforce protocol media policy;
+- resolve the publication-relative asset location;
+- verify required SHA-256 integrity;
+- return an explicit outcome rather than silently substituting another visual.
 
-```text
-mind@{subject.id}
-```
+Normative media support is SVG and PNG. WebP is protocol-allowed but consumer-optional.
 
-Therefore the root manifest of this repository is `mind@0x0sky`, not a generic `mind` template.
+Provider avatars, generated portraits, screenshots, or other derived visuals cannot silently become the canonical mark. `avatar` is presentation-only in the `0.6` line.
 
-The `master` branch is the living instance branch. A long-lived parallel generic branch is intentionally avoided because it would create a second ontology capable of drifting from released protocol contracts.
+See [`VISUAL_IDENTITY.md`](VISUAL_IDENTITY.md).
+
+## Synthetic conformance fixtures
+
+The protocol package includes synthetic visual-identity fixtures for:
+
+- person;
+- organization;
+- agent.
+
+They prove the visual contract without making any real person, organization, agent, provider account, or repository asset a protocol dependency.
+
+Regression tests additionally prove deterministic unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes.
 
 ## Relationships and provider projections
 
-The authored relationship and provenance model introduced in `0.5` remains intact. `0.6.0-rc.1` does not change relationship schema or reciprocal-confirmation semantics.
+The authored relationship and provenance model introduced in `0.5` remains intact. Canonical relationship entity ids remain provider-independent.
 
-Canonical relationship entity ids remain provider-independent. The current organization relationship is `organization:aiaiaiai`; the GitHub namespace `aiaiaiai-org` is provider metadata.
+Provider-facing compatibility fields may contain provider identifiers. They must never be interpreted as canonical entity identity merely because strings happen to match.
 
-`public_organizations` remains a legacy GitHub-facing compatibility projection. Its values are provider logins and therefore must not be treated as canonical organization ids merely because strings happen to match. Until an explicit provider-binding resource exists, CI validates canonical authored relationship semantics independently from that legacy provider projection.
+## Migration from earlier 0.6 candidates
 
-## Visual identity
+A concrete implementation adopting `0.6.0-rc.2` should:
 
-`0.6.0-rc.1` establishes the abstraction boundary first.
+1. keep manifest schema `2` unless the manifest machine shape itself changes;
+2. declare protocol version `0.6.0-rc.2`;
+3. keep concrete context version unchanged when only the shared protocol version advances;
+4. continue treating `schema/identity.schema.json` as universal Identity;
+5. resolve authored `primary_mark.asset_ref` only through the typed visual-assets contract;
+6. never store repository paths, provider URLs, digests, or storage locators inside universal Identity;
+7. preserve derived provider visuals as noncanonical presentation/evidence;
+8. treat `avatar` as presentation-only.
 
-A later `0.6` RC should:
+A concrete implementation with no canonical primary mark remains conformant; visual identity is optional.
 
-- publish real canonical marks for at least one person and one organization;
-- define an implementation-level asset resolver for opaque `asset_ref` values;
-- prove deterministic renderer fallback;
-- decide whether `avatar` is canonical Identity, an asset slot, or presentation-only data;
-- keep palette, typography, marketing voice, portrait systems, and brand semantics outside universal Identity unless independently justified.
+## Acceptance gate for `0.6.0-rc.2`
 
-## Migration from 0.5
-
-A concrete `0.5` mind adopting this line should:
-
-1. keep manifest schema `2` unless its manifest shape changes;
-2. adopt the `0.6` protocol version it actually implements;
-3. expose a concrete instance name `mind@{subject.id}`;
-4. treat `schema/identity.schema.json` as universal Identity rather than a resource envelope;
-5. carry the value through `schema/identity-resource.schema.json` or an equivalent protocol-conformant resource binding;
-6. validate embedded Identity `type/id` against `mind.subject`;
-7. keep provider and repository bindings outside the universal Identity value;
-8. bump the concrete context version when its durable published representation changes.
-
-## Acceptance gate for `0.6.0-rc.1`
-
-The development candidate is internally acceptable when:
+The candidate is internally acceptable when:
 
 - `protocol.yaml` and every published JSON Schema validate;
-- `mind@0x0sky` validates as a concrete implementation of the neutral Identity contract;
-- relationship authority and reciprocal-confirmation invariants remain green;
-- provider login strings are not promoted into universal Identity semantics;
-- regression tests cover correctness-critical validators;
-- protocol documentation changes trigger contract CI.
+- universal Identity remains provider/storage/runtime independent;
+- asset-ref resolution is deterministic;
+- missing, ambiguous, unsupported-media, and integrity failures are observable;
+- provider-derived visuals cannot silently replace canonical marks;
+- synthetic person, organization, and agent visual fixtures validate;
+- no named real-world asset is required by protocol tests;
+- relationship/provenance and existing validator regression suites remain green.
 
-Consumer conformance is a later `0.8` gate, not a prerequisite for merging this protocol line. Publishing a tag or GitHub Release remains a separate action requiring explicit release authorization.
+Publishing a tag or GitHub Release remains a separate action.

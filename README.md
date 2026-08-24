@@ -18,7 +18,7 @@ The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is n
 
 Neutral protocol truth is carried by `protocol.yaml`, protocol schemas, and protocol documentation on the same commit. A protocol release tag therefore identifies a released contract without pretending the concrete instance on that commit is generic.
 
-The staged next line targets **Mind Protocol `0.6.0-rc.1`**, manifest schema `2`, and `mind@0x0sky` context `0.4.0`.
+The current development line targets **Mind Protocol `0.6.0-rc.1`**, manifest schema `2`, and `mind@0x0sky` context `0.4.0`.
 
 ## Canonical Identity
 
@@ -80,7 +80,7 @@ mind@0x0sky
 
 The canonical authored relationship source for this instance is [`relationships/relationships.yaml`](relationships/relationships.yaml). Provider-discovered memberships remain integration evidence and never become authored protocol truth automatically.
 
-The GitHub-specific root `public_organizations` field remains temporarily as a legacy compatibility projection during the `0.5` migration.
+The canonical organization endpoint is `organization:aiaiaiai`; the current GitHub provider namespace is `aiaiaiai-org`. The GitHub-specific root `public_organizations` field remains temporarily as a legacy compatibility projection and therefore stores provider logins, not canonical entity ids.
 
 ## Schemas
 
@@ -104,7 +104,7 @@ A change to `mind@0x0sky` does not imply a protocol release. A protocol release 
 
 ## mind-web
 
-[`mind-web`](https://github.com/aiaiaiai-tech/mind-web) is a consumer, never protocol authority. It may combine authored facts with provider-derived evidence only when provenance remains distinguishable.
+[`mind-web`](https://github.com/aiaiaiai-org/mind-web) is a consumer, never protocol authority. It may combine authored facts with provider-derived evidence only when provenance remains distinguishable.
 
 ## Privacy boundary
 

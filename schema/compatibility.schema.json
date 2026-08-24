@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiaiaiai.org/mind/schema/compatibility/v1",
+  "title": "Mind Protocol Compatibility Policy",
+  "description": "Machine-readable compatibility freeze, 1.x evolution policy, and supported pre-1.0 migration floor.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol", "freeze", "forward_compatibility", "migration"],
+  "$defs": {
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "frozen_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "schema_id", "git_blob_sha1"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^schema/[A-Za-z0-9_.-]+\\.json$"
+        },
+        "schema_id": {
+          "type": "string",
+          "pattern": "^https://aiaiaiai\\.org/mind/schema/[A-Za-z0-9._/-]+$"
+        },
+        "git_blob_sha1": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "mind"},
+        "version": {"const": "0.9.0"}
+      }
+    },
+    "freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest_schema_version", "capability_unit", "removed_manifest_fields", "root_extension_policy", "frozen_contracts"],
+      "properties": {
+        "manifest_schema_version": {"const": 3},
+        "capability_unit": {"const": "module"},
+        "removed_manifest_fields": {"const": ["mind.kind", "public_organizations"]},
+        "root_extension_policy": {"const": "manifest_schema_revision_required"},
+        "frozen_contracts": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/frozen_contract"}
+        }
+      }
+    },
+    "forward_compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unknown_optional_modules", "unknown_required_modules", "unknown_default_loaded_modules", "unknown_root_manifest_fields", "stable_1_x"],
+      "properties": {
+        "unknown_optional_modules": {"const": "ignore_when_not_requested"},
+        "unknown_required_modules": {"const": "reject"},
+        "unknown_default_loaded_modules": {"const": "reject"},
+        "unknown_root_manifest_fields": {"const": "reject"},
+        "stable_1_x": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["baseline", "compatible_additions", "breaking_core_change", "consumer_rule"],
+          "properties": {
+            "baseline": {"const": "1.0.0"},
+            "compatible_additions": {"const": "optional_modules_or_versioned_optional_resources"},
+            "breaking_core_change": {"const": "major_version_required"},
+            "consumer_rule": {"const": "honor_declared_supported_range"}
+          }
+        }
+      }
+    },
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["floor_inclusive", "supported_stable_lines", "below_floor", "manifest_v2_to_v3"],
+      "properties": {
+        "floor_inclusive": {"const": "0.6.0"},
+        "supported_stable_lines": {"const": ["0.6.0", "0.7.0", "0.8.0"]},
+        "below_floor": {"const": "deterministic_unsupported_version"},
+        "manifest_v2_to_v3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mind_kind", "public_organizations", "provider_login_to_canonical_id"],
+          "properties": {
+            "mind_kind": {"const": "remove_after_subject_type_consistency_check"},
+            "public_organizations": {"const": "preserve_as_canonical_relationships_or_provider_integration_before_removal"},
+            "provider_login_to_canonical_id": {"const": "never_infer"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -73,11 +73,11 @@ Acceptance evidence:
 
 ## 0.9 — compatibility freeze
 
-Current protocol milestone: **`0.9.0`**.
+Status: **`0.9.0` published formal release; compatibility canaries green**.
 
 `0.9.0` is the **first formal GitHub Release**.
 
-Freeze the public compatibility surface before `1.0`:
+The release froze the public compatibility surface before `1.0`:
 
 - remove `mind.kind` in favor of the canonical `mind.subject.type`;
 - remove `public_organizations` from the provider-agnostic root manifest;
@@ -96,31 +96,30 @@ Freeze the public compatibility surface before `1.0`:
 - prohibit provider-login-to-canonical-id inference;
 - prohibit new root-manifest concepts without protocol-wide evidence.
 
-Release gate:
+Release evidence is complete: the final PR CI was green, the merge tree matched the tested head tree, and immutable `v0.9.0` plus its formal GitHub Release were published from the verified commit.
 
-- full CI green on the final release PR head;
-- compatibility freeze/fingerprint validation green;
-- supported migration suite green;
-- dual-mode conformance green;
-- reproducible neutral baseline green;
-- final semantic review clean;
-- tag `v0.9.0` points to the exact verified merge commit whose tree equals the tested PR-head tree;
-- GitHub Release `Mind Protocol 0.9.0` is published with the required artifacts.
+### Post-`0.9.0` compatibility canaries
 
-### After `0.9.0` publication — compatibility canaries
+The deliberately small real-canary set synchronized to the exact `0.9.0` release before `1.0.0-rc.1`:
 
-Once the exact `v0.9.0` artifact is published, a deliberately small set of existing concrete minds may synchronize to that release before `1.0.0-rc.1`.
+- `0x0sky/mind`;
+- `aiaiaiai-org/mind`;
+- `0xda-market/mind`;
+- `nilx-one/mind`.
 
-This phase is for compatibility evidence only. It may exercise manifest/resource migration, exact protocol pinning, canonical-vs-provider identity boundaries, provenance, optional modules, and already-defined canonical visual behavior. It must not introduce a named identity, provider, renderer, or repository as protocol authority.
+P5 acceptance is green: four real minds validate, no unclassified failure remains, and protocol-vs-implementation ownership is explicit for every finding.
 
-Any incompatibility found by a canary returns to the protocol release train as evidence for a reviewed fix or another RC decision. Full named identity, visual-family, provider-binding, agent, project/product, and ecosystem synchronization remains deferred until stable `1.0.0`.
+This phase was compatibility evidence only. It exercised manifest/resource migration, exact protocol pinning, canonical-vs-provider identity boundaries, authored provenance, optional modules, and already-defined visual behavior without making a named identity, provider, renderer, or repository protocol authority.
+
+Full named identity, visual-family, provider-binding, agent, project/product, and ecosystem synchronization remains deferred until stable `1.0.0`.
 
 ## `1.0.0-rc.1` — final protocol release candidate
 
-Publication: **GitHub prerelease**.
+Current source milestone: **`1.0.0-rc.1` candidate**. Formal publication remains a separate GitHub prerelease action after green PR/tree verification.
 
-Prove the frozen contract exactly as intended to ship:
+The candidate proves the frozen contract exactly as intended to ship:
 
+- strict SemVer 2.0 prerelease precedence for supported-range evaluation;
 - clean-checkout full conformance;
 - clean neutral-baseline generation;
 - all required synthetic identity-type fixtures;
@@ -130,6 +129,8 @@ Prove the frozen contract exactly as intended to ship:
 - no named-identity dependency;
 - no required provider dependency;
 - no semantic drift from the frozen `0.9` surface except deliberately reviewed finalization required for `1.0`.
+
+The candidate range is `[1.0.0-rc.1, 1.0.0)`. Stable `1.0.0` is therefore not accidentally accepted as an RC-range member.
 
 If a blocking semantic defect is found after `rc.1`, publish another RC instead of mutating the existing tag or silently changing the candidate.
 

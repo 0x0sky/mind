@@ -22,11 +22,11 @@ mind:
     type: person
     id: 0x0sky
 
-# Legacy GitHub-oriented compatibility projection.
-# Every listed organization is backed by a canonical authored member_of
-# relationship in relationships/relationships.yaml.
+# Legacy GitHub-oriented compatibility projection. Values here are provider
+# logins, not canonical organization ids. Canonical relationship identity lives
+# in relationships/relationships.yaml.
 public_organizations:
-  - aiaiaiai-tech
+  - aiaiaiai-org
   - 0xda-market
   - nilx-one
 

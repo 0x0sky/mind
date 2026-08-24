@@ -39,7 +39,7 @@ The canonical relationship source is [`relationships/relationships.yaml`](relati
 
 The canonical organization id `aiaiaiai` is provider-independent. The legacy `public_organizations` projection uses the current GitHub namespace `aiaiaiai-org` because that field remains provider-specific during the 0.5 migration.
 
-Provider-discovered GitHub memberships remain derived integration evidence. The root `public_organizations` field remains temporarily as a legacy projection, and every populated legacy entry in a mind adopting the relationships module must be backed by a canonical authored membership.
+Provider-discovered GitHub memberships remain derived integration evidence. The root `public_organizations` field remains temporarily as a provider-facing compatibility projection; its GitHub logins do not define or rename canonical relationship entity ids. Until an explicit provider-binding contract exists, consumers must not infer identity equality from string equality or inequality between these namespaces.
 
 ## Repository contract
 

@@ -4,7 +4,7 @@ schema_version: 1
 
 protocol:
   id: mind
-  version: 0.6.0-rc.1
+  version: 0.6.0-rc.2
   neutrality:
     subject: implementation_independent
     publication_owner: implementation_independent
@@ -28,6 +28,33 @@ contracts:
   relationships:
     schema: schema/relationships.schema.json
     role: authored_relationship_resource
+  visual_assets:
+    schema: schema/visual-assets.schema.json
+    role: canonical_visual_asset_resolution_resource
+
+visual_identity:
+  asset_ref_resolution:
+    resource_schema: schema/visual-assets.schema.json
+    discovery: registered_typed_resources
+    selection: unique_matching_ref
+  integrity:
+    descriptor: versioned_descriptor
+    algorithm: sha256
+    required: true
+  media_types:
+    normative:
+      - image/svg+xml
+      - image/png
+    optional:
+      - image/webp
+  fallback:
+    unavailable_mark: presentation_fallback_allowed_noncanonical
+    missing_asset: observable_failure_presentation_fallback_allowed_noncanonical
+    unsupported_media: observable_failure_presentation_fallback_allowed_noncanonical
+    integrity_failure: hard_failure_presentation_fallback_allowed_noncanonical
+    derived_visuals: must_not_silently_replace_canonical
+  avatar:
+    status: presentation_only
 
 instance_policy:
   canonical_instance_branch: master

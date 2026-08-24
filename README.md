@@ -16,44 +16,47 @@ This repository deliberately contains two different things without conflating th
 
 The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is not a neutral identity template.
 
-Neutral protocol truth is carried by `protocol.yaml`, protocol schemas, and protocol documentation on the same commit. A protocol release tag therefore identifies a released contract without pretending the concrete instance on that commit is generic.
-
-The current development line targets **Mind Protocol `0.6.0-rc.1`**, manifest schema `2`, and `mind@0x0sky` context `0.4.0`.
+The current development line targets **Mind Protocol `0.6.0-rc.2`**, manifest schema `2`, and keeps this concrete instance context independently versioned.
 
 ## Canonical Identity
 
-[`schema/identity.schema.json`](schema/identity.schema.json) is the canonical **Identity value**. It is intentionally independent from any concrete mind resource envelope or storage implementation.
-
-It defines semantic identity only:
+[`schema/identity.schema.json`](schema/identity.schema.json) is the canonical **Identity value**. It defines semantic identity only:
 
 - identity `type`;
 - stable provider-independent `id`;
 - canonical `display_name`;
-- optional visual identity expressed through semantic mark metadata and an opaque `asset_ref`.
+- optional visual identity through semantic mark metadata and an opaque `asset_ref`.
 
-It does **not** define GitHub ids, repository paths, URLs, validation-file locations, storage layout, runtime state, or provider bindings.
+It does **not** define provider ids, repository paths, URLs, validation-file locations, storage layout, runtime state, or renderer handles.
 
-A concrete mind carries that value through an implementation envelope. For `mind@0x0sky`, [`identity/identity.yaml`](identity/identity.yaml) uses [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json), while the embedded `identity` value is independently validated against the universal Identity contract.
+A concrete mind carries that value through [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json).
+
+## Canonical visual assets
+
+`0.6.0-rc.2` adds [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), a concrete publication contract for resolving opaque canonical `asset_ref` values.
+
+The protocol keeps byte locations and integrity outside universal Identity:
 
 ```text
-Mind Protocol
-└── Identity                         universal value
-
-mind@0x0sky                          concrete instance on master
-├── manifest.yaml
-└── identity/identity.yaml
-    └── identity                     implements universal Identity
+Identity.primary_mark.asset_ref       semantic opaque reference
+                │
+                ▼
+typed visual-assets resource          concrete publication descriptor
+                │
+                ├── media type
+                ├── publication-relative resource path
+                └── SHA-256 integrity
 ```
+
+Resolution and failure semantics are specified in [`docs/protocol/VISUAL_IDENTITY.md`](docs/protocol/VISUAL_IDENTITY.md). Provider avatars and generated portraits remain noncanonical presentation/evidence and cannot silently replace an authored canonical mark.
 
 ## Instance model
 
-Every concrete mind declares one `subject` and one publication `owner`. The conventional canonical instance name is:
+Every concrete mind declares one `subject` and one publication `owner`. The canonical instance naming convention is:
 
 ```text
 mind@{subject.id}
 ```
-
-For this repository that is `mind@0x0sky`.
 
 The instance is authoritative only about its subject. Relationships involving other entities remain claims from this subject's perspective until independently confirmed by the counterpart canonical mind.
 
@@ -69,18 +72,7 @@ mind@0x0sky
 └── writing
 ```
 
-- [`identity`](identity/README.md) — concrete implementation of the universal Identity contract;
-- [`relationships`](relationships/README.md) — authored entity relations, direction, provenance, and confirmation;
-- [`knowledge`](knowledge/README.md) — durable models and principles;
-- [`engineering`](engineering/README.md) — software practice and engineering contract;
-- [`systems`](systems/README.md) — software-ecosystem structure and system boundaries;
-- [`writing`](writing/README.md) — public creative practice and language register.
-
-## Relationships
-
-The canonical authored relationship source for this instance is [`relationships/relationships.yaml`](relationships/relationships.yaml). Provider-discovered memberships remain integration evidence and never become authored protocol truth automatically.
-
-The canonical organization endpoint is `organization:aiaiaiai`; the current GitHub provider namespace is `aiaiaiai-org`. The GitHub-specific root `public_organizations` field remains temporarily as a legacy compatibility projection and therefore stores provider logins, not canonical entity ids.
+The root manifest remains a composition contract rather than a graph database.
 
 ## Schemas
 
@@ -88,19 +80,20 @@ The canonical organization endpoint is `organization:aiaiaiai`; the current GitH
 - [`schema/mind.schema.json`](schema/mind.schema.json) — concrete mind manifest;
 - [`schema/module.schema.json`](schema/module.schema.json) — module descriptors;
 - [`schema/identity.schema.json`](schema/identity.schema.json) — universal Identity value;
-- [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json) — concrete mind identity-resource envelope;
-- [`schema/relationships.schema.json`](schema/relationships.schema.json) — authored relationships.
+- [`schema/identity-resource.schema.json`](schema/identity-resource.schema.json) — concrete identity-resource envelope;
+- [`schema/relationships.schema.json`](schema/relationships.schema.json) — authored relationships;
+- [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json) — canonical visual-asset catalog.
 
 ## Versioning
 
-The version axes are intentionally independent:
+The axes are intentionally independent:
 
 - `protocol.version` changes when shared Mind semantics change;
-- manifest `schema_version` changes only when the root manifest shape changes incompatibly;
-- `mind.context_version` changes when the durable context of one concrete mind changes;
+- manifest `schema_version` changes only when root manifest machine shape changes;
+- `mind.context_version` changes when durable context of one concrete mind changes;
 - resource/schema versions evolve with their own machine contracts.
 
-A change to `mind@0x0sky` does not imply a protocol release. A protocol release does not imply that another identity's mind context changed.
+Merging protocol development is not a protocol release. Tags and GitHub Releases are separate actions.
 
 ## mind-web
 

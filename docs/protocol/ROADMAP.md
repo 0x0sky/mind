@@ -1,210 +1,179 @@
 # Roadmap to Mind Protocol 1.0
 
-This roadmap describes protocol stabilization, not a promise that every domain feature must exist before `1.0`.
+This roadmap tracks **protocol stabilization only**. Concrete personal minds, organization minds, agent minds, named visual assets, provider bindings, product renderers, and ecosystem rollouts are separate implementation concerns.
 
-The goal of `1.0` is a small, explicit contract that can represent and render personal, organization, and AI-agent identities without provider-specific hacks, repository-layout coupling, or hidden historical assumptions.
+The north star is a small implementation-independent contract for typed identity, context, relationships, provenance, visual identity references, resource loading, compatibility, and deterministic conformance.
+
+## Version axes
+
+Mind keeps four independent version axes:
+
+- `protocol.version` — shared semantics and contracts;
+- manifest `schema_version` — machine shape of one concrete manifest;
+- concrete `mind.context_version` — durable content version of one implementation;
+- resource schema versions — machine contracts of typed resources.
+
+A protocol release never implies a concrete context release, and a concrete context change never implies a protocol release.
 
 ## 0.4 — readable protocol foundation
 
-Status: **`0.4.0` stable contract**
+Status: **stable**
 
-Goals:
-
-- separate manifest schema, protocol, and concrete context versions;
-- make `mind.subject` explicit;
-- distinguish subject from repository publication owner;
-- retain `mind.kind` temporarily for current consumer compatibility;
-- require `identity` for concrete minds;
-- schema-validate module descriptors;
-- allow typed machine-readable module resources;
-- add the canonical identity resource;
-- define optional `visual_identity.primary_mark`;
-- preserve current `public_organizations` provenance semantics.
-
-Stable `0.4.0` required a migrated personal reference mind, at least one migrated organization mind, and verified consumer compatibility. Those gates are satisfied.
+Delivered explicit subject/owner semantics, typed module resources, manifest schema v2, and the first universal visual-identity reference shape.
 
 ## 0.5 — relationships and provenance
 
-Status: **accepted semantics carried forward into `0.6`**
+Status: **accepted semantics carried forward**
 
-Goals:
+Delivered authored relationship direction, provenance, reciprocal confirmation, and a provider-independent canonical relationship boundary.
 
-- generalize authored relationships beyond the GitHub-specific `public_organizations` field;
-- define relationship identity, direction, provenance, and confirmation semantics;
-- preserve provider-discovered relationships as derived data;
-- provide an explicit migration path for `public_organizations` rather than silently changing its meaning;
-- keep provider-specific identifiers at integration boundaries.
+Provider discovery remains derived evidence rather than canonical authorship.
 
-The line introduced a typed `relationships` module/resource while keeping manifest schema v2. The personal and `aiaiaiai` organization minds exercise reciprocal authored membership across independent canonical viewpoints.
+## 0.6 — Identity and canonical visual contract
 
-Accepted invariants:
+### `0.6.0-rc.1` — protocol / instance separation
 
-- the personal reference relationship resource validates;
-- an organization mind independently publishes the matching reciprocal relation;
-- provider-specific identifiers do not leak into canonical relationship entity identity;
-- provider-facing `public_organizations` values are not assumed to equal canonical entity ids;
-- reciprocal-reference semantics are deterministic.
+Status: **merged baseline**
 
-Consumer conformance does not grant protocol stability. Cross-consumer verification belongs to `0.8`, where at least two independent consumers or consumer modes are tested against the same fixtures.
+Delivered:
 
-No visual-system expansion was required for this milestone.
+- implementation-independent `protocol.yaml`;
+- universal `schema/identity.schema.json`;
+- separate concrete identity-resource envelope;
+- explicit protocol/context version independence;
+- provider-independent canonical ids;
+- living concrete instance on `master` rather than a parallel generic ontology.
 
-## 0.6 — Identity abstraction and canonical visual identity
+### `0.6.0-rc.2` — canonical visual asset contract
 
-Status: **`0.6.0-rc.1` development candidate**
+Status: **current development candidate**
 
-`0.6` first separates universal Identity from any concrete mind implementation. Real visual assets are built on that boundary rather than baked into repository semantics.
+Protocol work:
 
-### RC1 — protocol / instance separation
+- define deterministic opaque `asset_ref` resolution;
+- define a typed visual-asset catalog;
+- use versioned descriptors with required SHA-256 integrity;
+- require SVG and PNG consumer support;
+- allow WebP as consumer-optional;
+- define deterministic unavailable, missing, ambiguous, unsupported-media, and integrity-failure outcomes;
+- prohibit silent replacement of canonical marks by derived/provider visuals;
+- keep `avatar` presentation-only;
+- prove the contract with synthetic person, organization, and agent fixtures.
 
-Goals:
+Real logos and marks for named identities are intentionally **not** protocol milestone dependencies.
 
-- introduce `protocol.yaml` as the implementation-independent protocol descriptor;
-- make `schema/identity.schema.json` the canonical universal Identity value;
-- separate concrete mind resource packaging into `schema/identity-resource.schema.json`;
-- remove repository paths, validation paths, provider bindings, and runtime/storage assumptions from universal Identity;
-- make `master` explicitly the living `mind@0x0sky` instance rather than a neutral template;
-- establish `mind@{subject.id}` as the concrete-instance naming convention;
-- keep protocol release version and instance context version independently meaningful;
-- avoid a long-lived parallel generic branch that could drift from released protocol contracts.
+### `0.6.0` — Identity and visual contract stable
 
-Expected structural model:
+Stable source-contract gate:
 
-```text
-protocol.yaml                         neutral protocol authority
-schema/identity.schema.json           universal Identity
+- universal Identity boundary is stable;
+- concrete identity-resource envelope boundary is stable;
+- visual-asset resolution/failure semantics are stable;
+- subject/publication-owner boundary is stable;
+- migration notes from earlier identity-resource semantics are complete;
+- full protocol CI is green.
 
-master
-└── mind@0x0sky                       concrete living instance
-    ├── manifest.yaml
-    └── identity/identity.yaml
-        └── identity                  implements universal Identity
-```
+Tag/GitHub Release publication is separate.
 
-The universal Identity contract must remain readable without knowing GitHub, repository layout, a renderer, a database, a filesystem, or an AI runtime.
+## 0.7 — agent identity semantics
 
-Canonical organization Identity and provider namespace are explicitly separate. For the parent organization:
+### `0.7.0-rc.1`
 
-```text
-canonical Identity:  organization:aiaiaiai
-GitHub namespace:     aiaiaiai-org
-```
+Prove `subject.type: agent` as first-class universal Identity using synthetic fixtures only:
 
-A provider binding may relate those layers, but universal Identity must never collapse them into one identifier.
+- person, organization, and agent share the same Identity contract;
+- agent subject may differ from publication owner;
+- no provider account is required;
+- model, prompt, memory, runtime, and execution state remain outside universal Identity;
+- no biological-personhood assumption exists in schema or docs;
+- synthetic portrait remains outside canonical Identity by default.
 
-### Later 0.6 RC — real visual identity
+### `0.7.0`
 
-Goals:
+Stable when the agent fixture, subject/owner boundary tests, runtime-independence checks, and full protocol CI are green.
 
-- exercise `primary_mark` with real canonical assets;
-- migrate at least one personal identity and one organization identity;
-- resolve opaque `asset_ref` values through an explicit concrete-mind asset contract;
-- define deterministic renderer fallback behavior;
-- decide whether `avatar` is a presentation slot or a canonical identity artifact;
-- introduce variants only where actual renderer requirements justify them;
-- keep palette, typography, and brand semantics separate from the universal identity mark.
+## 0.8 — neutral baseline and conformance
 
-Expected examples by the end of the line:
+Protocol work:
 
-```text
-person
-└── primary_mark: emblem | monogram | signature
+- generate a neutral baseline deterministically from released protocol contracts;
+- prevent concrete instance data from leaking into that baseline;
+- provide synthetic/generic fixtures for person, organization, agent, project, and product;
+- publish a machine-runnable conformance suite;
+- publish a protocol feature matrix;
+- define machine-readable supported protocol ranges;
+- verify at least two independent consumers or consumer modes;
+- define unknown optional capability handling.
 
-organization
-└── primary_mark: logo | emblem
-```
-
-## 0.7 — AI-agent identity
-
-Goals:
-
-- create and validate at least one real `subject.type: agent` mind;
-- verify an agent subject can have a different person or organization owner;
-- define the boundary between an AI's canonical mark and any synthetic portrait;
-- avoid implying biological personhood through the protocol model;
-- verify renderers do not require a GitHub user or organization account for the subject itself.
-
-Expected shape:
-
-```text
-agent
-├── primary_mark: emblem | glyph
-└── portrait?     later presentation capability
-```
-
-AI-specific behavior, model configuration, memory, prompts, and runtime state do not automatically belong to the universal identity contract.
-
-## 0.8 — baseline and consumer conformance
-
-Goals:
-
-- define a reproducible neutral baseline derived from a released `protocol.yaml` contract set;
-- stop treating an old long-lived foundation branch as the source of protocol truth;
-- add conformance fixtures for person, organization, agent, project, and product minds;
-- verify `mind-web` plus at least one second independent consumer or consumer mode against the same fixtures;
-- publish explicit supported protocol ranges;
-- make baseline extraction deterministic enough that instance content cannot leak into a fork template.
-
-The neutral baseline is an artifact of a protocol version, not a parallel ontology or branch that can drift away from the canonical protocol descriptor.
-
-Consumers prove interoperability; they do not become protocol authority and do not retroactively define protocol stability.
+Consumers prove interoperability; they never become protocol authority.
 
 ## 0.9 — compatibility freeze
 
-Goals:
+Freeze the public compatibility surface before `1.0`:
 
-- resolve all known field naming ambiguity;
-- decide the final future of compatibility-only `mind.kind`;
-- remove or formally deprecate pre-1.0 aliases with migration notes;
-- freeze identity, module, resource, provenance, and loading semantics;
-- define forward-compatibility rules for unknown optional modules/resources;
-- define the minimum compatibility policy for `1.x`;
-- synchronize every active sovereign organization mind with real canonical visual identity before the freeze completes.
+- resolve compatibility-only fields;
+- remove or formally deprecate pre-1.0 aliases;
+- freeze Identity, resource-envelope, relationships/provenance, loading/module discovery, and visual-reference semantics;
+- define unknown optional-capability forward compatibility;
+- define minimum `1.x` compatibility policy;
+- define the supported pre-1.0 migration floor;
+- prohibit new root-manifest concepts without protocol-wide evidence.
 
-No new major concept should enter the root manifest after this point without evidence that it is protocol-wide.
+## `1.0.0-rc.1` — final protocol release candidate
 
-## 1.0 — stable Mind contract
+Prove the frozen contract exactly as intended to ship:
 
-`1.0` is ready when a new human, AI agent, or renderer can deterministically answer:
+- clean-checkout full conformance;
+- clean neutral-baseline generation;
+- all required synthetic identity-type fixtures;
+- visual resolution/failure fixtures;
+- supported pre-1.0 migrations;
+- unknown optional-capability behavior;
+- no named-identity dependency;
+- no required provider dependency.
 
-- Which protocol contract am I implementing?
-- Is this data universal protocol semantics or one concrete mind instance?
-- What subject does this mind describe?
-- Who owns or publishes it?
-- What context version is published?
-- Which modules must I load?
-- Where are their descriptors and typed resources?
-- Which facts are canonical and which may be provider-derived?
-- What are the visibility and privacy boundaries?
-- How do I represent the subject visually when a canonical mark exists?
-- How do I safely ignore optional capabilities I do not implement?
+## `1.0.0` — stable Mind Protocol
 
-Required identity coverage:
+The first compatibility-guaranteed protocol must provide:
 
-- personal identity with a canonical mark;
-- organization identity with a canonical logo or emblem;
-- AI-agent identity with a canonical emblem or glyph and independently declared publication owner.
+- implementation-independent Identity;
+- explicit subject and publication owner;
+- typed versioned resources;
+- authored-vs-derived provenance;
+- deterministic relationship semantics;
+- deterministic visual identity reference and failure semantics;
+- privacy/visibility boundaries;
+- deterministic loading and module discovery;
+- optional-capability forward compatibility;
+- provider-agnostic core;
+- machine-readable supported version range;
+- reproducible neutral baseline;
+- public conformance suite.
 
-Required engineering properties:
+Required synthetic fixture coverage:
 
-- universal Identity has no repository/provider/runtime coupling;
-- machine schemas and human documentation agree;
-- conformance validation catches subject drift, broken resources, dependency cycles, and missing assets;
-- current consumers have a documented migration path;
-- provider-specific systems remain integrations, not protocol authority;
-- no canonical concept depends on `mind-web`, GitHub UI behavior, or one AI vendor.
+- person;
+- organization;
+- agent;
+- project;
+- product.
+
+Release artifacts include the versioned contract set, release notes, migration guide, conformance suite, neutral baseline artifact, and compatibility policy.
+
+Tags and GitHub Releases are separate publication actions.
 
 ## Non-goals for 1.0
 
-The following may evolve independently after `1.0` and do not block the core protocol:
+The core protocol does not require:
 
-- full corporate brand systems;
-- typography and marketing voice;
+- a full corporate brand system;
+- typography or marketing voice;
 - rich portrait systems;
-- animation and 3D renderer semantics;
-- AI runtime/model configuration;
-- private memory or conversation archives;
+- animation or 3D renderer semantics;
+- AI model configuration;
+- AI prompts, memory, or runtime state;
+- private conversation archives;
 - provider-specific repository enrichment;
-- product-specific domain models.
-
-Keeping those concerns outside the core is part of reaching `1.0`, not missing it.
+- deployment topology;
+- migration of every existing named identity;
+- forcing every repository, project, or product to become a sovereign mind.

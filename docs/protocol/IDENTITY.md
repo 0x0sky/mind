@@ -39,7 +39,7 @@ Classifies the semantic subject. It is not a hosting-account type and must not b
 
 Stable identifier chosen by the identity's canonical context. Provider numeric ids, installation ids, API URLs, account database ids, repository namespaces, and transient aliases do not belong here.
 
-For example, the organization Identity may be `organization:aiaiaiai` while its current GitHub provider namespace is `aiaiaiai-org`. Those are deliberately different identifiers in different layers.
+A canonical organization id and its current provider namespace may be different strings. Provider bindings relate those layers; universal Identity does not collapse them.
 
 ### `display_name`
 
@@ -47,9 +47,7 @@ Canonical human-readable name. A provider may expose a different display label w
 
 ## Visual identity
 
-Visual identity remains semantically owned by Identity. Storage and rendering remain implementation concerns.
-
-The universal contract therefore uses an opaque `asset_ref`:
+Visual identity is semantically referenced by Identity while storage, loading, byte integrity, and rendering remain outside the universal value.
 
 ```yaml
 visual_identity:
@@ -59,9 +57,11 @@ visual_identity:
     alt: Example
 ```
 
-`asset_ref` identifies a canonical asset semantically. It is not a repository path, CDN URL, provider avatar URL, filesystem location, or renderer texture handle.
+`asset_ref` is an opaque semantic identifier. It is not a repository path, CDN URL, provider avatar URL, filesystem location, digest, or renderer texture handle.
 
-A later `0.6` contract may define how a concrete mind resolves that reference to versioned assets. That resolver must not change the meaning of Identity itself.
+Mind Protocol `0.6.0-rc.2` defines its portable concrete resolution through the separate visual-asset catalog contract. See [`VISUAL_IDENTITY.md`](VISUAL_IDENTITY.md).
+
+`avatar` remains presentation-only in the `0.6` line. Provider avatars and generated portraits are derived/presentation evidence and cannot silently replace a canonical primary mark.
 
 ## Concrete resource envelope
 
@@ -71,13 +71,13 @@ A mind repository may wrap the Identity value in a resource envelope for version
 schema_version: 1
 identity:
   type: person
-  id: 0x0sky
-  display_name: 0x0sky
+  id: example
+  display_name: Example
 validation:
   schema: schema/identity-resource.schema.json
 ```
 
-The envelope belongs to the Mind repository contract. It is **not** part of universal Identity.
+The envelope belongs to the Mind publication contract. It is **not** part of universal Identity.
 
 For every concrete mind, the embedded Identity `type` and `id` must exactly match `manifest.yaml -> mind.subject`.
 
@@ -89,50 +89,21 @@ The canonical naming convention for a concrete instance is:
 mind@{subject.id}
 ```
 
-Examples:
-
-```text
-mind@0x0sky
-mind@aiaiaiai
-mind@magi
-```
-
 This is an instance name, not the identity id itself.
 
 ## Publication ownership
 
 `mind.subject` identifies the Identity represented by the instance. `mind.owner` identifies the entity accountable for publishing the repository.
 
-They may be the same:
-
-```text
-subject: person:0x0sky
-owner:   person:0x0sky
-```
-
-or intentionally different:
-
-```text
-subject: agent:magi
-owner:   organization:aiaiaiai
-```
-
-This prevents hosting implementation from being confused with biological personhood, legal ownership, or autonomous infrastructure ownership.
+They may be the same or intentionally different. This prevents hosting implementation from being confused with biological personhood, legal ownership, or autonomous infrastructure ownership.
 
 ## Provider boundary
 
-Provider mappings are integrations. They may resolve an identity to:
-
-- a GitHub login;
-- an organization membership;
-- a social handle;
-- a profile avatar;
-- a repository namespace;
-- a runtime account.
+Provider mappings are integrations. They may resolve an identity to a GitHub login, social handle, provider avatar, repository namespace, service account, or other external identifier.
 
 Those mappings may provide evidence or presentation data, but they do not modify the canonical Identity value unless the canonical mind explicitly authors a semantic change.
 
-Legacy provider-facing projections may therefore contain provider identifiers that are not string-equal to canonical Identity ids. A consumer must not infer identity equality from provider-string equality or inequality alone.
+A consumer must not infer identity equality from provider-string equality or inequality alone.
 
 ## Invariant
 
@@ -145,4 +116,4 @@ A consumer that understands the Identity contract must be able to parse the same
 - which database or filesystem stores assets;
 - whether the subject is represented by a user account, organization account, service account, or no provider account.
 
-That is the abstraction boundary introduced by the `0.6` line.
+That is the abstraction boundary of the `0.6` line.

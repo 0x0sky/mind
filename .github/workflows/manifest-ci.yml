@@ -10,9 +10,12 @@ on:
       - protocol.yaml
       - manifest.yaml
       - schema/**
+      - docs/protocol/**
       - scripts/validate_manifest.py
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py
+      - scripts/validate_schemas.py
+      - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
       - relationships/relationships.yaml
@@ -22,9 +25,12 @@ on:
       - protocol.yaml
       - manifest.yaml
       - schema/**
+      - docs/protocol/**
       - scripts/validate_manifest.py
       - scripts/validate_protocol.py
       - scripts/validate_relationships.py
+      - scripts/validate_schemas.py
+      - tests/**
       - "**/module.yaml"
       - identity/identity.yaml
       - relationships/relationships.yaml
@@ -50,6 +56,9 @@ jobs:
       - name: Install validator dependencies
         run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.23.0
 
+      - name: Validate every published JSON Schema
+        run: python scripts/validate_schemas.py
+
       - name: Validate manifest YAML syntax
         run: python scripts/validate_manifest.py --syntax-only
 
@@ -61,3 +70,6 @@ jobs:
 
       - name: Validate relationship semantics and migration
         run: python scripts/validate_relationships.py
+
+      - name: Run validator regression tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v

@@ -16,7 +16,7 @@ This repository deliberately contains two different things without conflating th
 
 The `master` branch is the living canonical branch of **`mind@0x0sky`**. It is not a neutral identity template.
 
-The current development candidate is **Mind Protocol `0.7.0-rc.1`**, built on the stable `0.6.0` Identity/visual contract. Manifest schema remains `2`, while the concrete instance context remains independently versioned.
+The current stable source contract is **Mind Protocol `0.7.0`**. Manifest schema remains `2`, while the concrete instance context remains independently versioned.
 
 ## Canonical Identity
 
@@ -33,17 +33,17 @@ A concrete mind carries that value through [`schema/identity-resource.schema.jso
 
 ## Agent identity
 
-`0.7.0-rc.1` proves that `agent` is a first-class value of the same universal Identity contract used by people and organizations; there is no separate AI-specific Identity schema.
+Mind Protocol `0.7.0` stabilizes `agent` as a first-class value of the same universal Identity contract used by people and organizations; there is no separate AI-specific Identity schema.
 
-The synthetic agent fixture proves that an agent subject may have a distinct publication owner and requires no provider account or AI runtime. Model, prompt, memory, runtime, execution state, and biological-personhood assertions remain outside universal Identity.
+The synthetic agent conformance fixture proves that an agent subject may have a distinct publication owner and requires no provider account or AI runtime. Model, prompt, memory, runtime, execution state, and biological-personhood assertions remain outside universal Identity.
 
-A canonical agent mark may still be an emblem or glyph under the existing visual-identity contract. A generated or synthetic portrait is presentation data by default and is not promoted into canonical Identity merely because the subject is an agent.
+A canonical agent mark may be an emblem or glyph under the existing visual-identity contract. A generated or synthetic portrait is presentation data by default and is not promoted into canonical Identity merely because the subject is an agent.
 
 See [`docs/protocol/AGENT_IDENTITY.md`](docs/protocol/AGENT_IDENTITY.md).
 
 ## Canonical visual assets
 
-Mind Protocol `0.6.0` defines [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), a concrete publication contract for resolving opaque canonical `asset_ref` values.
+Mind Protocol `0.6.0` introduced [`schema/visual-assets.schema.json`](schema/visual-assets.schema.json), the concrete publication contract for resolving opaque canonical `asset_ref` values. Those semantics remain unchanged in `0.7.0`.
 
 The protocol keeps byte locations and integrity outside universal Identity:
 

@@ -33,59 +33,44 @@ Provider discovery remains derived evidence rather than canonical authorship.
 
 Status: **`0.6.0` stable source contract**
 
-### `0.6.0-rc.1` — protocol / instance separation
-
-Status: **merged**
-
-Delivered implementation-independent `protocol.yaml`, universal Identity, a separate concrete identity-resource envelope, independent protocol/context versioning, provider-independent canonical ids, and a living concrete instance on `master` rather than a parallel generic ontology.
-
-### `0.6.0-rc.2` — canonical visual asset contract
-
-Status: **merged**
-
-Delivered deterministic opaque `asset_ref` resolution, a typed visual-asset catalog, versioned descriptors with required SHA-256 integrity, normative SVG/PNG plus optional WebP policy, observable failure outcomes, derived-visual provenance protection, presentation-only avatar semantics, and synthetic person/organization/agent fixtures.
+Delivered universal Identity/resource separation, deterministic canonical visual-asset resolution and failure semantics, independent protocol/context versioning, and migration documentation.
 
 Real logos and marks for named identities remain separate implementation work.
 
-### `0.6.0` — stable
-
-The stable source-contract gate is satisfied: universal Identity, resource-envelope, visual-resolution, subject/owner, migration, and full-CI boundaries are established.
-
-A source-contract merge is not a tag or GitHub Release.
-
 ## 0.7 — agent identity semantics
+
+Status: **`0.7.0` stable source contract**
 
 ### `0.7.0-rc.1`
 
-Status: **current development candidate**
+Status: **merged**
 
-Protocol work:
+Delivered a synthetic first-class agent conformance case proving:
 
-- prove `subject.type: agent` through the same universal Identity schema used by other subject types;
-- prove subject and publication owner may differ without requiring them to differ;
-- use synthetic fixtures only;
-- require no provider account for agent identity semantics;
-- keep model, prompt, memory, runtime, and execution state outside universal Identity;
-- keep biological-personhood assertions outside the agent Identity contract;
-- keep synthetic/generated portraits outside canonical Identity by default while preserving canonical emblem/glyph support through the existing visual contract.
-
-Acceptance gate:
-
-- person, organization, and agent share the same Identity contract;
-- the synthetic agent fixture validates;
-- distinct publication ownership validates;
-- same-owner publication remains valid;
-- provider/runtime fields are rejected from universal Identity;
-- no biological-personhood assumption is required by schema or documentation;
-- full protocol CI is green.
+- person, organization, and agent share the same universal Identity contract;
+- agent subject and publication owner may differ without requiring distinct ownership;
+- no provider account is required;
+- model, prompt, memory, runtime, tools, and execution state remain outside universal Identity;
+- biological-personhood assertions remain outside universal Identity;
+- synthetic/generated portraits remain presentation-only by default;
+- canonical agent emblem/glyph support remains available through the existing visual contract.
 
 ### `0.7.0`
 
-Stable when the RC1 semantics above are unchanged, the agent fixture and owner/runtime boundary tests remain green, and the stable-promotion PR introduces no new semantic delta.
+Stable source-contract gate:
 
-Release/tag publication remains separately authorized.
+- agent conformance fixture green;
+- subject/owner boundary documented and tested;
+- universal Identity remains runtime/provider independent;
+- no schema specialization for agent identity;
+- full protocol CI green;
+- stable promotion introduces no semantic delta beyond RC1.
+
+Tag/GitHub Release publication remains separately authorized.
 
 ## 0.8 — neutral baseline and conformance
+
+Next protocol milestone: **`0.8.0`**.
 
 Protocol work:
 

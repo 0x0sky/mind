@@ -1,0 +1,66 @@
+# © 2026 aiaiaiai · aiaiaiai.org
+# SPDX-License-Identifier: MIT
+schema_version: 1
+
+protocol:
+  id: mind
+  version: 0.9.0
+
+freeze:
+  manifest_schema_version: 3
+  capability_unit: module
+  removed_manifest_fields:
+    - mind.kind
+    - public_organizations
+  root_extension_policy: manifest_schema_revision_required
+  frozen_contracts:
+    - path: schema/protocol.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/protocol/v3
+      git_blob_sha1: 37fcdb58cff9fb9e292fb126bcf8e25f029fdc93
+    - path: schema/mind.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/manifest/v3
+      git_blob_sha1: cc89e3364c404a86fdce72a061195768ee460597
+    - path: schema/module.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/module/v1
+      git_blob_sha1: 206a9f05feb888c1186d9fb884989d108dc53756
+    - path: schema/identity.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/identity/v1
+      git_blob_sha1: 32efb75e88b9edd197ded82ca0a77669ad3e5679
+    - path: schema/identity-resource.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/identity-resource/v1
+      git_blob_sha1: aa9d22d32d7b3ad033032888663488850453f7c2
+    - path: schema/relationships.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/relationships/v1
+      git_blob_sha1: 6cae6a6de82a2a225d55969a44fc7773304e94a5
+    - path: schema/visual-assets.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/visual-assets/v1
+      git_blob_sha1: dd65ec62ce70a6fe22ee005339ae9c374451a320
+    - path: schema/conformance.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/conformance/v2
+      git_blob_sha1: a94e3a96a5f475a2757da4b4a8533f6b8b150540
+    - path: schema/compatibility.schema.json
+      schema_id: https://aiaiaiai.org/mind/schema/compatibility/v1
+      git_blob_sha1: e525fc254281fa67e3d8bf1bd0ec63be04716b04
+
+forward_compatibility:
+  unknown_optional_modules: ignore_when_not_requested
+  unknown_required_modules: reject
+  unknown_default_loaded_modules: reject
+  unknown_root_manifest_fields: reject
+  stable_1_x:
+    baseline: 1.0.0
+    compatible_additions: optional_modules_or_versioned_optional_resources
+    breaking_core_change: major_version_required
+    consumer_rule: honor_declared_supported_range
+
+migration:
+  floor_inclusive: 0.6.0
+  supported_stable_lines:
+    - 0.6.0
+    - 0.7.0
+    - 0.8.0
+  below_floor: deterministic_unsupported_version
+  manifest_v2_to_v3:
+    mind_kind: remove_after_subject_type_consistency_check
+    public_organizations: preserve_as_canonical_relationships_or_provider_integration_before_removal
+    provider_login_to_canonical_id: never_infer

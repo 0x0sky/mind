@@ -35,16 +35,14 @@ def validate() -> list[str]:
     protocol_consumption = repository.get("protocol_consumption")
     if protocol_consumption != {
         "id": "mind",
-        "version": "0.9.0",
+        "version": "1.0.0-rc.1",
         "authority_repository": "aiaiaiai-org/mind-protocol",
-        "release_repository": "0x0sky/mind",
-        "release_tag": "v0.9.0",
-        "release_commit": "457844c8ced0318d91d628617ff6f8ec6f428ab7",
+        "release_repository": "aiaiaiai-org/mind-protocol",
+        "release_tag": "v1.0.0-rc.1",
+        "release_commit": "6bf8467f0e3990808464e118cc60cc83d8ab2ced",
         "floating_master": "forbidden",
     }:
-        errors.append(
-            "repository metadata must separate current protocol authority from immutable v0.9.0 release provenance"
-        )
+        errors.append("repository metadata must pin the immutable Mind Protocol 1.0.0-rc.1 release exactly")
 
     fork_policy = repository.get("fork_policy", {})
     if fork_policy.get("relationship_to_protocol_repository") != "independent_consumer":
@@ -52,10 +50,12 @@ def validate() -> list[str]:
 
     subject = {"type": "person", "id": "0x0sky"}
     mind = manifest.get("mind", {})
+    if manifest.get("protocol") != {"id": "mind", "version": "1.0.0-rc.1"}:
+        errors.append("manifest must consume Mind Protocol 1.0.0-rc.1")
     if mind.get("subject") != subject or mind.get("owner") != subject:
         errors.append("manifest subject and owner must remain person:0x0sky")
     if mind.get("context_version") != "0.4.0":
-        errors.append("protocol-only repository split must not silently bump personal context_version")
+        errors.append("protocol-only RC synchronization must not silently bump personal context_version")
 
     if identity.get("identity") != {
         "type": "person",
@@ -93,8 +93,8 @@ def main() -> int:
         return 1
 
     print(
-        "mind@0x0sky is an independent concrete Mind consumer with normalized person Identity "
-        "and truthful protocol provenance"
+        "mind@0x0sky is an independent concrete Mind consumer pinned to Mind Protocol 1.0.0-rc.1 "
+        "with normalized person Identity"
     )
     return 0
 

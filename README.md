@@ -41,13 +41,13 @@ Folder placement does not define module semantics; the manifest catalog does.
 
 ## Protocol consumption
 
-Current binding: **Mind Protocol `1.0.0-rc.1`**.
+Current binding: **Mind Protocol `1.0.0-rc.2`**.
 
 Exact release provenance:
 
 - **authority/release repository:** `aiaiaiai-org/mind-protocol`;
-- **tag:** `v1.0.0-rc.1`;
-- **commit:** `6bf8467f0e3990808464e118cc60cc83d8ab2ced`.
+- **tag:** `v1.0.0-rc.2`;
+- **commit:** `acdcedcf02c8b4ef314179bf54955a84606c8fb5`.
 
 The historical first formal `v0.9.0` release remains immutable in this repository because it predates the physical authority split. It is history, not the current protocol source.
 

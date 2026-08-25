@@ -15,8 +15,9 @@ from validate_manifest import load_json_mapping, load_yaml_mapping
 ROOT = Path(__file__).resolve().parents[1]
 LOCK_PATH = ROOT / "protocol.lock.yaml"
 MANIFEST_PATH = ROOT / "manifest.yaml"
-EXPECTED_SOURCE = {
-    "repository": "aiaiaiai-org/mind-protocol",
+EXPECTED_AUTHORITY_REPOSITORY = "aiaiaiai-org/mind-protocol"
+EXPECTED_RELEASE_SOURCE = {
+    "repository": "0x0sky/mind",
     "tag": "v0.9.0",
     "commit": "457844c8ced0318d91d628617ff6f8ec6f428ab7",
     "floating_branch": "forbidden",
@@ -46,9 +47,18 @@ def validate() -> list[str]:
     if manifest.get("protocol") != protocol:
         errors.append("manifest protocol must match protocol.lock.yaml exactly")
 
-    if lock.get("source") != EXPECTED_SOURCE:
+    if lock.get("authority_repository") != EXPECTED_AUTHORITY_REPOSITORY:
         errors.append(
-            "protocol source must pin aiaiaiai-org/mind-protocol v0.9.0 at the historical release commit"
+            "current Mind Protocol authority must be aiaiaiai-org/mind-protocol"
+        )
+    if lock.get("release_source") != EXPECTED_RELEASE_SOURCE:
+        errors.append(
+            "Mind Protocol 0.9.0 release provenance must remain 0x0sky/mind@v0.9.0 "
+            "at the immutable historical release commit"
+        )
+    if "source" in lock:
+        errors.append(
+            "ambiguous legacy source field is forbidden; use authority_repository and release_source"
         )
 
     descriptor = lock.get("protocol_descriptor")
@@ -148,7 +158,10 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print("mind@0x0sky pins the complete Mind Protocol v0.9.0 machine contract set exactly")
+    print(
+        "mind@0x0sky pins the complete historical Mind Protocol v0.9.0 release "
+        "while naming aiaiaiai-org/mind-protocol as current authority"
+    )
     return 0
 
 

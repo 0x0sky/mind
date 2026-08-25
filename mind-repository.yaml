@@ -27,11 +27,14 @@ routing:
 protocol_consumption:
   id: mind
   version: 0.9.0
-  source_repository: aiaiaiai-org/mind-protocol
-  source_tag: v0.9.0
+  authority_repository: aiaiaiai-org/mind-protocol
+  release_repository: 0x0sky/mind
+  release_tag: v0.9.0
+  release_commit: 457844c8ced0318d91d628617ff6f8ec6f428ab7
   floating_master: forbidden
 
 fork_policy:
+  relationship_to_protocol_repository: independent_consumer
   copy_reference_instance_content: forbidden
   creation_mechanism: exact_release_bootstrap
 
@@ -42,6 +45,7 @@ version_axes:
 invariants:
   - this_repository_is_not_mind_protocol_authority
   - mind_at_0x0sky_is_canonical_only_for_person_0x0sky
-  - protocol_contracts_are_consumed_from_aiaiaiai_org_mind_protocol
+  - current_protocol_authority_is_aiaiaiai_org_mind_protocol
+  - historical_release_provenance_is_preserved_exactly
   - provider_accounts_do_not_define_canonical_identity
   - protocol_tags_are_forbidden_as_concrete_context_tags

@@ -9,9 +9,9 @@ This repository is a **standalone concrete Mind Protocol consumer**. It does not
 - `manifest.yaml` — canonical publication boundary for `mind@0x0sky`;
 - `modules/identity/identity.yaml` — canonical machine-readable person Identity;
 - registered modules — durable authored public context for this subject;
-- `protocol.lock.yaml` — exact immutable Mind Protocol release consumed by this repository, with protocol authority and release provenance represented separately.
+- `protocol.lock.yaml` — exact immutable Mind Protocol release consumed by this repository.
 
-The current canonical protocol authority is `aiaiaiai-org/mind-protocol`. The vendored `protocol.yaml`, `conformance.yaml`, `compatibility.yaml`, and `schema/` are release contracts, not locally authored protocol authority.
+The canonical protocol authority is `aiaiaiai-org/mind-protocol`. The vendored `protocol.yaml`, `conformance.yaml`, `compatibility.yaml`, and `schema/` are immutable release contracts, not locally authored protocol authority.
 
 ## Identity
 
@@ -41,22 +41,23 @@ Folder placement does not define module semantics; the manifest catalog does.
 
 ## Protocol consumption
 
-Current binding: **Mind Protocol `0.9.0`**.
+Current binding: **Mind Protocol `1.0.0-rc.1`**.
 
-Two facts are intentionally separate:
+Exact release provenance:
 
-- **current protocol authority:** `aiaiaiai-org/mind-protocol`;
-- **immutable `0.9.0` release provenance:** `0x0sky/mind@v0.9.0`, commit `457844c8ced0318d91d628617ff6f8ec6f428ab7`.
+- **authority/release repository:** `aiaiaiai-org/mind-protocol`;
+- **tag:** `v1.0.0-rc.1`;
+- **commit:** `6bf8467f0e3990808464e118cc60cc83d8ab2ced`.
 
-The authority moved after `0.9.0`; the historical release is not recreated, retagged, or rewritten in the new repository. Starting with `1.0.0-rc.1`, formal protocol releases are published from `aiaiaiai-org/mind-protocol`.
+The historical first formal `v0.9.0` release remains immutable in this repository because it predates the physical authority split. It is history, not the current protocol source.
 
-`mind.context_version` is independent and remains `0.4.0`. A protocol migration does not bump personal context unless durable authored context itself changes.
+`mind.context_version` is independent and remains `0.4.0`. This RC synchronization changes only the consumed protocol release; no durable personal context or canonical Identity is changed.
 
-Protocol-version tags do not belong in this concrete repository beyond the immutable historical `v0.9.0` that predates the physical authority split.
+Protocol-version tags do not belong in this concrete repository beyond the immutable historical `v0.9.0` that predates the split.
 
 ## Repository relationship
 
-This concrete Mind is intended to be an **independent GitHub repository**, not a fork of the protocol repository. Protocol compatibility is expressed through the exact release lock and vendored release contracts, not GitHub fork ancestry.
+This concrete Mind is an **independent protocol consumer**, not a fork of `mind-protocol`. Protocol compatibility is expressed through the exact release lock and vendored release contracts, not GitHub fork ancestry.
 
 ## Privacy boundary
 

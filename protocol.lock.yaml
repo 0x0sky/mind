@@ -4,25 +4,25 @@ schema_version: 1
 
 protocol:
   id: mind
-  version: 0.9.0
+  version: 1.0.0-rc.1
 
 authority_repository: aiaiaiai-org/mind-protocol
 
 release_source:
-  repository: 0x0sky/mind
-  tag: v0.9.0
-  commit: 457844c8ced0318d91d628617ff6f8ec6f428ab7
+  repository: aiaiaiai-org/mind-protocol
+  tag: v1.0.0-rc.1
+  commit: 6bf8467f0e3990808464e118cc60cc83d8ab2ced
   floating_branch: forbidden
 
 protocol_descriptor:
   path: protocol.yaml
-  git_blob_sha1: d4294338ce8d19ff732e3de280c9292c3df5f199
+  git_blob_sha1: 776eee50640361f533f5fd1b9ab7efd9a7b3e458
 
 release_machine_artifacts:
   conformance.yaml:
-    git_blob_sha1: 53ba4996a694e80da3e58092511cc02d7d77f172
+    git_blob_sha1: b2c84244e5591539086f156f08fc5cf136a97bd2
   compatibility.yaml:
-    git_blob_sha1: 10381cea7a7ad7557bf1a84654f9acdf1ebb9d00
+    git_blob_sha1: 12f5a34b27333489cb6adfb89679bc0e69927dbb
 
 vendored_contracts:
   schema/protocol.schema.json:

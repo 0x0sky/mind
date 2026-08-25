@@ -26,11 +26,11 @@ routing:
 
 protocol_consumption:
   id: mind
-  version: 1.0.0-rc.1
+  version: 1.0.0-rc.2
   authority_repository: aiaiaiai-org/mind-protocol
   release_repository: aiaiaiai-org/mind-protocol
-  release_tag: v1.0.0-rc.1
-  release_commit: 6bf8467f0e3990808464e118cc60cc83d8ab2ced
+  release_tag: v1.0.0-rc.2
+  release_commit: acdcedcf02c8b4ef314179bf54955a84606c8fb5
   floating_master: forbidden
 
 fork_policy:

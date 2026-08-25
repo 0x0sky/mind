@@ -35,14 +35,14 @@ def validate() -> list[str]:
     protocol_consumption = repository.get("protocol_consumption")
     if protocol_consumption != {
         "id": "mind",
-        "version": "1.0.0-rc.1",
+        "version": "1.0.0-rc.2",
         "authority_repository": "aiaiaiai-org/mind-protocol",
         "release_repository": "aiaiaiai-org/mind-protocol",
-        "release_tag": "v1.0.0-rc.1",
-        "release_commit": "6bf8467f0e3990808464e118cc60cc83d8ab2ced",
+        "release_tag": "v1.0.0-rc.2",
+        "release_commit": "acdcedcf02c8b4ef314179bf54955a84606c8fb5",
         "floating_master": "forbidden",
     }:
-        errors.append("repository metadata must pin the immutable Mind Protocol 1.0.0-rc.1 release exactly")
+        errors.append("repository metadata must pin the immutable Mind Protocol 1.0.0-rc.2 release exactly")
 
     fork_policy = repository.get("fork_policy", {})
     if fork_policy.get("relationship_to_protocol_repository") != "independent_consumer":
@@ -50,8 +50,8 @@ def validate() -> list[str]:
 
     subject = {"type": "person", "id": "0x0sky"}
     mind = manifest.get("mind", {})
-    if manifest.get("protocol") != {"id": "mind", "version": "1.0.0-rc.1"}:
-        errors.append("manifest must consume Mind Protocol 1.0.0-rc.1")
+    if manifest.get("protocol") != {"id": "mind", "version": "1.0.0-rc.2"}:
+        errors.append("manifest must consume Mind Protocol 1.0.0-rc.2")
     if mind.get("subject") != subject or mind.get("owner") != subject:
         errors.append("manifest subject and owner must remain person:0x0sky")
     if mind.get("context_version") != "0.4.0":
@@ -93,7 +93,7 @@ def main() -> int:
         return 1
 
     print(
-        "mind@0x0sky is an independent concrete Mind consumer pinned to Mind Protocol 1.0.0-rc.1 "
+        "mind@0x0sky is an independent concrete Mind consumer pinned to Mind Protocol 1.0.0-rc.2 "
         "with normalized person Identity"
     )
     return 0

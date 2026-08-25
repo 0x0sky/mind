@@ -4,7 +4,7 @@ schema_version: 2
 
 protocol:
   id: mind
-  version: 1.0.0-rc.1
+  version: 1.0.0-rc.2
 
 supported_range:
   minimum_inclusive: 1.0.0-rc.1

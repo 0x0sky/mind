@@ -18,11 +18,12 @@ MANIFEST_PATH = ROOT / "manifest.yaml"
 EXPECTED_AUTHORITY_REPOSITORY = "aiaiaiai-org/mind-protocol"
 EXPECTED_RELEASE_SOURCE = {
     "repository": "aiaiaiai-org/mind-protocol",
-    "tag": "v1.0.0-rc.1",
-    "commit": "6bf8467f0e3990808464e118cc60cc83d8ab2ced",
+    "tag": "v1.0.0-rc.2",
+    "commit": "acdcedcf02c8b4ef314179bf54955a84606c8fb5",
     "floating_branch": "forbidden",
 }
-EXPECTED_PROTOCOL = {"id": "mind", "version": "1.0.0-rc.1"}
+EXPECTED_PROTOCOL = {"id": "mind", "version": "1.0.0-rc.2"}
+RELEASE_LABEL = "v1.0.0-rc.2"
 
 
 def git_blob_sha1(path: Path) -> str:
@@ -34,7 +35,7 @@ def verify_blob(path: Path, expected_sha: Any, label: str, errors: list[str]) ->
     if not path.is_file():
         errors.append(f"locked release artifact is missing: {label}")
     elif git_blob_sha1(path) != expected_sha:
-        errors.append(f"release artifact drift from v1.0.0-rc.1: {label}")
+        errors.append(f"release artifact drift from {RELEASE_LABEL}: {label}")
 
 
 def validate() -> list[str]:
@@ -44,14 +45,14 @@ def validate() -> list[str]:
 
     protocol = lock.get("protocol")
     if protocol != EXPECTED_PROTOCOL:
-        errors.append("protocol.lock.yaml must pin Mind Protocol 1.0.0-rc.1 exactly")
+        errors.append("protocol.lock.yaml must pin Mind Protocol 1.0.0-rc.2 exactly")
     if manifest.get("protocol") != protocol:
         errors.append("manifest protocol must match protocol.lock.yaml exactly")
 
     if lock.get("authority_repository") != EXPECTED_AUTHORITY_REPOSITORY:
         errors.append("current Mind Protocol authority must be aiaiaiai-org/mind-protocol")
     if lock.get("release_source") != EXPECTED_RELEASE_SOURCE:
-        errors.append("Mind Protocol 1.0.0-rc.1 release provenance must pin aiaiaiai-org/mind-protocol@v1.0.0-rc.1 exactly")
+        errors.append("Mind Protocol 1.0.0-rc.2 release provenance must pin aiaiaiai-org/mind-protocol@v1.0.0-rc.2 exactly")
     if "source" in lock:
         errors.append("ambiguous legacy source field is forbidden; use authority_repository and release_source")
 
@@ -142,7 +143,7 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print("mind@0x0sky pins the complete immutable Mind Protocol v1.0.0-rc.1 release from aiaiaiai-org/mind-protocol")
+    print("mind@0x0sky pins the complete immutable Mind Protocol v1.0.0-rc.2 release from aiaiaiai-org/mind-protocol")
     return 0
 
 

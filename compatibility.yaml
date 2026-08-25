@@ -4,7 +4,7 @@ schema_version: 1
 
 protocol:
   id: mind
-  version: 1.0.0-rc.1
+  version: 0.9.0
 
 freeze:
   manifest_schema_version: 3
@@ -59,7 +59,6 @@ migration:
     - 0.6.0
     - 0.7.0
     - 0.8.0
-    - 0.9.0
   below_floor: deterministic_unsupported_version
   manifest_v2_to_v3:
     mind_kind: remove_after_subject_type_consistency_check

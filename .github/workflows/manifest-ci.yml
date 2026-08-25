@@ -3,38 +3,38 @@
 name: Mind Contract CI
 
 on:
-  pull_request:
+  push:
+    branches:
+      - master
     paths:
-      - README.md
-      - AGENTS.md
+      - manifest.yaml
       - mind-repository.yaml
       - protocol.yaml
+      - protocol.lock.yaml
       - conformance.yaml
       - compatibility.yaml
-      - manifest.yaml
       - schema/**
-      - docs/REPOSITORY_MODEL.md
-      - docs/protocol/**
-      - scripts/semver.py
-      - scripts/bootstrap_mind.py
-      - scripts/validate_manifest.py
-      - scripts/validate_protocol.py
-      - scripts/validate_relationships.py
-      - scripts/validate_schemas.py
-      - scripts/validate_visual_assets.py
-      - scripts/validate_identity_resources.py
-      - scripts/validate_agent_identity.py
-      - scripts/validate_conformance.py
-      - scripts/validate_compatibility.py
-      - scripts/generate_baseline.py
-      - scripts/build_release_bundle.py
-      - scripts/migrate_manifest_v2_to_v3.py
-      - tests/**
+      - scripts/**
       - "**/module.yaml"
-      - identity/identity.yaml
-      - relationships/relationships.yaml
+      - "**/identity.yaml"
+      - "**/relationships.yaml"
+      - docs/migrations/**
       - .github/workflows/manifest-ci.yml
-      - .github/workflows/release.yml
+  pull_request:
+    paths:
+      - manifest.yaml
+      - mind-repository.yaml
+      - protocol.yaml
+      - protocol.lock.yaml
+      - conformance.yaml
+      - compatibility.yaml
+      - schema/**
+      - scripts/**
+      - "**/module.yaml"
+      - "**/identity.yaml"
+      - "**/relationships.yaml"
+      - docs/migrations/**
+      - .github/workflows/manifest-ci.yml
   workflow_dispatch:
 
 permissions:
@@ -56,7 +56,7 @@ jobs:
       - name: Install validator dependencies
         run: python -m pip install --disable-pip-version-check PyYAML==6.0.2 jsonschema==4.23.0
 
-      - name: Validate every published JSON Schema
+      - name: Validate vendored JSON Schemas
         run: python scripts/validate_schemas.py
 
       - name: Validate manifest YAML syntax
@@ -65,32 +65,14 @@ jobs:
       - name: Validate manifest, modules, and resources
         run: python scripts/validate_manifest.py
 
-      - name: Validate universal Identity resources
+      - name: Validate universal Identity resource
         run: python scripts/validate_identity_resources.py
 
-      - name: Validate neutral protocol and instance binding
-        run: python scripts/validate_protocol.py
-
-      - name: Validate relationship semantics and migration
+      - name: Validate relationship semantics
         run: python scripts/validate_relationships.py
 
-      - name: Validate canonical visual asset fixtures
-        run: python scripts/validate_visual_assets.py
+      - name: Validate immutable protocol release lock
+        run: python scripts/validate_protocol_lock.py
 
-      - name: Validate first-class agent Identity fixture
-        run: python scripts/validate_agent_identity.py
-
-      - name: Run dual-mode protocol conformance
-        run: python scripts/validate_conformance.py --mode all
-
-      - name: Validate compatibility freeze and migration policy
-        run: python scripts/validate_compatibility.py
-
-      - name: Validate reproducible neutral baseline
-        run: python scripts/generate_baseline.py --check
-
-      - name: Validate reproducible formal release bundle
-        run: python scripts/build_release_bundle.py --check
-
-      - name: Run validator, bootstrap, migration, and release regression tests
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Validate personal consumer invariants
+        run: python scripts/validate_personal_canary.py

@@ -4,10 +4,10 @@ schema_version: 2
 
 protocol:
   id: mind
-  version: 1.0.0-rc.1
+  version: 0.9.0
 
 supported_range:
-  minimum_inclusive: 1.0.0-rc.1
+  minimum_inclusive: 0.9.0
   maximum_exclusive: 1.0.0
 
 fixture_types:
@@ -89,11 +89,11 @@ consumer_modes:
 consumer_support:
   schema:
     supported_range:
-      minimum_inclusive: 1.0.0-rc.1
+      minimum_inclusive: 0.9.0
       maximum_exclusive: 1.0.0
   minimal:
     supported_range:
-      minimum_inclusive: 1.0.0-rc.1
+      minimum_inclusive: 0.9.0
       maximum_exclusive: 1.0.0
 
 probes:

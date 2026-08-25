@@ -36,11 +36,19 @@ def validate() -> list[str]:
     if protocol_consumption != {
         "id": "mind",
         "version": "0.9.0",
-        "source_repository": "aiaiaiai-org/mind-protocol",
-        "source_tag": "v0.9.0",
+        "authority_repository": "aiaiaiai-org/mind-protocol",
+        "release_repository": "0x0sky/mind",
+        "release_tag": "v0.9.0",
+        "release_commit": "457844c8ced0318d91d628617ff6f8ec6f428ab7",
         "floating_master": "forbidden",
     }:
-        errors.append("repository metadata must consume exact aiaiaiai-org/mind-protocol v0.9.0")
+        errors.append(
+            "repository metadata must separate current protocol authority from immutable v0.9.0 release provenance"
+        )
+
+    fork_policy = repository.get("fork_policy", {})
+    if fork_policy.get("relationship_to_protocol_repository") != "independent_consumer":
+        errors.append("mind@0x0sky must model protocol linkage as an independent consumer, not a fork")
 
     subject = {"type": "person", "id": "0x0sky"}
     mind = manifest.get("mind", {})
@@ -84,7 +92,10 @@ def main() -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
 
-    print("mind@0x0sky is a pure concrete Mind consumer with normalized person Identity")
+    print(
+        "mind@0x0sky is an independent concrete Mind consumer with normalized person Identity "
+        "and truthful protocol provenance"
+    )
     return 0
 
 

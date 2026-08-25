@@ -1,16 +1,14 @@
 # © 2026 aiaiaiai · aiaiaiai.org
 # SPDX-License-Identifier: MIT
-# Manifest v3 removes compatibility-only kind and provider-specific organization projections.
 schema_version: 3
 
 protocol:
   id: mind
-  version: 1.0.0-rc.1
+  version: 0.9.0
 
-# Living canonical instance on master: mind@0x0sky.
 mind:
-  context_version: 0.4.0
   name: mind@0x0sky
+  context_version: 0.4.0
   subject:
     type: person
     id: 0x0sky
@@ -45,7 +43,7 @@ modules:
     cross_reference: preferred
     composition_over_inheritance: preferred
   catalog:
-    identity: identity/module.yaml
+    identity: modules/identity/module.yaml
     relationships: relationships/module.yaml
     knowledge: knowledge/module.yaml
     engineering: engineering/module.yaml

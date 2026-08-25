@@ -1,127 +1,57 @@
 # AGENTS
 
-> Native repository instructions for the `0xda` working environment, derived from `.assistant/contract/agent.yaml` and `.assistant/environments/0xda.yaml`.
+This repository is the concrete public Mind for `person:0x0sky`. It is a **Mind Protocol consumer**, not protocol authority.
 
-This repository intentionally contains both Mind Protocol authority and one concrete reference Mind. **Do not infer that the concrete reference implementation is a template.**
+## Read order
 
-## Repository routing — read this first
+1. Read `mind-repository.yaml` to confirm repository role.
+2. Read `manifest.yaml` for subject, owner, registered modules, loading order, visibility, and validation boundaries.
+3. Load only the registered modules relevant to the task.
+4. Treat vendored protocol contracts as immutable release inputs locked by `protocol.lock.yaml`.
 
-Start with [`mind-repository.yaml`](mind-repository.yaml). It declares the two co-located roles and the canonical entry point for each.
+## Protocol boundary
 
-Choose task mode before loading context:
+Canonical Mind Protocol source and releases live in `aiaiaiai-org/mind-protocol`.
 
-1. **Protocol task** — definition, schema, conformance, compatibility, migration, release or bootstrap semantics. Start with `protocol.yaml`; use `conformance.yaml`, `compatibility.yaml`, `schema/`, and protocol docs as needed.
-2. **Reference-instance task** — authored context specifically about subject `person:0x0sky`. Start with `manifest.yaml` and follow its registered modules/loading policy.
-3. **New-Mind task** — creating a Mind for another person, organization, agent, project, or product. Start with `docs/protocol/BOOTSTRAP.md`; bootstrap from an exact immutable protocol release. **Never seed from `mind@0x0sky` content.**
-4. **Protocol contribution** — a GitHub fork/feature branch is valid as source-development workflow. A fork of `master` is not a concrete-Mind template.
+Do not modify vendored `protocol.yaml`, `conformance.yaml`, `compatibility.yaml`, or `schema/` as if this repository defined the protocol. Protocol changes belong in the protocol repository and arrive here only through an explicit exact-release sync.
 
-`mind-repository.yaml` is repository metadata, not a universal protocol contract. Repository-specific routing must not leak into protocol semantics.
+Never consume floating `master` as protocol authority. Never create protocol-version tags in this concrete repository.
+
+## Identity boundary
+
+`modules/identity/identity.yaml` is canonical only for `person:0x0sky`.
+
+Provider logins, handles, repository ownership, avatars, runtime identities, organizations, projects, products, and agents are distinct concepts and must not silently redefine the canonical person Identity.
 
 ## Environment identity
 
 Operate as **0xda**, the current personal working environment in which `0x0sky` collaborates with the assistant.
 
-`0xda` is not a vendor alias. Keep this environment separate from organizations, products, projects, and other agent environments.
+`0xda` is not a vendor alias and is not the subject of this Mind. Keep environment identity separate from the canonical person Identity and from organization/product/project/agent identities.
 
-## Purpose
+## Loading and module rules
 
-Use this repository as the canonical knowledge base for `mind@0x0sky` only when the task is actually about that concrete subject. Use the neutral protocol contracts as authority for universal Mind behavior.
-
-Prefer explicit repository contracts over inferred conventions.
-
-## Concrete instance entry point
-
-For `mind@0x0sky` work, `manifest.yaml` defines the subject and publication owner, registered modules, loading order, context boundaries, and validation schemas.
-
-Do not assume a fixed repository layout. Personal, organizational, agent, project, and product Minds may register different modules while sharing the same protocol contract.
-
-## New Mind construction
-
-A concrete Mind must be created from an exact protocol release through the neutral bootstrap path:
-
-```text
-exact protocol release
-→ neutral baseline
-→ explicit subject / owner / Identity
-→ concrete mind@<id>
-→ authored modules/resources only
-```
-
-Use `scripts/bootstrap_mind.py` from the exact checked-out release tag. Do not copy or rename the reference manifest, identity, relationships, knowledge, engineering, handles, or other `0x0sky` modules.
-
-Provider account names are evidence/integration data, never automatic canonical identity IDs.
-
-## Loading rules
-
-- Read only files relevant to the chosen task mode.
-- For concrete-instance work, follow module/loading declarations in `manifest.yaml`.
-- Do not load the entire repository unless explicitly required.
-- Treat registered Markdown documents as specifications unless they state otherwise.
-- Load archived context only when explicitly requested or required to resolve history.
-- Avoid duplicating information in generated outputs.
-
-## Agent guard
-
-- Act only on clear user intent.
-- Prefer stability over effect.
-- Make the smallest correct change.
-- Verify the exact target before irreversible action.
-- Distinguish protocol authority, repository metadata, release publication, and concrete authored context.
-
-## Communication
-
-Follow the user’s language. Keep technical terms in English when that improves precision. Be concise, direct, and technically precise. Report changes, validation, blockers, and uncertainty.
+- Follow `manifest.yaml`; folder placement alone does not define authority.
+- Respect each module's declared responsibility and dependencies.
+- Prefer cross-references over duplicated facts.
+- Keep public content durable and intentionally authored.
+- Load archived or optional context only when relevant.
+- Do not infer canonical facts from provider metadata.
 
 ## Engineering workflow
 
-1. Inspect current state before editing.
-2. Determine protocol vs reference-instance vs bootstrap scope.
-3. Form the smallest sufficient plan.
-4. Implement only the requested scope.
-5. Run the most relevant checks.
-6. Keep documentation synchronized with behavior.
-7. Prefer reviewable commits and draft pull requests.
+1. Inspect current state.
+2. Make the smallest correct change.
+3. Keep docs and machine contracts synchronized.
+4. Use a feature/fix branch, then Draft PR.
+5. Run full relevant CI and require green before merge.
+6. Reuse verified results rather than duplicating checks.
+7. Merge only under explicit project authorization; release/deploy/publication remain separate actions.
 
-Preserve provider independence, avoid duplicated sources of truth, prefer explicit contracts, and do not publish with failing validation.
+## Safety
 
-## Source precedence
+Never add secrets, credentials, access tokens, private keys, private health or relationship information, or transient personal state.
 
-Each concept must have exactly one canonical source. When files overlap or conflict:
-
-1. use `mind-repository.yaml` to determine repository role;
-2. for universal semantics, prefer protocol contracts over reference-instance content;
-3. for concrete `0x0sky` content, follow `manifest.yaml` and the relevant module contract;
-4. prefer stable context over transient context unless the task concerns current state;
-5. do not merge conflicting rules automatically;
-6. surface unresolved conflicts clearly.
-
-File modification time alone does not establish authority.
-
-## Module boundaries
-
-- Respect each module’s declared responsibility.
-- Do not introduce undeclared dependencies between modules.
-- Prefer cross-references over duplicated content.
-- Keep modules independently replaceable where the contract permits it.
-- Do not invent new systems when an existing registered module already owns the concern.
-- Keep personal identity, organizations, products, projects, and agents separate.
-- Do not import project-specific rules implicitly.
-
-## GitHub boundary
-
-Proceed with inspection, branches, edits, commits, draft pull requests, issues, workflows, and CI fixes required by the task. Require explicit user authorization before merge, deploy, publish, deletion, repository transfer, secret rotation or exposure, or another irreversible action.
-
-## Safety and integrity
-
-- Never add secrets, credentials, private keys, access tokens, private health or relationship information, or transient personal state.
-- Preserve existing terminology and repository conventions.
-- Keep generated changes human-readable and compatible with declared validation contracts.
-- Never reinterpret the abstract baseline as a concrete Mind.
-- Never reinterpret `mind@0x0sky` as a universal or concrete-template authority.
-- Keep public content durable, intentional, and safe to expose.
-
-## Architecture boundary
-
-This file implements the `0xda` environment. Shared behavior belongs in `.assistant/contract/`; environment-specific identity and runtime behavior belong in `.assistant/environments/0xda.yaml`.
+Preserve provider independence and distinguish authored fact, inference, and external observation.
 
 <!-- © 2026 aiaiaiai · aiaiaiai.org -->

@@ -3,18 +3,18 @@
 schema_version: 1
 module:
   id: identity
-  purpose: implement the canonical identity contract for the subject of this concrete mind
+  purpose: define the canonical public person identity represented by this mind
   stability: stable
   dependencies: []
   entrypoints:
-    - identity/README.md
-    - identity/handles.md
+    - modules/identity/README.md
+    - modules/identity/handles.md
   owner:
     type: person
     id: 0x0sky
   visibility: public
   resources:
     identity:
-      path: identity/identity.yaml
+      path: modules/identity/identity.yaml
       format: yaml
       schema: schema/identity-resource.schema.json

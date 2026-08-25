@@ -1,70 +1,20 @@
-# modules
+# Modules
 
-A module is a focused, replaceable unit of context composed into a concrete mind.
+`manifest.yaml` is the registration authority for this concrete Mind.
 
-## Interface
+The personal Identity module is normalized under `modules/identity/`, matching the concrete organization-Mind layout. Existing authored personal modules retain their historical repository paths unless a separate migration changes them; folder placement does not define protocol semantics.
 
-Each `module.yaml` is validated by [`../schema/module.schema.json`](../schema/module.schema.json) and declares:
+Current registered modules:
 
-- `id` — stable unique identifier;
-- `purpose` — one responsibility;
-- `stability` — `stable`, `transient`, or `archived`;
-- `dependencies` — explicit module identifiers;
-- `entrypoints` — canonical human- or machine-readable files loaded by consumers;
-- `owner` — entity responsible for the module;
-- `visibility` — public or private handling expectations;
-- optional `resources` — typed machine-readable data owned by the module.
+- `identity` → `modules/identity/module.yaml`
+- `relationships` → `relationships/module.yaml`
+- `knowledge` → `knowledge/module.yaml`
+- `engineering` → `engineering/module.yaml`
+- `systems` → `systems/module.yaml`
+- `writing` → `writing/module.yaml`
 
-A module may expose only machine-readable resources and therefore have an empty `entrypoints` list. Every module must declare at least one entrypoint or one typed resource; an empty module is invalid.
+Each module owns one responsibility, declares dependencies explicitly, and must not duplicate another module's canonical content.
 
-## Machine-readable resources
+Vendored schemas are consumed from the exact release locked by `protocol.lock.yaml`; this repository does not define module or resource schema semantics.
 
-A resource lets a module expose structured data without adding module-specific fields to the root manifest.
-
-```yaml
-module:
-  id: identity
-  resources:
-    identity:
-      path: identity/identity.yaml
-      format: yaml
-      schema: schema/identity.schema.json
-```
-
-Each resource declares:
-
-- a repository-relative `path`;
-- its serialization `format` (`yaml` or `json`);
-- a repository-relative JSON Schema.
-
-Mind CI validates the resource against its declared schema. This keeps the root manifest focused on composition while allowing modules to evolve typed contracts independently.
-
-The identity resource is the first protocol-defined resource. Future modules may add their own resources without making those domain semantics global to every mind.
-
-## Rules
-
-- A module must have one reason to change.
-- A module must not duplicate another module's canonical content.
-- Dependencies must resolve to registered module IDs.
-- Self-dependencies and dependency cycles are forbidden.
-- Every declared entrypoint must exist inside the repository.
-- Every declared resource and resource schema must exist inside the repository.
-- A module must declare at least one entrypoint or resource.
-- Concrete minds must assign a real module owner; `unspecified` is reserved for abstract baseline semantics.
-- Optional consumers must be able to ignore optional modules safely.
-- Concrete implementations may choose any folder names; registration belongs in `manifest.yaml`.
-- Module-specific data belongs in typed resources instead of new root-manifest fields unless the concept is genuinely protocol-wide.
-
-## Example registration
-
-```yaml
-modules:
-  registered:
-    - identity
-    - engineering
-  catalog:
-    identity: identity/module.yaml
-    engineering: engineering/module.yaml
-```
-
-The root manifest registers modules; each module descriptor owns its local interface and resources.
+<!-- © 2026 aiaiaiai · aiaiaiai.org -->

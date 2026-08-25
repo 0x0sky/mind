@@ -27,7 +27,7 @@ release_machine_artifacts:
 vendored_contracts:
   schema/protocol.schema.json:
     schema_id: https://aiaiaiai.org/mind/schema/protocol/v3
-    git_blob_sha1: 23bc8ffde889c1186d9fb884989d108dc53756
+    git_blob_sha1: 23bc8ffde889c7c20ca446e6fca8e914920f4fd2
   schema/mind.schema.json:
     schema_id: https://aiaiaiai.org/mind/schema/manifest/v3
     git_blob_sha1: cc89e3364c404a86fdce72a061195768ee460597
